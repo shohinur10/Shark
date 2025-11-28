@@ -1,0 +1,108 @@
+/** WORKOUT CATEGORIES PREVIEW **/
+.workout-categories-preview {
+	padding: $spacing-3xl 0;
+	background: #ffffff;
+
+	.container {
+		@include container;
+	}
+
+	.section-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		margin-bottom: $spacing-2xl;
+
+		.section-title {
+			font-family: $font;
+			font-size: 36px;
+			font-weight: 700;
+			color: $gray-900;
+			margin-bottom: $spacing-sm;
+		}
+
+		.section-subtitle {
+			font-family: $font;
+			font-size: 18px;
+			color: $gray-600;
+		}
+
+		.view-all-btn {
+			background: $gray-900;
+			color: #ffffff;
+			font-weight: 600;
+			text-transform: none;
+			padding: $spacing-sm $spacing-xl;
+			border-radius: $radius-md;
+
+			&:hover {
+				background: $gray-800;
+			}
+		}
+	}
+
+	.category-card {
+		border-radius: $radius-lg;
+		overflow: hidden;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		transition: all $transition-base;
+		cursor: pointer;
+		height: 100%;
+
+		&:hover {
+			transform: translateY(-8px);
+			box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+		}
+
+		.category-image {
+			position: relative;
+			width: 100%;
+			height: 300px;
+			background-size: cover;
+			background-position: center;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.category-content {
+			text-align: center;
+			color: #ffffff;
+			padding: $spacing-lg;
+		}
+
+		.category-icon {
+			font-size: 48px;
+			color: $fitness-orange;
+			margin-bottom: $spacing-md;
+		}
+
+		.category-title {
+			font-family: $font;
+			font-weight: 700;
+			font-size: 24px;
+			color: #ffffff;
+			margin-bottom: $spacing-xs;
+			text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+		}
+
+		.category-description {
+			font-family: $font;
+			font-size: 14px;
+			color: rgba(255, 255, 255, 0.9);
+			margin-bottom: $spacing-sm;
+		}
+
+		.category-count {
+			font-family: $font;
+			font-size: 12px;
+			color: rgba(255, 255, 255, 0.8);
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+	}
+}
+
+
+
+

@@ -1,0 +1,499 @@
+/** COACHING PAGE - PREMIUM REVENUE SYSTEM **/
+
+.coaching-page {
+	padding: $spacing-2xl 0;
+	min-height: calc(100vh - 200px);
+	background: #ffffff;
+
+	.container {
+		@include container;
+		max-width: $container-lg;
+	}
+
+	// Page Header
+	.page-header {
+		margin-bottom: $spacing-3xl;
+		text-align: center;
+		padding: $spacing-2xl 0;
+
+		.page-title {
+			font-family: $font;
+			font-size: 48px;
+			font-weight: 800;
+			color: $gray-900;
+			margin-bottom: $spacing-md;
+			letter-spacing: -1px;
+		}
+
+		.page-subtitle {
+			font-family: $font;
+			font-size: 20px;
+			color: $gray-600;
+			font-weight: 400;
+		}
+	}
+
+	// Coaching Tabs
+	.coaching-tabs-section {
+		margin-bottom: $spacing-2xl;
+		border-bottom: 2px solid $gray-200;
+		background: #ffffff;
+
+		.coaching-tabs {
+			.MuiTab-root {
+				font-family: $font;
+				font-weight: 500;
+				font-size: 16px;
+				text-transform: none;
+				min-height: 72px;
+				color: $gray-600;
+				transition: all $transition-base;
+				padding: $spacing-md $spacing-xl;
+
+				&:hover {
+					color: $gray-900;
+					background: $gray-50;
+				}
+
+				&.Mui-selected {
+					color: $gray-900;
+					font-weight: 700;
+					background: $gray-50;
+				}
+			}
+
+			.MuiTabs-indicator {
+				background: linear-gradient(90deg, $fitness-orange 0%, #ec6b57 100%);
+				height: 3px;
+			}
+		}
+	}
+
+	// Personal Trainers Section
+	.trainers-section {
+		margin-bottom: $spacing-3xl;
+
+		.trainer-card {
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+
+			&:hover {
+				transform: translateY(-8px);
+				box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+				border-color: $gray-300;
+			}
+
+			.trainer-header {
+				position: relative;
+				width: 100%;
+			}
+
+			.trainer-photo {
+				position: relative;
+				width: 100%;
+				height: 280px;
+				background-size: cover;
+				background-position: center;
+
+				.verified-badge {
+					position: absolute;
+					top: $spacing-sm;
+					right: $spacing-sm;
+					background: rgba(76, 175, 80, 0.95);
+					color: #ffffff;
+					border-radius: 50%;
+					width: 32px;
+					height: 32px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					backdrop-filter: blur(10px);
+
+					svg {
+						font-size: 18px;
+					}
+				}
+
+				.online-badge {
+					position: absolute;
+					top: $spacing-sm;
+					left: $spacing-sm;
+					background: rgba(33, 150, 243, 0.95);
+					color: #ffffff;
+					backdrop-filter: blur(10px);
+					font-weight: 600;
+					font-size: 11px;
+				}
+			}
+
+			.trainer-name {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				font-size: 22px;
+			}
+
+			.rating-text {
+				font-family: $font;
+				color: $gray-600;
+				font-size: 13px;
+			}
+
+			.trainer-experience,
+			.trainer-location,
+			.trainer-availability {
+				display: flex;
+				align-items: center;
+				gap: $spacing-xs;
+
+				.icon {
+					color: $gray-500;
+					font-size: 18px;
+				}
+
+				span,
+				.availability-text {
+					font-family: $font;
+					color: $gray-700;
+					font-size: 14px;
+				}
+			}
+
+			.trainer-specialization,
+			.trainer-certifications {
+				.label {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-700;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+					font-size: 11px;
+				}
+
+				.spec-chip {
+					background: $gray-100;
+					color: $gray-700;
+					border: 1px solid $gray-300;
+					font-weight: 500;
+					font-size: 10px;
+					margin-top: $spacing-xs;
+				}
+
+				.certs-text {
+					font-family: $font;
+					color: $gray-600;
+					font-size: 13px;
+					line-height: 1.5;
+				}
+			}
+
+			.trainer-pricing {
+				padding: $spacing-md;
+				background: $gray-50;
+				border-radius: $radius-md;
+				margin-top: $spacing-sm;
+
+				.price {
+					font-family: $font;
+					font-weight: 800;
+					color: $gray-900;
+					line-height: 1;
+				}
+
+				.price-label {
+					font-family: $font;
+					color: $gray-600;
+					font-size: 11px;
+				}
+
+				.package-info {
+					text-align: right;
+
+					.package-price {
+						font-family: $font;
+						font-weight: 600;
+						color: $gray-900;
+						font-size: 13px;
+					}
+
+					.package-savings {
+						font-family: $font;
+						color: #4caf50;
+						font-weight: 600;
+						font-size: 11px;
+					}
+				}
+			}
+
+			.book-session-btn {
+				background: $gray-900;
+				color: #ffffff;
+				font-weight: 600;
+				text-transform: none;
+				padding: $spacing-sm $spacing-lg;
+				margin-top: $spacing-md;
+
+				&:hover {
+					background: $gray-800;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				}
+			}
+		}
+	}
+
+	// Online Coaching Plans Section
+	.coaching-plans-section {
+		margin-bottom: $spacing-3xl;
+
+		.plan-card {
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			height: 100%;
+			position: relative;
+
+			&.popular {
+				border: 3px solid $fitness-orange;
+				transform: scale(1.05);
+
+				&:hover {
+					transform: scale(1.08) translateY(-8px);
+				}
+			}
+
+			&:hover {
+				transform: translateY(-8px);
+				box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+			}
+
+			.popular-badge {
+				position: absolute;
+				top: -12px;
+				left: 50%;
+				transform: translateX(-50%);
+				background: $fitness-orange;
+				color: #ffffff;
+				font-weight: 700;
+				font-size: 12px;
+				padding: $spacing-xs $spacing-md;
+				border-radius: $radius-md;
+				z-index: 1;
+			}
+
+			.plan-name {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				margin-bottom: $spacing-xs;
+			}
+
+			.plan-duration {
+				font-family: $font;
+				color: $gray-600;
+				font-size: 14px;
+			}
+
+			.plan-price {
+				text-align: center;
+				padding: $spacing-lg 0;
+				border-top: 2px solid $gray-200;
+				border-bottom: 2px solid $gray-200;
+				margin: $spacing-md 0;
+
+				.price-amount {
+					font-family: $font;
+					font-weight: 800;
+					color: $gray-900;
+					line-height: 1;
+				}
+
+				.price-period {
+					font-family: $font;
+					color: $gray-600;
+					font-size: 14px;
+					margin-top: $spacing-xs;
+				}
+			}
+
+			.plan-features {
+				.features-title {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					font-size: 14px;
+				}
+
+				.feature-icon {
+					color: $fitness-orange;
+					font-size: 18px;
+				}
+
+				.feature-text {
+					font-family: $font;
+					color: $gray-700;
+					font-size: 14px;
+				}
+			}
+
+			.select-plan-btn {
+				background: $gray-900;
+				color: #ffffff;
+				font-weight: 600;
+				text-transform: none;
+				padding: $spacing-md $spacing-xl;
+				margin-top: $spacing-lg;
+
+				&:hover {
+					background: $gray-800;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				}
+			}
+
+			&.popular .select-plan-btn {
+				background: $fitness-orange;
+				color: #ffffff;
+
+				&:hover {
+					background: darken($fitness-orange, 10%);
+				}
+			}
+		}
+	}
+
+	// Gym Partners Section
+	.gym-partners-section {
+		margin-bottom: $spacing-3xl;
+
+		.gym-card {
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			height: 100%;
+
+			&:hover {
+				transform: translateY(-8px);
+				box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+				border-color: $gray-300;
+			}
+
+			.gym-logo {
+				width: 100%;
+				height: 200px;
+				background-size: cover;
+				background-position: center;
+			}
+
+			.gym-name {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+			}
+
+			.icon {
+				color: $gray-500;
+				font-size: 18px;
+			}
+
+			.rating-text {
+				font-family: $font;
+				color: $gray-600;
+				font-size: 13px;
+			}
+
+			.gym-specialties {
+				.label {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-700;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+					font-size: 11px;
+				}
+
+				.specialty-chip {
+					background: $gray-100;
+					color: $gray-700;
+					border: 1px solid $gray-300;
+					font-weight: 500;
+					font-size: 10px;
+					margin-top: $spacing-xs;
+				}
+			}
+
+			.gym-pricing {
+				display: flex;
+				align-items: center;
+				gap: $spacing-xs;
+				padding: $spacing-sm;
+				background: $gray-50;
+				border-radius: $radius-md;
+
+				.icon {
+					color: $gray-500;
+				}
+
+				.price-range {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-900;
+					font-size: 14px;
+				}
+			}
+
+			.view-gym-btn {
+				border-color: $gray-900;
+				color: $gray-900;
+				font-weight: 600;
+				text-transform: none;
+				margin-top: $spacing-sm;
+
+				&:hover {
+					background: $gray-900;
+					color: #ffffff;
+					border-color: $gray-900;
+				}
+			}
+		}
+	}
+}
+
+// Responsive Design
+@media (max-width: $breakpoint-md) {
+	.coaching-page {
+		padding: $spacing-lg 0;
+
+		.page-header {
+			.page-title {
+				font-size: 32px;
+			}
+
+			.page-subtitle {
+				font-size: 16px;
+			}
+		}
+
+		.coaching-tabs-section {
+			.coaching-tabs {
+				.MuiTab-root {
+					font-size: 13px;
+					min-height: 56px;
+					padding: $spacing-sm $spacing-md;
+				}
+			}
+		}
+	}
+}
+
+
+
+

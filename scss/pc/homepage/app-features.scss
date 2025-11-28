@@ -1,0 +1,65 @@
+/** APP FEATURES **/
+.app-features {
+	padding: $spacing-3xl 0;
+	background: #ffffff;
+
+	.container {
+		@include container;
+	}
+
+	.section-header {
+		margin-bottom: $spacing-2xl;
+		text-align: center;
+
+		.section-title {
+			font-family: $font;
+			font-size: 36px;
+			font-weight: 700;
+			color: $gray-900;
+			margin-bottom: $spacing-sm;
+		}
+
+		.section-subtitle {
+			font-family: $font;
+			font-size: 18px;
+			color: $gray-600;
+		}
+	}
+
+	.feature-card {
+		border-radius: $radius-lg;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+		transition: all $transition-base;
+		height: 100%;
+		text-align: center;
+
+		&:hover {
+			transform: translateY(-8px);
+			box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+			border-color: $gray-300;
+		}
+
+		.feature-icon {
+			font-size: 56px;
+			margin-bottom: $spacing-md;
+		}
+
+		.feature-title {
+			font-family: $font;
+			font-weight: 600;
+			color: $gray-900;
+			margin-bottom: $spacing-sm;
+		}
+
+		.feature-description {
+			font-family: $font;
+			color: $gray-600;
+			line-height: 1.6;
+		}
+	}
+}
+
+
+
+

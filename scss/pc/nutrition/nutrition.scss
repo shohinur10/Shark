@@ -1,0 +1,1433 @@
+/** NUTRITION PAGE STYLES - WHITE & GRAY THEME **/
+
+.nutrition-page {
+	padding: $spacing-2xl 0;
+	min-height: calc(100vh - 200px);
+	background: #ffffff;
+
+	.container {
+		@include container;
+		max-width: $container-lg;
+	}
+
+	// Page Header
+	.page-header {
+		margin-bottom: $spacing-2xl;
+		text-align: center;
+		padding: $spacing-xl 0;
+
+		.page-title {
+			font-family: $font;
+			font-size: 42px;
+			font-weight: 700;
+			color: $gray-900;
+			margin-bottom: $spacing-sm;
+			letter-spacing: -0.5px;
+		}
+
+		.page-subtitle {
+			font-family: $font;
+			font-size: 18px;
+			color: $gray-600;
+			font-weight: 400;
+		}
+	}
+
+	// Nutrition Hero Section
+	.nutrition-hero {
+		margin-bottom: $spacing-3xl;
+
+		.hero-video {
+			position: relative;
+			width: 100%;
+			height: 400px;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+			background: $gray-100;
+
+			.nutrition-video {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			.video-overlay {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+				padding: $spacing-xl;
+				color: #ffffff;
+
+				.video-title {
+					font-family: $font;
+					font-weight: 700;
+					font-size: 32px;
+					margin-bottom: $spacing-sm;
+					color: #ffffff;
+				}
+
+				.video-subtitle {
+					font-family: $font;
+					font-size: 16px;
+					color: rgba(255, 255, 255, 0.9);
+				}
+			}
+		}
+
+		.nutrition-grid {
+			display: flex;
+			flex-direction: column;
+			gap: $spacing-md;
+			height: 100%;
+
+			.nutrition-item {
+				flex: 1;
+				border-radius: $radius-lg;
+				overflow: hidden;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				background: #ffffff;
+				border: 1px solid $gray-200;
+				transition: all $transition-base;
+
+				&:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+				}
+
+				.nutrition-thumbnail {
+					position: relative;
+					width: 100%;
+					height: 180px;
+					background: $gray-100;
+
+					.thumbnail-overlay {
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						background: rgba(0, 0, 0, 0.3);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						opacity: 0;
+						transition: opacity $transition-base;
+
+						.play-btn {
+							background: rgba(255, 255, 255, 0.9);
+							color: $gray-900;
+
+							&:hover {
+								background: #ffffff;
+								transform: scale(1.1);
+							}
+						}
+					}
+
+					&:hover .thumbnail-overlay {
+						opacity: 1;
+					}
+				}
+
+				.nutrition-info {
+					padding: $spacing-md;
+
+					.category-chip {
+						background: $gray-900;
+						color: #ffffff;
+						font-size: 10px;
+						font-weight: 600;
+						margin-bottom: $spacing-xs;
+					}
+
+					.nutrition-title {
+						font-family: $font;
+						font-weight: 600;
+						color: $gray-900;
+						font-size: 14px;
+					}
+				}
+			}
+		}
+	}
+
+	// Why Nutrition Matters Section
+	.why-nutrition-section {
+		margin-bottom: $spacing-3xl;
+		padding: $spacing-2xl 0;
+		background: $gray-50;
+		border-radius: $radius-lg;
+
+		.section-title {
+			font-family: $font;
+			font-weight: 700;
+			color: $gray-900;
+			font-size: 32px;
+			text-align: center;
+			margin-bottom: $spacing-md;
+		}
+
+		.section-description {
+			font-family: $font;
+			font-size: 16px;
+			color: $gray-700;
+			text-align: center;
+			max-width: 800px;
+			margin: 0 auto $spacing-2xl;
+			line-height: 1.8;
+		}
+
+		.stats-grid {
+			.stat-card {
+				background: #ffffff;
+				border-radius: $radius-lg;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+				border: 1px solid $gray-200;
+				text-align: center;
+				transition: all $transition-base;
+				height: 100%;
+
+				&:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+					border-color: $gray-300;
+				}
+
+				.stat-icon {
+					display: flex;
+					justify-content: center;
+					margin-bottom: $spacing-md;
+
+					svg {
+						font-size: 48px;
+						color: $gray-700;
+					}
+				}
+
+				.stat-number {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					font-size: 48px;
+					margin-bottom: $spacing-sm;
+				}
+
+				.stat-title {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-900;
+					margin-bottom: $spacing-sm;
+					font-size: 18px;
+				}
+
+				.stat-description {
+					font-family: $font;
+					color: $gray-600;
+					line-height: 1.6;
+					font-size: 14px;
+				}
+			}
+		}
+	}
+
+	// Tabs
+	.nutrition-tabs {
+		margin-bottom: $spacing-2xl;
+		border-bottom: 1px solid $gray-200;
+		background: #ffffff;
+
+		.custom-tabs {
+			.MuiTab-root {
+				font-family: $font;
+				font-weight: 500;
+				font-size: 15px;
+				text-transform: none;
+				min-height: 64px;
+				color: $gray-600;
+				transition: all $transition-base;
+				padding: $spacing-md $spacing-lg;
+
+				&:hover {
+					color: $gray-900;
+					background: $gray-50;
+				}
+
+				&.Mui-selected {
+					color: $gray-900;
+					font-weight: 600;
+					background: $gray-50;
+				}
+			}
+
+			.MuiTabs-indicator {
+				background: $gray-900;
+				height: 2px;
+			}
+		}
+	}
+
+	// Section Title
+	.section-title {
+		font-family: $font;
+		font-weight: 600;
+		color: $gray-900;
+		font-size: 24px;
+	}
+
+	.section-description {
+		font-family: $font;
+		font-size: 14px;
+		color: $gray-600;
+		line-height: 1.6;
+	}
+
+	// Nutrition Card
+	.nutrition-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+		padding: $spacing-xl;
+
+		.nutrition-progress-section {
+			margin-bottom: $spacing-xl;
+			padding-bottom: $spacing-xl;
+			border-bottom: 1px solid $gray-200;
+
+			.macro-label {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				display: flex;
+				align-items: center;
+				gap: $spacing-xs;
+				margin-bottom: $spacing-sm;
+
+				.calorie-icon {
+					color: $gray-600;
+					font-size: 20px;
+				}
+			}
+
+			.macro-value {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				font-size: 20px;
+			}
+
+			.calorie-progress {
+				height: 10px;
+				border-radius: $radius-full;
+				background-color: $gray-200;
+
+				.MuiLinearProgress-bar {
+					background: $gray-700;
+					border-radius: $radius-full;
+				}
+			}
+		}
+
+		.macros-section {
+			margin-top: $spacing-xl;
+
+			.macros-title {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				margin-bottom: $spacing-lg;
+				font-size: 18px;
+			}
+
+			.macro-card {
+				background: $gray-50;
+				border-radius: $radius-lg;
+				padding: $spacing-lg;
+				text-align: center;
+				border: 1px solid $gray-200;
+				transition: all $transition-base;
+
+				&:hover {
+					transform: translateY(-2px);
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+					border-color: $gray-300;
+				}
+
+				&.protein {
+					border-left: 3px solid $gray-700;
+				}
+
+				&.carbs {
+					border-left: 3px solid $gray-600;
+				}
+
+				&.fats {
+					border-left: 3px solid $gray-500;
+				}
+
+				.macro-amount {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					margin-bottom: $spacing-xs;
+					font-size: 32px;
+				}
+
+				.macro-target {
+					font-family: $font;
+					font-size: 13px;
+					color: $gray-600;
+					margin-bottom: $spacing-md;
+				}
+
+				.macro-progress {
+					height: 6px;
+					border-radius: $radius-full;
+					background-color: $gray-200;
+					margin-bottom: $spacing-sm;
+				}
+
+				.macro-name {
+					font-family: $font;
+					font-weight: 600;
+					text-transform: uppercase;
+					letter-spacing: 1px;
+					color: $gray-700;
+					font-size: 11px;
+				}
+			}
+
+			.protein .macro-progress .MuiLinearProgress-bar {
+				background: $gray-800;
+				border-radius: $radius-full;
+			}
+
+			.carbs .macro-progress .MuiLinearProgress-bar {
+				background: $gray-700;
+				border-radius: $radius-full;
+			}
+
+			.fats .macro-progress .MuiLinearProgress-bar {
+				background: $gray-600;
+				border-radius: $radius-full;
+			}
+		}
+	}
+
+	// Active Plan Card
+	.active-plan-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+		height: 100%;
+
+		.meal-plan-placeholder {
+			text-align: center;
+			padding: $spacing-2xl 0;
+
+			.browse-btn {
+				background: $gray-900;
+				color: #ffffff;
+				font-weight: 600;
+				text-transform: none;
+				padding: $spacing-sm $spacing-xl;
+				border-radius: $radius-md;
+				transition: all $transition-base;
+
+				&:hover {
+					background: $gray-800;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				}
+			}
+		}
+	}
+
+	// Vitamins Section
+	.vitamins-section {
+		.vitamin-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+
+			&:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+				border-color: $gray-300;
+			}
+
+			.vitamin-image {
+				position: relative;
+				width: 100%;
+				height: 250px;
+				background: $gray-100;
+
+				.vitamin-overlay {
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					padding: $spacing-sm;
+
+					.category-chip {
+						background: rgba(255, 255, 255, 0.95);
+						color: $gray-700;
+						font-weight: 600;
+						font-size: 11px;
+						border: 1px solid $gray-300;
+						backdrop-filter: blur(10px);
+						align-self: flex-start;
+					}
+
+					.rating-badge {
+						display: flex;
+						align-items: center;
+						gap: $spacing-xs;
+						background: rgba(255, 255, 255, 0.95);
+						padding: $spacing-xs $spacing-sm;
+						border-radius: $radius-md;
+						backdrop-filter: blur(10px);
+						align-self: flex-end;
+
+						.star-icon {
+							color: #ffa726;
+							font-size: 18px;
+						}
+
+						.rating-text {
+							font-family: $font;
+							font-weight: 600;
+							color: $gray-900;
+							font-size: 14px;
+						}
+					}
+				}
+			}
+
+			.vitamin-name {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				font-size: 18px;
+			}
+
+			.star-icon {
+				color: $gray-600;
+				font-size: 18px;
+			}
+
+			.vitamin-dosage {
+				font-family: $font;
+				font-size: 13px;
+				color: $gray-600;
+			}
+
+			.benefits-section {
+				.benefits-label {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-700;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+					font-size: 11px;
+				}
+
+				.benefit-chip {
+					background: $gray-100;
+					color: $gray-700;
+					border: 1px solid $gray-300;
+					font-size: 11px;
+					font-weight: 500;
+				}
+			}
+		}
+	}
+
+	// Meal Plans Section
+	.meal-plans-section {
+		.browse-all-btn {
+			background: $gray-900;
+			color: #ffffff;
+			font-weight: 600;
+			text-transform: none;
+			padding: $spacing-sm $spacing-xl;
+			border-radius: $radius-md;
+			transition: all $transition-base;
+
+			&:hover {
+				background: $gray-800;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			}
+		}
+
+		.meal-plan-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			cursor: pointer;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			text-decoration: none;
+			color: inherit;
+
+			&:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+				border-color: $gray-300;
+			}
+
+			.meal-plan-image {
+				position: relative;
+				width: 100%;
+				height: 250px;
+				background: $gray-100;
+
+				.premium-badge {
+					position: absolute;
+					top: $spacing-sm;
+					right: $spacing-sm;
+					background: $gray-900;
+					color: #ffffff;
+					font-weight: 700;
+					font-size: 11px;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+					z-index: 2;
+				}
+
+				.meal-plan-overlay {
+					position: absolute;
+					bottom: 0;
+					left: 0;
+					right: 0;
+					background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+					padding: $spacing-sm;
+					display: flex;
+					justify-content: flex-end;
+
+					.star-icon-white {
+						color: #ffa726;
+						font-size: 18px;
+					}
+
+					.rating-text-white {
+						font-family: $font;
+						font-weight: 600;
+						color: #ffffff;
+						font-size: 14px;
+					}
+				}
+			}
+
+			.meal-plan-stat {
+				text-align: center;
+			}
+
+			.start-plan-btn {
+				background: $gray-900;
+				color: #ffffff;
+				font-weight: 600;
+				text-transform: none;
+				font-size: 12px;
+				padding: $spacing-xs $spacing-md;
+
+				&:hover {
+					background: $gray-800;
+				}
+			}
+
+			.meal-plan-title {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				font-size: 18px;
+			}
+
+			.goal-chip {
+				background: $gray-900;
+				color: #ffffff;
+				font-weight: 500;
+				border: none;
+			}
+
+			.diet-chip {
+				background: $gray-100;
+				color: $gray-700;
+				border: 1px solid $gray-300;
+			}
+
+			.price {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+			}
+		}
+	}
+
+	// Calculator Section
+	.calculator-section {
+		.calculator-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+
+			.calculator-title {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				font-size: 20px;
+			}
+		}
+
+		.calculator-result-card {
+			background: linear-gradient(135deg, $gray-50 0%, #ffffff 100%);
+			border-radius: $radius-lg;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			position: sticky;
+			top: 20px;
+
+			.calculator-title {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				font-size: 20px;
+			}
+
+			.result-display {
+				text-align: center;
+				padding: $spacing-lg 0;
+
+				.result-value {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					font-size: 64px;
+					margin-bottom: $spacing-xs;
+					background: linear-gradient(135deg, $gray-900 0%, $gray-700 100%);
+					-webkit-background-clip: text;
+					-webkit-text-fill-color: transparent;
+					background-clip: text;
+				}
+
+				.result-label {
+					font-family: $font;
+					color: $gray-600;
+					font-size: 16px;
+					margin-bottom: $spacing-lg;
+				}
+
+				.result-breakdown {
+					text-align: left;
+					background: $gray-50;
+					padding: $spacing-md;
+					border-radius: $radius-md;
+					border-left: 3px solid $gray-700;
+				}
+			}
+
+			.result-placeholder {
+				padding: $spacing-3xl 0;
+				text-align: center;
+			}
+
+			.macro-result-card {
+				background: $gray-50;
+				border-radius: $radius-lg;
+				padding: $spacing-xl;
+				text-align: center;
+				border: 1px solid $gray-200;
+				transition: all $transition-base;
+
+				&:hover {
+					transform: translateY(-2px);
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+				}
+
+				&.protein {
+					border-left: 4px solid $gray-800;
+				}
+
+				&.carbs {
+					border-left: 4px solid $gray-700;
+				}
+
+				&.fats {
+					border-left: 4px solid $gray-600;
+				}
+
+				.macro-result-value {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					margin-bottom: $spacing-xs;
+				}
+
+				.macro-result-label {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-700;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+					font-size: 12px;
+					margin-bottom: $spacing-xs;
+				}
+			}
+		}
+
+		.calculate-btn {
+			background: $gray-900;
+			color: #ffffff;
+			font-weight: 600;
+			text-transform: none;
+			padding: $spacing-md $spacing-xl;
+			border-radius: $radius-md;
+			transition: all $transition-base;
+
+			&:hover {
+				background: $gray-800;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				transform: translateY(-2px);
+			}
+		}
+	}
+
+	// Recipes Section
+	.recipes-section {
+		.browse-all-btn {
+			background: $gray-900;
+			color: #ffffff;
+			font-weight: 600;
+			text-transform: none;
+			padding: $spacing-sm $spacing-xl;
+			border-radius: $radius-md;
+			transition: all $transition-base;
+
+			&:hover {
+				background: $gray-800;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			}
+		}
+
+		.recipe-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			cursor: pointer;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			text-decoration: none;
+			color: inherit;
+
+			&:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+				border-color: $gray-300;
+			}
+
+			.recipe-image {
+				position: relative;
+				width: 100%;
+				height: 250px;
+				background: $gray-100;
+
+				.recipe-overlay {
+					position: absolute;
+					bottom: 0;
+					left: 0;
+					right: 0;
+					background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+					padding: $spacing-sm;
+					display: flex;
+					justify-content: flex-end;
+
+					.recipe-calorie-chip,
+					.recipe-time-chip {
+						background: rgba(255, 255, 255, 0.95);
+						color: $gray-900;
+						font-weight: 600;
+						font-size: 11px;
+						backdrop-filter: blur(10px);
+
+						svg {
+							font-size: 14px;
+						}
+					}
+				}
+			}
+
+			.recipe-title {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				font-size: 18px;
+			}
+
+			.recipe-tag {
+				background: $gray-100;
+				color: $gray-700;
+				border: 1px solid $gray-300;
+				font-size: 11px;
+				font-weight: 500;
+			}
+
+			.recipe-macro-chip {
+				font-size: 10px;
+				font-weight: 600;
+				height: 24px;
+
+				&.protein {
+					background: $gray-800;
+					color: #ffffff;
+				}
+
+				&.carbs {
+					background: $gray-700;
+					color: #ffffff;
+				}
+
+				&.fats {
+					background: $gray-600;
+					color: #ffffff;
+				}
+			}
+		}
+	}
+}
+
+// Meal Plan Detail Page
+.meal-plan-detail-page {
+	padding: $spacing-2xl 0;
+	min-height: calc(100vh - 200px);
+	background: #ffffff;
+
+	.container {
+		@include container;
+		max-width: $container-lg;
+	}
+
+	.meal-plan-hero {
+		margin-bottom: $spacing-3xl;
+
+		.meal-plan-hero-image {
+			position: relative;
+			width: 100%;
+			height: 500px;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			.hero-overlay {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+				padding: $spacing-2xl;
+				color: #ffffff;
+
+				.goal-chip-hero,
+				.duration-chip-hero {
+					background: rgba(255, 255, 255, 0.2);
+					color: #ffffff;
+					backdrop-filter: blur(10px);
+					border: 1px solid rgba(255, 255, 255, 0.3);
+				}
+
+				.rating-chip-hero {
+					background: rgba(255, 167, 38, 0.9);
+					color: #ffffff;
+					backdrop-filter: blur(10px);
+
+					svg {
+						color: #ffffff;
+					}
+				}
+
+				.meal-plan-hero-title {
+					font-family: $font;
+					font-weight: 700;
+					font-size: 48px;
+					color: #ffffff;
+					margin-bottom: $spacing-md;
+				}
+
+				.meal-plan-hero-description {
+					font-family: $font;
+					font-size: 18px;
+					color: rgba(255, 255, 255, 0.9);
+					line-height: 1.6;
+					max-width: 800px;
+				}
+
+				.start-plan-btn-hero {
+					background: #ffffff;
+					color: $gray-900;
+					font-weight: 600;
+					text-transform: none;
+					padding: $spacing-md $spacing-xl;
+
+					&:hover {
+						background: $gray-100;
+					}
+				}
+
+				.shopping-list-btn {
+					border-color: rgba(255, 255, 255, 0.5);
+					color: #ffffff;
+
+					&:hover {
+						background: rgba(255, 255, 255, 0.1);
+						border-color: #ffffff;
+					}
+				}
+
+				.action-icon-btn {
+					color: #ffffff;
+					border: 1px solid rgba(255, 255, 255, 0.3);
+					background: rgba(255, 255, 255, 0.1);
+					backdrop-filter: blur(10px);
+
+					&:hover {
+						background: rgba(255, 255, 255, 0.2);
+					}
+				}
+			}
+		}
+	}
+
+	.nutrition-stats-section {
+		margin-bottom: $spacing-3xl;
+
+		.nutrition-stat-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			text-align: center;
+
+			&:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+			}
+
+			&.protein {
+				border-left: 4px solid $gray-800;
+			}
+
+			&.carbs {
+				border-left: 4px solid $gray-700;
+			}
+
+			&.fats {
+				border-left: 4px solid $gray-600;
+			}
+
+			.stat-icon {
+				color: $gray-600;
+				font-size: 24px;
+			}
+
+			.stat-label {
+				font-family: $font;
+				font-weight: 500;
+				color: $gray-600;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				font-size: 12px;
+			}
+
+			.stat-value {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				margin: $spacing-sm 0;
+			}
+
+			.stat-unit {
+				font-family: $font;
+				color: $gray-600;
+				font-size: 12px;
+			}
+
+			.stat-progress {
+				height: 6px;
+				border-radius: $radius-full;
+				background-color: $gray-200;
+				margin-top: $spacing-sm;
+
+				.MuiLinearProgress-bar {
+					border-radius: $radius-full;
+				}
+			}
+		}
+	}
+
+	.daily-meals-section {
+		.meal-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			}
+
+			.meal-type {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+			}
+
+			.meal-calorie-chip {
+				background: $gray-900;
+				color: #ffffff;
+				font-weight: 600;
+				font-size: 11px;
+
+				svg {
+					color: #ffffff;
+				}
+			}
+
+			.meal-macro {
+				text-align: center;
+			}
+
+			.meal-items-label {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-700;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				font-size: 11px;
+			}
+
+			.check-icon {
+				color: $gray-600;
+			}
+		}
+	}
+}
+
+// Recipe Detail Page
+.recipe-detail-page {
+	padding: $spacing-2xl 0;
+	min-height: calc(100vh - 200px);
+	background: #ffffff;
+
+	.container {
+		@include container;
+		max-width: $container-lg;
+	}
+
+	.recipe-hero {
+		margin-bottom: $spacing-3xl;
+
+		.recipe-hero-image {
+			position: relative;
+			width: 100%;
+			height: 500px;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			.recipe-hero-overlay {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+				padding: $spacing-2xl;
+				color: #ffffff;
+
+				.recipe-info-chip {
+					background: rgba(255, 255, 255, 0.2);
+					color: #ffffff;
+					backdrop-filter: blur(10px);
+					border: 1px solid rgba(255, 255, 255, 0.3);
+
+					svg {
+						color: #ffffff;
+					}
+				}
+
+				.recipe-rating-chip {
+					background: rgba(255, 167, 38, 0.9);
+					color: #ffffff;
+					backdrop-filter: blur(10px);
+
+					svg {
+						color: #ffffff;
+					}
+				}
+
+				.recipe-tag-hero {
+					background: rgba(255, 255, 255, 0.2);
+					color: #ffffff;
+					backdrop-filter: blur(10px);
+					border: 1px solid rgba(255, 255, 255, 0.3);
+					font-size: 11px;
+					font-weight: 500;
+				}
+
+				.recipe-hero-title {
+					font-family: $font;
+					font-weight: 700;
+					font-size: 48px;
+					color: #ffffff;
+					margin-bottom: $spacing-md;
+				}
+
+				.recipe-hero-description {
+					font-family: $font;
+					font-size: 18px;
+					color: rgba(255, 255, 255, 0.9);
+					line-height: 1.6;
+					max-width: 800px;
+				}
+
+				.cook-now-btn {
+					background: #ffffff;
+					color: $gray-900;
+					font-weight: 600;
+					text-transform: none;
+					padding: $spacing-md $spacing-xl;
+
+					&:hover {
+						background: $gray-100;
+					}
+				}
+
+				.action-icon-btn {
+					color: #ffffff;
+					border: 1px solid rgba(255, 255, 255, 0.3);
+					background: rgba(255, 255, 255, 0.1);
+					backdrop-filter: blur(10px);
+
+					&:hover {
+						background: rgba(255, 255, 255, 0.2);
+					}
+				}
+			}
+		}
+	}
+
+	.ingredients-card,
+	.instructions-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+
+		.ingredient-item {
+			padding: $spacing-sm 0;
+
+			.check-icon {
+				color: $gray-600;
+				margin-right: $spacing-sm;
+			}
+
+			.ingredient-text {
+				font-family: $font;
+				color: $gray-700;
+			}
+		}
+
+		.instructions-text {
+			font-family: $font;
+			color: $gray-700;
+			line-height: 1.8;
+			font-size: 16px;
+		}
+
+		.instruction-item {
+			padding: $spacing-md 0;
+			display: flex;
+			align-items: flex-start;
+
+			.instruction-number {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 32px;
+				height: 32px;
+				border-radius: 50%;
+				background: $gray-900;
+				color: #ffffff;
+				font-family: $font;
+				font-weight: 700;
+				font-size: 14px;
+				margin-right: $spacing-md;
+				flex-shrink: 0;
+			}
+
+			.instruction-text {
+				font-family: $font;
+				color: $gray-700;
+				line-height: 1.8;
+				font-size: 16px;
+			}
+		}
+	}
+
+	.nutrition-facts-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+
+		.nutrition-fact-item {
+			&.protein {
+				.nutrition-progress .MuiLinearProgress-bar {
+					background: $gray-800;
+				}
+			}
+
+			&.carbs {
+				.nutrition-progress .MuiLinearProgress-bar {
+					background: $gray-700;
+				}
+			}
+
+			&.fats {
+				.nutrition-progress .MuiLinearProgress-bar {
+					background: $gray-600;
+				}
+			}
+
+			.nutrition-label {
+				font-family: $font;
+				font-weight: 500;
+				color: $gray-700;
+				display: flex;
+				align-items: center;
+				gap: $spacing-xs;
+			}
+
+			.nutrition-icon {
+				color: $gray-600;
+			}
+
+			.nutrition-value {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+			}
+
+			.nutrition-progress {
+				height: 8px;
+				border-radius: $radius-full;
+				background-color: $gray-200;
+
+				.MuiLinearProgress-bar {
+					border-radius: $radius-full;
+				}
+			}
+		}
+
+		.recipe-tips {
+			background: $gray-50;
+			padding: $spacing-md;
+			border-radius: $radius-md;
+			border-left: 3px solid $gray-700;
+
+			.tips-label {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				margin-bottom: $spacing-xs;
+			}
+
+			.tips-text {
+				font-family: $font;
+				color: $gray-700;
+				line-height: 1.6;
+			}
+		}
+	}
+}
+
+// Responsive Design
+@media (max-width: $breakpoint-md) {
+	.nutrition-page {
+		padding: $spacing-lg 0;
+
+		.page-header {
+			.page-title {
+				font-size: 32px;
+			}
+
+			.page-subtitle {
+				font-size: 16px;
+			}
+		}
+
+		.nutrition-hero {
+			.hero-video {
+				height: 250px;
+
+				.video-overlay {
+					.video-title {
+						font-size: 24px;
+					}
+
+					.video-subtitle {
+						font-size: 14px;
+					}
+				}
+			}
+
+			.nutrition-grid {
+				margin-top: $spacing-md;
+			}
+		}
+
+		.why-nutrition-section {
+			.section-title {
+				font-size: 24px;
+			}
+		}
+
+		.nutrition-tabs {
+			.custom-tabs {
+				.MuiTab-root {
+					font-size: 13px;
+					min-height: 56px;
+					padding: $spacing-sm $spacing-md;
+				}
+			}
+		}
+	}
+}

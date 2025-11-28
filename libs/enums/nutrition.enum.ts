@@ -1,0 +1,47 @@
+// Meal types
+export enum MealType {
+	BREAKFAST = 'BREAKFAST',
+	LUNCH = 'LUNCH',
+	DINNER = 'DINNER',
+	SNACK = 'SNACK',
+	PRE_WORKOUT = 'PRE_WORKOUT',
+	POST_WORKOUT = 'POST_WORKOUT',
+}
+
+// Dietary preferences
+export enum DietaryPreference {
+	NONE = 'NONE',                    // No specific diet
+	VEGETARIAN = 'VEGETARIAN',
+	VEGAN = 'VEGAN',
+	PESCATARIAN = 'PESCATARIAN',
+	KETO = 'KETO',
+	PALEO = 'PALEO',
+	LOW_CARB = 'LOW_CARB',
+	HIGH_PROTEIN = 'HIGH_PROTEIN',
+	GLUTEN_FREE = 'GLUTEN_FREE',
+	DAIRY_FREE = 'DAIRY_FREE',
+	HALAL = 'HALAL',
+	KOSHER = 'KOSHER',
+	MEDITERRANEAN = 'MEDITERRANEAN',
+	INTERMITTENT_FASTING = 'INTERMITTENT_FASTING',
+}
+
+// Meal plan status
+export enum MealPlanStatus {
+	DRAFT = 'DRAFT',
+	PUBLISHED = 'PUBLISHED',
+	ARCHIVED = 'ARCHIVED',
+	DELETED = 'DELETED',
+}
+
+
+// Nutrition goal
+export enum NutritionGoal {
+	WEIGHT_LOSS = 'WEIGHT_LOSS',
+	MUSCLE_GAIN = 'MUSCLE_GAIN',
+	MAINTENANCE = 'MAINTENANCE',
+	PERFORMANCE = 'PERFORMANCE',
+	HEALTH = 'HEALTH',
+}
+
+

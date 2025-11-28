@@ -1,0 +1,781 @@
+/** PROGRESS PAGE STYLES - WHITE & GRAY THEME **/
+
+.progress-page {
+	padding: $spacing-2xl 0;
+	min-height: calc(100vh - 200px);
+	background: #ffffff;
+
+	.container {
+		@include container;
+		max-width: $container-lg;
+	}
+
+	// Page Header
+	.page-header {
+		margin-bottom: $spacing-2xl;
+		text-align: center;
+		padding: $spacing-xl 0;
+
+		.page-title {
+			font-family: $font;
+			font-size: 42px;
+			font-weight: 700;
+			color: $gray-900;
+			margin-bottom: $spacing-sm;
+			letter-spacing: -0.5px;
+		}
+
+		.page-subtitle {
+			font-family: $font;
+			font-size: 18px;
+			color: $gray-600;
+			font-weight: 400;
+		}
+	}
+
+	// Motivation Hero Section
+	.motivation-hero {
+		margin-bottom: $spacing-3xl;
+
+		.hero-video {
+			position: relative;
+			width: 100%;
+			height: 400px;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+			background: $gray-100;
+
+			.motivation-video {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			.video-overlay {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+				padding: $spacing-xl;
+				color: #ffffff;
+
+				.video-title {
+					font-family: $font;
+					font-weight: 700;
+					font-size: 32px;
+					margin-bottom: $spacing-sm;
+					color: #ffffff;
+				}
+
+				.video-subtitle {
+					font-family: $font;
+					font-size: 16px;
+					color: rgba(255, 255, 255, 0.9);
+				}
+			}
+		}
+
+		.motivation-grid {
+			display: flex;
+			flex-direction: column;
+			gap: $spacing-md;
+			height: 100%;
+
+			.motivation-item {
+				flex: 1;
+				border-radius: $radius-lg;
+				overflow: hidden;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				background: #ffffff;
+				border: 1px solid $gray-200;
+				transition: all $transition-base;
+
+				&:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+				}
+
+				.motivation-thumbnail {
+					position: relative;
+					width: 100%;
+					height: 180px;
+					background: $gray-100;
+
+					.thumbnail-overlay {
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						background: rgba(0, 0, 0, 0.3);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						opacity: 0;
+						transition: opacity $transition-base;
+
+						.play-btn {
+							background: rgba(255, 255, 255, 0.9);
+							color: $gray-900;
+
+							&:hover {
+								background: #ffffff;
+								transform: scale(1.1);
+							}
+						}
+					}
+
+					&:hover .thumbnail-overlay {
+						opacity: 1;
+					}
+				}
+
+				.motivation-info {
+					padding: $spacing-md;
+
+					.category-chip {
+						background: $gray-900;
+						color: #ffffff;
+						font-size: 10px;
+						font-weight: 600;
+						margin-bottom: $spacing-xs;
+					}
+
+					.motivation-title {
+						font-family: $font;
+						font-weight: 600;
+						color: $gray-900;
+						font-size: 14px;
+					}
+				}
+			}
+		}
+	}
+
+	// Why Track Progress Section
+	.why-track-section {
+		margin-bottom: $spacing-3xl;
+		padding: $spacing-2xl 0;
+		background: $gray-50;
+		border-radius: $radius-lg;
+
+		.section-title {
+			font-family: $font;
+			font-weight: 700;
+			color: $gray-900;
+			font-size: 32px;
+			text-align: center;
+			margin-bottom: $spacing-md;
+		}
+
+		.section-description {
+			font-family: $font;
+			font-size: 16px;
+			color: $gray-700;
+			text-align: center;
+			max-width: 800px;
+			margin: 0 auto $spacing-2xl;
+			line-height: 1.8;
+		}
+
+		.stats-grid {
+			.stat-card {
+				background: #ffffff;
+				border-radius: $radius-lg;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+				border: 1px solid $gray-200;
+				text-align: center;
+				transition: all $transition-base;
+				height: 100%;
+
+				&:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+					border-color: $gray-300;
+				}
+
+				.stat-icon {
+					display: flex;
+					justify-content: center;
+					margin-bottom: $spacing-md;
+
+					svg {
+						font-size: 48px;
+						color: $gray-700;
+					}
+				}
+
+				.stat-number {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					font-size: 48px;
+					margin-bottom: $spacing-sm;
+				}
+
+				.stat-title {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-900;
+					margin-bottom: $spacing-sm;
+					font-size: 18px;
+				}
+
+				.stat-description {
+					font-family: $font;
+					color: $gray-600;
+					line-height: 1.6;
+					font-size: 14px;
+				}
+			}
+		}
+	}
+
+	// Current Stats Section
+	.current-stats-section {
+		margin-bottom: $spacing-2xl;
+
+		.section-title {
+			font-family: $font;
+			font-weight: 600;
+			color: $gray-900;
+			font-size: 24px;
+			margin-bottom: $spacing-lg;
+		}
+
+		.metric-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+
+			&:hover {
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				border-color: $gray-300;
+			}
+
+			.metric-icon {
+				color: $gray-600;
+				font-size: 20px;
+			}
+
+			.metric-label {
+				font-family: $font;
+				font-weight: 500;
+				color: $gray-600;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				font-size: 12px;
+			}
+
+			.metric-value {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				margin: $spacing-xs 0;
+			}
+
+			.metric-target {
+				font-family: $font;
+				color: $gray-600;
+				font-size: 12px;
+				margin-bottom: $spacing-sm;
+			}
+
+			.metric-progress {
+				height: 6px;
+				border-radius: $radius-full;
+				background-color: $gray-200;
+
+				.MuiLinearProgress-bar {
+					background: $gray-700;
+					border-radius: $radius-full;
+				}
+			}
+		}
+	}
+
+	// Tabs
+	.progress-tabs {
+		margin-bottom: $spacing-2xl;
+		border-bottom: 1px solid $gray-200;
+		background: #ffffff;
+
+		.custom-tabs {
+			.MuiTab-root {
+				font-family: $font;
+				font-weight: 500;
+				font-size: 15px;
+				text-transform: none;
+				min-height: 64px;
+				color: $gray-600;
+				transition: all $transition-base;
+				padding: $spacing-md $spacing-lg;
+
+				&:hover {
+					color: $gray-900;
+					background: $gray-50;
+				}
+
+				&.Mui-selected {
+					color: $gray-900;
+					font-weight: 600;
+					background: $gray-50;
+				}
+			}
+
+			.MuiTabs-indicator {
+				background: $gray-900;
+				height: 2px;
+			}
+		}
+	}
+
+	// Measurements Card
+	.measurements-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+
+		.add-btn {
+			background: $gray-900;
+			color: #ffffff;
+			font-weight: 600;
+			text-transform: none;
+
+			&:hover {
+				background: $gray-800;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			}
+		}
+
+		.measurement-item {
+			background: $gray-50;
+			border-radius: $radius-md;
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+				border-color: $gray-300;
+			}
+
+			.measurement-label {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-700;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				font-size: 11px;
+			}
+
+			.measurement-value {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				margin: $spacing-sm 0;
+			}
+
+			.measurement-trend {
+				display: flex;
+				align-items: center;
+				gap: $spacing-xs;
+				margin-top: $spacing-sm;
+
+				.trend-icon {
+					color: $gray-600;
+					font-size: 16px;
+				}
+
+				.trend-text {
+					font-family: $font;
+					color: $gray-600;
+					font-size: 12px;
+				}
+			}
+		}
+	}
+
+	// Muscle Tracking Card
+	.muscle-tracking-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+
+		.section-description {
+			font-family: $font;
+			color: $gray-600;
+			line-height: 1.6;
+			margin-bottom: $spacing-lg;
+		}
+
+		.muscle-card {
+			background: #ffffff;
+			border-radius: $radius-md;
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+				border-color: $gray-300;
+			}
+
+			.muscle-name {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+			}
+
+			.muscle-value {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				font-size: 20px;
+			}
+
+			.muscle-target {
+				font-family: $font;
+				color: $gray-600;
+				font-size: 12px;
+			}
+
+			.muscle-progress-text {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-700;
+				font-size: 12px;
+			}
+
+			.muscle-progress {
+				height: 8px;
+				border-radius: $radius-full;
+				background-color: $gray-200;
+
+				.MuiLinearProgress-bar {
+					background: $gray-800;
+					border-radius: $radius-full;
+				}
+			}
+		}
+	}
+
+	// Charts Placeholder
+	.charts-placeholder {
+		background: $gray-50;
+		border-radius: $radius-md;
+		border: 1px dashed $gray-300;
+		min-height: 300px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	// Photos Placeholder
+	.photos-placeholder {
+		background: $gray-50;
+		border-radius: $radius-md;
+		border: 1px dashed $gray-300;
+		min-height: 200px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	// Workout Log Placeholder
+	.workout-log-placeholder {
+		background: $gray-50;
+		border-radius: $radius-md;
+		border: 1px dashed $gray-300;
+		padding: $spacing-2xl;
+		text-align: center;
+	}
+
+	// Overview Card
+	.overview-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+	}
+
+	.quick-stats-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+		position: sticky;
+		top: 20px;
+
+		.quick-stat-item {
+			padding: $spacing-sm 0;
+		}
+
+		.quick-stat-value {
+			font-family: $font;
+			font-weight: 700;
+			color: $gray-900;
+		}
+
+		.trend-down {
+			color: #4caf50;
+		}
+
+		.trend-up {
+			color: #f44336;
+		}
+	}
+
+	// Weight Tracker
+	.weight-tracker-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+
+		.weight-chart-container {
+			.weight-chart {
+				background: $gray-50;
+				border-radius: $radius-md;
+				padding: $spacing-lg;
+			}
+		}
+
+		.weight-summary-card {
+			background: $gray-50;
+			border-radius: $radius-lg;
+			border: 1px solid $gray-200;
+
+			.trend-down {
+				color: #4caf50;
+			}
+		}
+	}
+
+	// Photos Card
+	.photos-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+
+		.photo-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+
+			&:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+			}
+
+			.photo-date {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+			}
+		}
+	}
+
+	// Workout History
+	.workout-history-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+
+		.calorie-chip {
+			background: $gray-900;
+			color: #ffffff;
+			font-weight: 600;
+			font-size: 11px;
+
+			svg {
+				color: #ffffff;
+			}
+		}
+	}
+
+	// Nutrition Logs
+	.nutrition-logs-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+	}
+
+	// Weekly Goals
+	.weekly-goals-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+
+		.goal-card {
+			background: $gray-50;
+			border-radius: $radius-lg;
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+				border-color: $gray-300;
+			}
+
+			.goal-title {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+			}
+
+			.goal-type-chip {
+				background: $gray-200;
+				color: $gray-700;
+				font-size: 10px;
+				font-weight: 600;
+			}
+
+			.goal-percentage {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+			}
+
+			.goal-progress {
+				height: 8px;
+				border-radius: $radius-full;
+				background-color: $gray-200;
+
+				.MuiLinearProgress-bar {
+					background: $gray-800;
+					border-radius: $radius-full;
+				}
+			}
+		}
+	}
+
+	// Achievements
+	.achievements-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+		border: 1px solid $gray-200;
+
+		.achievement-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+			}
+
+			&.unlocked {
+				border-color: #4caf50;
+				background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, #ffffff 100%);
+			}
+
+			&.in_progress {
+				border-color: $gray-300;
+			}
+
+			&.locked {
+				opacity: 0.6;
+			}
+
+			.achievement-badge {
+				width: 56px;
+				height: 56px;
+			}
+
+			.achievement-title {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+			}
+
+			.achievement-progress-text {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-700;
+			}
+
+			.achievement-progress {
+				height: 6px;
+				border-radius: $radius-full;
+				background-color: $gray-200;
+
+				.MuiLinearProgress-bar {
+					background: $gray-800;
+					border-radius: $radius-full;
+				}
+			}
+		}
+	}
+}
+
+// Responsive Design
+@media (max-width: $breakpoint-md) {
+	.progress-page {
+		padding: $spacing-lg 0;
+
+		.page-header {
+			.page-title {
+				font-size: 32px;
+			}
+
+			.page-subtitle {
+				font-size: 16px;
+			}
+		}
+
+		.motivation-hero {
+			.hero-video {
+				height: 250px;
+
+				.video-overlay {
+					.video-title {
+						font-size: 24px;
+					}
+
+					.video-subtitle {
+						font-size: 14px;
+					}
+				}
+			}
+
+			.motivation-grid {
+				margin-top: $spacing-md;
+			}
+		}
+
+		.why-track-section {
+			.section-title {
+				font-size: 24px;
+			}
+		}
+
+		.progress-tabs {
+			.custom-tabs {
+				.MuiTab-root {
+					font-size: 13px;
+					min-height: 56px;
+					padding: $spacing-sm $spacing-md;
+				}
+			}
+		}
+	}
+}
+

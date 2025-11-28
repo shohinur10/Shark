@@ -1,0 +1,245 @@
+/** SUPPORT PAGE STYLES **/
+
+#pc-wrap {
+	.support-page {
+		position: relative;
+		padding: 60px 0px 60px;
+		width: 100%;
+		height: auto;
+		background: #ffffff;
+
+		.container {
+			@include container;
+			max-width: $container-lg;
+			display: flex;
+			flex-direction: column;
+
+			.support-main-info {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin-bottom: $spacing-3xl;
+
+				.info {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					text-align: center;
+					margin-bottom: $spacing-xl;
+
+					span {
+						color: $gray-900;
+						font-family: $font;
+						font-size: 42px;
+						font-style: normal;
+						font-weight: 700;
+						line-height: normal;
+						letter-spacing: -0.5px;
+						margin-bottom: $spacing-sm;
+					}
+
+					p {
+						color: $gray-600;
+						font-family: $font;
+						font-size: 18px;
+						font-style: normal;
+						font-weight: 400;
+						line-height: normal;
+					}
+				}
+
+				.btns {
+					margin-top: $spacing-lg;
+					display: flex;
+					flex-direction: row;
+					justify-content: center;
+					gap: 0;
+					border-radius: $radius-md;
+					overflow: hidden;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+					div {
+						width: 200px;
+						height: 50px;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						border: 1px solid $gray-200;
+						cursor: pointer;
+						color: $gray-600;
+						font-family: $font;
+						font-size: 14px;
+						font-style: normal;
+						font-weight: 600;
+						line-height: normal;
+						background: #ffffff;
+						transition: all $transition-base;
+
+						&:first-child {
+							border-radius: $radius-md 0 0 $radius-md;
+						}
+
+						&:last-child {
+							border-radius: 0 $radius-md $radius-md 0;
+						}
+
+						&:hover {
+							background: $gray-50;
+							color: $gray-900;
+						}
+
+						&.active {
+							border: 1px solid $gray-900;
+							background: $gray-900;
+							color: #ffffff;
+							z-index: 1;
+						}
+
+						svg {
+							font-size: 18px;
+						}
+					}
+				}
+			}
+
+			.support-content {
+				margin-top: $spacing-2xl;
+				display: flex;
+				flex-direction: column;
+
+				.section-title {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					font-size: 28px;
+					margin-bottom: $spacing-md;
+				}
+
+				// Contact Form Section
+				.contact-form-section {
+					.contact-form-card {
+						background: #ffffff;
+						border-radius: $radius-lg;
+						box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+						border: 1px solid $gray-200;
+
+						.submit-btn {
+							background: $gray-900;
+							color: #ffffff;
+							font-weight: 600;
+							text-transform: none;
+							padding: $spacing-md $spacing-xl;
+
+							&:hover {
+								background: $gray-800;
+								box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+							}
+						}
+					}
+				}
+
+				// Policies Section
+				.policies-section {
+					.policy-card {
+						background: #ffffff;
+						border-radius: $radius-lg;
+						box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+						border: 1px solid $gray-200;
+						transition: all $transition-base;
+						height: 100%;
+
+						&:hover {
+							transform: translateY(-4px);
+							box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+							border-color: $gray-300;
+						}
+
+						.policy-title {
+							font-family: $font;
+							font-weight: 600;
+							color: $gray-900;
+						}
+					}
+				}
+
+				// Troubleshooting Section
+				.troubleshooting-section {
+					.troubleshooting-accordions {
+						.troubleshooting-accordion {
+							background: #ffffff;
+							border-radius: $radius-md;
+							box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+							border: 1px solid $gray-200;
+							margin-bottom: $spacing-md;
+							transition: all $transition-base;
+
+							&:hover {
+								box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+							}
+
+							.troubleshooting-title {
+								font-family: $font;
+								font-weight: 600;
+								color: $gray-900;
+								font-size: 16px;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Responsive Design
+@media (max-width: $breakpoint-md) {
+	#pc-wrap {
+		.support-page {
+			padding: $spacing-lg 0;
+
+			.container {
+				.support-main-info {
+					.info {
+						span {
+							font-size: 32px;
+						}
+
+						p {
+							font-size: 16px;
+						}
+					}
+
+					.btns {
+						flex-wrap: wrap;
+						border-radius: $radius-md;
+
+						div {
+							width: 50%;
+							border-radius: 0;
+
+							&:first-child {
+								border-radius: $radius-md 0 0 0;
+							}
+
+							&:nth-child(2) {
+								border-radius: 0 $radius-md 0 0;
+							}
+
+							&:nth-child(3) {
+								border-radius: 0 0 0 $radius-md;
+							}
+
+							&:last-child {
+								border-radius: 0 0 $radius-md 0;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+

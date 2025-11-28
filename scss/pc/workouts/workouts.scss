@@ -1,0 +1,307 @@
+/** WORKOUTS PAGE - PROGRAM-BASED STRUCTURE **/
+
+.workouts-page {
+	padding: $spacing-2xl 0;
+	min-height: calc(100vh - 200px);
+	background: #ffffff;
+
+	.container {
+		@include container;
+		max-width: $container-lg;
+	}
+
+	// Page Header
+	.page-header {
+		margin-bottom: $spacing-3xl;
+		text-align: center;
+		padding: $spacing-2xl 0;
+
+		.page-title {
+			font-family: $font;
+			font-size: 48px;
+			font-weight: 800;
+			color: $gray-900;
+			margin-bottom: $spacing-md;
+			letter-spacing: -1px;
+		}
+
+		.page-subtitle {
+			font-family: $font;
+			font-size: 20px;
+			color: $gray-600;
+			font-weight: 400;
+		}
+	}
+
+	// Goal-Based Tabs
+	.goal-tabs-section {
+		margin-bottom: $spacing-2xl;
+		border-bottom: 2px solid $gray-200;
+		background: #ffffff;
+
+		.goal-tabs {
+			.MuiTab-root {
+				font-family: $font;
+				font-weight: 500;
+				font-size: 15px;
+				text-transform: none;
+				min-height: 72px;
+				color: $gray-600;
+				transition: all $transition-base;
+				padding: $spacing-md $spacing-xl;
+
+				&:hover {
+					color: $gray-900;
+					background: $gray-50;
+				}
+
+				&.Mui-selected {
+					color: $gray-900;
+					font-weight: 700;
+					background: $gray-50;
+				}
+			}
+
+			.MuiTabs-indicator {
+				background: linear-gradient(90deg, $fitness-orange 0%, #ec6b57 100%);
+				height: 3px;
+			}
+		}
+	}
+
+	// Filters Section
+	.filters-section {
+		margin-bottom: $spacing-2xl;
+		padding: $spacing-lg;
+		background: $gray-50;
+		border-radius: $radius-lg;
+
+		.filter-chip {
+			font-family: $font;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all $transition-base;
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			}
+
+			&.MuiChip-filled {
+				background: $gray-900;
+				color: #ffffff;
+
+				&:hover {
+					background: $gray-800;
+				}
+			}
+		}
+	}
+
+	// Programs Section
+	.programs-section {
+		margin-bottom: $spacing-3xl;
+
+		.program-card {
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			cursor: pointer;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+
+			&:hover {
+				transform: translateY(-8px);
+				box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+				border-color: $gray-300;
+			}
+
+			.program-thumbnail {
+				position: relative;
+				width: 100%;
+				height: 300px;
+				background-size: cover;
+				background-position: center;
+
+				.thumbnail-overlay {
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					background: rgba(0, 0, 0, 0.3);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					opacity: 0;
+					transition: opacity $transition-base;
+
+					.play-btn {
+						background: rgba(255, 255, 255, 0.95);
+						color: $gray-900;
+						width: 64px;
+						height: 64px;
+
+						&:hover {
+							background: #ffffff;
+							transform: scale(1.15);
+						}
+					}
+				}
+
+				&:hover .thumbnail-overlay {
+					opacity: 1;
+				}
+
+				.program-badges {
+					position: absolute;
+					top: $spacing-sm;
+					right: $spacing-sm;
+					display: flex;
+					flex-direction: column;
+					gap: $spacing-xs;
+
+					.duration-badge {
+						background: rgba(255, 255, 255, 0.95);
+						color: $gray-900;
+						font-weight: 700;
+						font-size: 11px;
+						backdrop-filter: blur(10px);
+					}
+
+					.difficulty-badge {
+						background: rgba(241, 119, 66, 0.95);
+						color: #ffffff;
+						font-weight: 700;
+						font-size: 11px;
+						backdrop-filter: blur(10px);
+					}
+				}
+			}
+
+			.program-title {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				font-size: 20px;
+				line-height: 1.3;
+			}
+
+			.program-description {
+				font-family: $font;
+				color: $gray-600;
+				line-height: 1.6;
+				font-size: 14px;
+			}
+
+			.goal-chip {
+				background: $gray-900;
+				color: #ffffff;
+				font-weight: 600;
+				font-size: 11px;
+			}
+
+			.equipment-chip {
+				background: $gray-100;
+				color: $gray-700;
+				border: 1px solid $gray-300;
+				font-weight: 500;
+				font-size: 11px;
+
+				svg {
+					font-size: 14px;
+				}
+			}
+
+			.program-stat {
+				.stat-icon {
+					color: #ffa726;
+					font-size: 18px;
+				}
+
+				.stat-value {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-700;
+					font-size: 13px;
+				}
+			}
+
+			.sample-workouts {
+				margin-top: $spacing-md;
+				padding-top: $spacing-md;
+				border-top: 1px solid $gray-200;
+
+				.sample-label {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-700;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+					font-size: 10px;
+				}
+
+				.sample-chip {
+					background: $gray-50;
+					color: $gray-700;
+					border: 1px solid $gray-300;
+					font-size: 10px;
+					font-weight: 500;
+				}
+			}
+
+			.start-program-btn {
+				background: $gray-900;
+				color: #ffffff;
+				font-weight: 600;
+				text-transform: none;
+				padding: $spacing-sm $spacing-lg;
+				margin-top: $spacing-md;
+
+				&:hover {
+					background: $gray-800;
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				}
+			}
+		}
+	}
+
+	// Empty State
+	.empty-state {
+		text-align: center;
+		padding: $spacing-3xl;
+		background: $gray-50;
+		border-radius: $radius-lg;
+		border: 2px dashed $gray-300;
+	}
+}
+
+// Responsive Design
+@media (max-width: $breakpoint-md) {
+	.workouts-page {
+		padding: $spacing-lg 0;
+
+		.page-header {
+			.page-title {
+				font-size: 32px;
+			}
+
+			.page-subtitle {
+				font-size: 16px;
+			}
+		}
+
+		.goal-tabs-section {
+			.goal-tabs {
+				.MuiTab-root {
+					font-size: 13px;
+					min-height: 56px;
+					padding: $spacing-sm $spacing-md;
+				}
+			}
+		}
+	}
+}

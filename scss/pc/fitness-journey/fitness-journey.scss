@@ -1,0 +1,724 @@
+/** FITNESS JOURNEY PAGE - UNIFIED PROGRESS & NUTRITION **/
+
+.fitness-journey-page {
+	padding: $spacing-2xl 0;
+	min-height: calc(100vh - 200px);
+	background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
+
+	.container {
+		@include container;
+		max-width: $container-lg;
+	}
+
+	// Enhanced Page Header
+	.page-header {
+		margin-bottom: $spacing-3xl;
+		text-align: center;
+		padding: $spacing-2xl 0;
+		background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(76, 175, 80, 0.05) 100%);
+		border-radius: $radius-lg;
+		margin-top: $spacing-xl;
+
+		.page-title {
+			font-family: $font;
+			font-size: 56px;
+			font-weight: 800;
+			background: linear-gradient(135deg, $gray-900 0%, $gray-700 100%);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+			margin-bottom: $spacing-md;
+			letter-spacing: -1px;
+		}
+
+		.page-subtitle {
+			font-family: $font;
+			font-size: 20px;
+			color: $gray-600;
+			font-weight: 400;
+		}
+	}
+
+	// Hero Section
+	.hero-section {
+		margin-bottom: $spacing-3xl;
+
+		.hero-video {
+			position: relative;
+			width: 100%;
+			height: 450px;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+			background: $gray-100;
+
+			.motivation-video {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			.video-overlay {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+				padding: $spacing-2xl;
+				color: #ffffff;
+
+				.video-title {
+					font-family: $font;
+					font-weight: 700;
+					font-size: 36px;
+					margin-bottom: $spacing-sm;
+					color: #ffffff;
+				}
+
+				.video-subtitle {
+					font-family: $font;
+					font-size: 18px;
+					color: rgba(255, 255, 255, 0.9);
+				}
+			}
+		}
+
+		.motivation-grid {
+			display: flex;
+			flex-direction: column;
+			gap: $spacing-md;
+			height: 100%;
+
+			.motivation-item {
+				flex: 1;
+				border-radius: $radius-lg;
+				overflow: hidden;
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+				background: #ffffff;
+				border: 1px solid $gray-200;
+				transition: all $transition-base;
+
+				&:hover {
+					transform: translateY(-6px);
+					box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+				}
+
+				.motivation-thumbnail {
+					position: relative;
+					width: 100%;
+					height: 200px;
+					background: $gray-100;
+
+					.thumbnail-overlay {
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						background: rgba(0, 0, 0, 0.4);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						opacity: 0;
+						transition: opacity $transition-base;
+
+						.play-btn {
+							background: rgba(255, 255, 255, 0.95);
+							color: $gray-900;
+							width: 64px;
+							height: 64px;
+
+							&:hover {
+								background: #ffffff;
+								transform: scale(1.15);
+							}
+						}
+					}
+
+					&:hover .thumbnail-overlay {
+						opacity: 1;
+					}
+				}
+
+				.motivation-info {
+					padding: $spacing-md;
+
+					.category-chip {
+						background: $gray-900;
+						color: #ffffff;
+						font-size: 10px;
+						font-weight: 600;
+						margin-bottom: $spacing-xs;
+					}
+
+					.motivation-title {
+						font-family: $font;
+						font-weight: 600;
+						color: $gray-900;
+						font-size: 14px;
+					}
+				}
+			}
+		}
+	}
+
+	// Why It Matters Section
+	.why-matters-section {
+		margin-bottom: $spacing-3xl;
+		padding: $spacing-3xl 0;
+		background: linear-gradient(135deg, $gray-50 0%, #ffffff 100%);
+		border-radius: $radius-lg;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+		.section-title {
+			font-family: $font;
+			font-weight: 700;
+			color: $gray-900;
+			font-size: 36px;
+			text-align: center;
+			margin-bottom: $spacing-md;
+		}
+
+		.section-description {
+			font-family: $font;
+			font-size: 18px;
+			color: $gray-700;
+			text-align: center;
+			max-width: 900px;
+			margin: 0 auto $spacing-3xl;
+			line-height: 1.8;
+		}
+
+		.stats-grid {
+			.stat-card {
+				background: #ffffff;
+				border-radius: $radius-lg;
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+				border: 1px solid $gray-200;
+				text-align: center;
+				transition: all $transition-base;
+				height: 100%;
+				position: relative;
+				overflow: hidden;
+
+				&::before {
+					content: '';
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					height: 4px;
+					background: inherit;
+				}
+
+				&:hover {
+					transform: translateY(-8px);
+					box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+				}
+
+				.stat-icon {
+					display: flex;
+					justify-content: center;
+					margin-bottom: $spacing-md;
+
+					svg {
+						font-size: 56px;
+					}
+				}
+
+				.stat-number {
+					font-family: $font;
+					font-weight: 800;
+					color: $gray-900;
+					font-size: 56px;
+					margin-bottom: $spacing-sm;
+					line-height: 1;
+				}
+
+				.stat-title {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-900;
+					margin-bottom: $spacing-sm;
+					font-size: 20px;
+				}
+
+				.stat-description {
+					font-family: $font;
+					color: $gray-600;
+					line-height: 1.7;
+					font-size: 14px;
+				}
+			}
+		}
+	}
+
+	// Unified Dashboard
+	.unified-dashboard {
+		margin-bottom: $spacing-3xl;
+
+		.dashboard-title {
+			font-family: $font;
+			font-weight: 700;
+			color: $gray-900;
+			font-size: 28px;
+			margin-bottom: $spacing-xl;
+		}
+
+		.dashboard-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			height: 100%;
+
+			&:hover {
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+			}
+
+			&.progress-card {
+				border-left: 4px solid #2196f3;
+			}
+
+			&.nutrition-card {
+				border-left: 4px solid #4caf50;
+			}
+
+			.section-icon {
+				font-size: 28px;
+				color: $gray-700;
+			}
+
+			.card-title {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				font-size: 20px;
+			}
+
+			.metric-box {
+				background: $gray-50;
+				border-radius: $radius-md;
+				padding: $spacing-md;
+				border: 1px solid $gray-200;
+				transition: all $transition-base;
+
+				&:hover {
+					background: #ffffff;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+				}
+
+				.metric-icon {
+					color: $gray-600;
+					font-size: 20px;
+				}
+
+				.metric-label {
+					font-family: $font;
+					font-weight: 500;
+					color: $gray-600;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+					font-size: 11px;
+				}
+
+				.metric-value {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					margin: $spacing-xs 0;
+				}
+
+				.metric-target {
+					font-family: $font;
+					color: $gray-600;
+					font-size: 11px;
+					margin-bottom: $spacing-xs;
+				}
+
+				.metric-progress {
+					height: 8px;
+					border-radius: $radius-full;
+					background-color: $gray-200;
+
+					.MuiLinearProgress-bar {
+						background: $gray-800;
+						border-radius: $radius-full;
+					}
+				}
+			}
+
+			.nutrition-progress-section {
+				.macro-label {
+					font-family: $font;
+					font-weight: 600;
+					color: $gray-900;
+					display: flex;
+					align-items: center;
+					gap: $spacing-xs;
+					margin-bottom: $spacing-sm;
+
+					.calorie-icon {
+						color: $gray-600;
+						font-size: 20px;
+					}
+				}
+
+				.macro-value {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					font-size: 20px;
+				}
+
+				.calorie-progress {
+					height: 12px;
+					border-radius: $radius-full;
+					background-color: $gray-200;
+
+					.MuiLinearProgress-bar {
+						background: linear-gradient(90deg, #ff9800 0%, #f57c00 100%);
+						border-radius: $radius-full;
+					}
+				}
+			}
+
+			.macro-card {
+				background: $gray-50;
+				border-radius: $radius-lg;
+				padding: $spacing-lg;
+				text-align: center;
+				border: 1px solid $gray-200;
+				transition: all $transition-base;
+
+				&:hover {
+					transform: translateY(-4px);
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				}
+
+				&.protein {
+					border-left: 4px solid $gray-800;
+				}
+
+				&.carbs {
+					border-left: 4px solid $gray-700;
+				}
+
+				&.fats {
+					border-left: 4px solid $gray-600;
+				}
+
+				.macro-amount {
+					font-family: $font;
+					font-weight: 700;
+					color: $gray-900;
+					margin-bottom: $spacing-xs;
+					font-size: 28px;
+				}
+
+				.macro-target {
+					font-family: $font;
+					font-size: 12px;
+					color: $gray-600;
+					margin-bottom: $spacing-sm;
+				}
+
+				.macro-progress {
+					height: 8px;
+					border-radius: $radius-full;
+					background-color: $gray-200;
+					margin-bottom: $spacing-xs;
+				}
+
+				.macro-name {
+					font-family: $font;
+					font-weight: 600;
+					text-transform: uppercase;
+					letter-spacing: 1px;
+					color: $gray-700;
+					font-size: 11px;
+				}
+			}
+
+			.protein .macro-progress .MuiLinearProgress-bar {
+				background: $gray-800;
+			}
+
+			.carbs .macro-progress .MuiLinearProgress-bar {
+				background: $gray-700;
+			}
+
+			.fats .macro-progress .MuiLinearProgress-bar {
+				background: $gray-600;
+			}
+		}
+	}
+
+	// Enhanced Tabs
+	.journey-tabs {
+		margin-bottom: $spacing-2xl;
+		border-bottom: 2px solid $gray-200;
+		background: #ffffff;
+		border-radius: $radius-lg $radius-lg 0 0;
+		padding: 0 $spacing-lg;
+
+		.custom-tabs {
+			.MuiTab-root {
+				font-family: $font;
+				font-weight: 500;
+				font-size: 16px;
+				text-transform: none;
+				min-height: 72px;
+				color: $gray-600;
+				transition: all $transition-base;
+				padding: $spacing-md $spacing-xl;
+
+				&:hover {
+					color: $gray-900;
+					background: $gray-50;
+				}
+
+				&.Mui-selected {
+					color: $gray-900;
+					font-weight: 700;
+					background: $gray-50;
+				}
+			}
+
+			.MuiTabs-indicator {
+				background: linear-gradient(90deg, #2196f3 0%, #4caf50 100%);
+				height: 3px;
+			}
+		}
+	}
+
+	// Measurements Card
+	.measurements-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		border: 1px solid $gray-200;
+
+		.add-btn {
+			background: linear-gradient(135deg, #2196f3 0%, #4caf50 100%);
+			color: #ffffff;
+			font-weight: 600;
+			text-transform: none;
+			padding: $spacing-sm $spacing-xl;
+
+			&:hover {
+				background: linear-gradient(135deg, #1976d2 0%, #388e3c 100%);
+				box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+			}
+		}
+
+		.measurement-item {
+			background: linear-gradient(135deg, $gray-50 0%, #ffffff 100%);
+			border-radius: $radius-lg;
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+
+			&:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+				border-color: $gray-300;
+			}
+
+			.measurement-label {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-700;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				font-size: 11px;
+			}
+
+			.measurement-value {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				margin: $spacing-sm 0;
+			}
+
+			.measurement-trend {
+				display: flex;
+				align-items: center;
+				gap: $spacing-xs;
+				margin-top: $spacing-sm;
+
+				.trend-icon {
+					color: #4caf50;
+					font-size: 18px;
+				}
+
+				.trend-text {
+					font-family: $font;
+					color: $gray-600;
+					font-size: 12px;
+				}
+			}
+		}
+	}
+
+	// Meal Plans Section
+	.meal-plans-section {
+		.browse-all-btn {
+			background: linear-gradient(135deg, #2196f3 0%, #4caf50 100%);
+			color: #ffffff;
+			font-weight: 600;
+			text-transform: none;
+			padding: $spacing-sm $spacing-xl;
+			border-radius: $radius-md;
+			transition: all $transition-base;
+
+			&:hover {
+				background: linear-gradient(135deg, #1976d2 0%, #388e3c 100%);
+				box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+			}
+		}
+
+		.meal-plan-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			cursor: pointer;
+			height: 100%;
+			text-decoration: none;
+			color: inherit;
+
+			&:hover {
+				transform: translateY(-8px);
+				box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+			}
+
+			.premium-badge {
+				background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+				color: #ffffff;
+				font-weight: 700;
+				font-size: 11px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+			}
+
+			.goal-chip {
+				background: rgba(255, 255, 255, 0.3);
+				color: #ffffff;
+				font-weight: 600;
+				border: 1px solid rgba(255, 255, 255, 0.5);
+				backdrop-filter: blur(10px);
+			}
+
+			.diet-chip {
+				background: rgba(255, 255, 255, 0.2);
+				color: #ffffff;
+				border: 1px solid rgba(255, 255, 255, 0.3);
+				backdrop-filter: blur(10px);
+			}
+
+			.meal-plan-title {
+				font-family: $font;
+				font-weight: 700;
+				color: #ffffff;
+				font-size: 24px;
+				text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+			}
+
+			.price {
+				font-family: $font;
+				font-weight: 700;
+				color: #ffffff;
+				text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+			}
+		}
+	}
+
+	// Overview Card
+	.overview-card {
+		background: #ffffff;
+		border-radius: $radius-lg;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		border: 1px solid $gray-200;
+	}
+
+	// Charts Placeholder
+	.charts-placeholder {
+		background: linear-gradient(135deg, $gray-50 0%, #ffffff 100%);
+		border-radius: $radius-md;
+		border: 2px dashed $gray-300;
+		min-height: 300px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	// Photos Placeholder
+	.photos-placeholder {
+		background: linear-gradient(135deg, $gray-50 0%, #ffffff 100%);
+		border-radius: $radius-md;
+		border: 2px dashed $gray-300;
+		min-height: 200px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+
+// Responsive Design
+@media (max-width: $breakpoint-md) {
+	.fitness-journey-page {
+		padding: $spacing-lg 0;
+
+		.page-header {
+			.page-title {
+				font-size: 36px;
+			}
+
+			.page-subtitle {
+				font-size: 16px;
+			}
+		}
+
+		.hero-section {
+			.hero-video {
+				height: 250px;
+
+				.video-overlay {
+					.video-title {
+						font-size: 24px;
+					}
+
+					.video-subtitle {
+						font-size: 14px;
+					}
+				}
+			}
+
+			.motivation-grid {
+				margin-top: $spacing-md;
+			}
+		}
+
+		.why-matters-section {
+			.section-title {
+				font-size: 24px;
+			}
+		}
+
+		.journey-tabs {
+			.custom-tabs {
+				.MuiTab-root {
+					font-size: 13px;
+					min-height: 56px;
+					padding: $spacing-sm $spacing-md;
+				}
+			}
+		}
+	}
+}
+
+
+
+

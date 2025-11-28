@@ -1,0 +1,162 @@
+/** PRICING TEASER **/
+.pricing-teaser {
+	padding: $spacing-3xl 0;
+	background: linear-gradient(135deg, $gray-900 0%, #212121 100%);
+	color: #ffffff;
+
+	.container {
+		@include container;
+	}
+
+	.section-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		margin-bottom: $spacing-2xl;
+
+		.section-title {
+			font-family: $font;
+			font-size: 36px;
+			font-weight: 700;
+			color: #ffffff;
+			margin-bottom: $spacing-sm;
+		}
+
+		.section-subtitle {
+			font-family: $font;
+			font-size: 18px;
+			color: rgba(255, 255, 255, 0.8);
+		}
+
+		.view-all-btn {
+			border: 2px solid #ffffff;
+			color: #ffffff;
+			font-weight: 600;
+			text-transform: none;
+			padding: $spacing-sm $spacing-xl;
+			border-radius: $radius-md;
+
+			&:hover {
+				background: #ffffff;
+				color: $gray-900;
+			}
+		}
+	}
+
+	.pricing-card {
+		border-radius: $radius-lg;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+		transition: all $transition-base;
+		height: 100%;
+		position: relative;
+		background: #ffffff;
+		color: $gray-900;
+
+		&.popular {
+			border: 3px solid $fitness-orange;
+			transform: scale(1.05);
+
+			&:hover {
+				transform: scale(1.08) translateY(-8px);
+			}
+		}
+
+		&:hover {
+			transform: translateY(-8px);
+			box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+		}
+
+		.popular-badge {
+			position: absolute;
+			top: -12px;
+			left: 50%;
+			transform: translateX(-50%);
+			background: $fitness-orange;
+			color: #ffffff;
+			font-weight: 700;
+			font-size: 12px;
+			padding: $spacing-xs $spacing-md;
+			z-index: 1;
+
+			svg {
+				color: #ffffff;
+			}
+		}
+
+		.plan-name {
+			font-family: $font;
+			font-weight: 700;
+			color: $gray-900;
+			margin-bottom: $spacing-xs;
+		}
+
+		.plan-description {
+			font-family: $font;
+			color: $gray-600;
+		}
+
+		.plan-price-container {
+			display: flex;
+			align-items: baseline;
+			justify-content: center;
+			margin: $spacing-xl 0;
+		}
+
+		.plan-price {
+			font-family: $font;
+			font-weight: 800;
+			color: $gray-900;
+			line-height: 1;
+		}
+
+		.plan-period {
+			font-family: $font;
+			color: $gray-600;
+			margin-left: $spacing-xs;
+		}
+
+		.plan-features {
+			margin: $spacing-xl 0;
+			text-align: left;
+
+			.feature-check {
+				color: #4caf50;
+				font-size: 20px;
+				min-width: 32px;
+			}
+
+			.feature-text {
+				font-family: $font;
+				color: $gray-700;
+				font-size: 14px;
+			}
+		}
+
+		.plan-button {
+			background: $gray-900;
+			color: #ffffff;
+			font-weight: 600;
+			text-transform: none;
+			padding: $spacing-md $spacing-xl;
+			border-radius: $radius-md;
+			margin-top: $spacing-lg;
+
+			&:hover {
+				background: $gray-800;
+			}
+		}
+
+		&.popular .plan-button {
+			background: $fitness-orange;
+			color: #ffffff;
+
+			&:hover {
+				background: darken($fitness-orange, 10%);
+			}
+		}
+	}
+}
+
+
+
+
