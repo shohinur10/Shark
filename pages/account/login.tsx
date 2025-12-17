@@ -1,7 +1,20 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Stack, Box, Typography, TextField, Button, Link, Checkbox, FormControlLabel, Alert } from '@mui/material';
+import {
+	Stack,
+	Box,
+	Typography,
+	TextField,
+	Button,
+	Link,
+	Checkbox,
+	FormControlLabel,
+	Alert,
+	Divider,
+	CircularProgress,
+	InputAdornment,
+} from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { logIn } from '../../libs/auth';
@@ -9,9 +22,13 @@ import { sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailIcon from '@mui/icons-material/Email';
+import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
+import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -30,15 +47,46 @@ const LoginPage: NextPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
+	const [fieldErrors, setFieldErrors] = useState<{ nick?: string; password?: string }>({});
+	const [isEmail, setIsEmail] = useState(false);
+
+	useEffect(() => {
+		// Check if input is email format
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		setIsEmail(emailRegex.test(formData.nick));
+	}, [formData.nick]);
 
 	const handleInputChange = (field: string, value: any) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
 		setError('');
+		if (fieldErrors[field as keyof typeof fieldErrors]) {
+			setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
+		}
+	};
+
+	const validateForm = () => {
+		const errors: { nick?: string; password?: string } = {};
+		let isValid = true;
+
+		if (!formData.nick.trim()) {
+			errors.nick = 'Username or email is required';
+			isValid = false;
+		}
+
+		if (!formData.password) {
+			errors.password = 'Password is required';
+			isValid = false;
+		} else if (formData.password.length < 6) {
+			errors.password = 'Password must be at least 6 characters';
+			isValid = false;
+		}
+
+		setFieldErrors(errors);
+		return isValid;
 	};
 
 	const handleLogin = useCallback(async () => {
-		if (!formData.nick || !formData.password) {
-			setError('Please fill in all fields');
+		if (!validateForm()) {
 			return;
 		}
 
@@ -49,8 +97,9 @@ const LoginPage: NextPage = () => {
 			await logIn(formData.nick, formData.password);
 			await router.push((router.query.referrer as string) || '/dashboard');
 		} catch (err: any) {
-			setError(err.message || 'Login failed. Please check your credentials.');
-			await sweetMixinErrorAlert(err.message || 'Login failed');
+			const errorMessage = err.message || 'Login failed. Please check your credentials.';
+			setError(errorMessage);
+			await sweetMixinErrorAlert(errorMessage);
 		} finally {
 			setLoading(false);
 		}
@@ -62,118 +111,316 @@ const LoginPage: NextPage = () => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return (
-			<Stack className={'login-page'}>
-				<Stack className={'container'}>
-					<Typography variant="h4">Login</Typography>
-					<div>MOBILE LOGIN PAGE</div>
-				</Stack>
-			</Stack>
-		);
-	} else {
-		return (
-			<Stack className={'login-page'}>
-				<Stack className={'container'}>
-					<Box className={'login-container'}>
-						<Box className={'login-left'}>
-							<Box className={'login-header'}>
-								<Box className={'logo-section'}>
-									<img src="/img/logo/logoText.svg" alt="Shark" className={'logo-img'} />
-									<Typography variant="h4" className={'logo-text'}>
-										Shark
-									</Typography>
-								</Box>
-								<Typography variant="h3" className={'login-title'}>
-									Welcome Back
-								</Typography>
-								<Typography variant="body1" className={'login-subtitle'}>
-									Sign in to continue your fitness journey
+	const handleSocialLogin = (provider: 'google' | 'facebook') => {
+		// TODO: Implement social login
+		console.log(`${provider} login clicked`);
+		// Placeholder for social login implementation
+	};
+
+	const mobileView = (
+		<Stack className={'login-page mobile'}>
+			<Box className={'mobile-container'}>
+				<Box className={'mobile-header'}>
+					<Box className={'logo-section'}>
+						<img src="/img/logo/logoText.svg" alt="Shark" className={'logo-img'} />
+						<Typography variant="h5" className={'logo-text'}>
+							Shark
+						</Typography>
+					</Box>
+					<Typography variant="h4" className={'mobile-title'}>
+						Welcome Back
+					</Typography>
+					<Typography variant="body2" className={'mobile-subtitle'}>
+						Sign in to continue your fitness journey
+					</Typography>
+				</Box>
+
+				<Box className={'mobile-form'}>
+					{error && (
+						<Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
+							{error}
+						</Alert>
+					)}
+
+					<TextField
+						fullWidth
+						label={isEmail ? 'Email Address' : 'Username'}
+						variant="outlined"
+						value={formData.nick}
+						onChange={(e) => handleInputChange('nick', e.target.value)}
+						onKeyPress={handleKeyPress}
+						error={!!fieldErrors.nick}
+						helperText={fieldErrors.nick}
+						required
+						className={'form-input'}
+						InputProps={{
+							startAdornment: (
+								<InputAdornment position="start">
+									{isEmail ? <EmailIcon sx={{ color: 'text.secondary' }} /> : <PersonIcon sx={{ color: 'text.secondary' }} />}
+								</InputAdornment>
+							),
+						}}
+						sx={{ mb: 2 }}
+					/>
+
+					<TextField
+						fullWidth
+						label="Password"
+						type={showPassword ? 'text' : 'password'}
+						variant="outlined"
+						value={formData.password}
+						onChange={(e) => handleInputChange('password', e.target.value)}
+						onKeyPress={handleKeyPress}
+						error={!!fieldErrors.password}
+						helperText={fieldErrors.password}
+						required
+						className={'form-input'}
+						InputProps={{
+							startAdornment: (
+								<InputAdornment position="start">
+									<LockOutlinedIcon sx={{ color: 'text.secondary' }} />
+								</InputAdornment>
+							),
+							endAdornment: (
+								<IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+									{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+								</IconButton>
+							),
+						}}
+						sx={{ mb: 2 }}
+					/>
+
+					<Box className={'mobile-options'}>
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={formData.rememberMe}
+									onChange={(e) => handleInputChange('rememberMe', e.target.checked)}
+									size="small"
+								/>
+							}
+							label={<Typography variant="body2">Remember me</Typography>}
+						/>
+						<Link href="/account/forgot-password" className={'forgot-link'}>
+							<Typography variant="body2">Forgot?</Typography>
+						</Link>
+					</Box>
+
+					<Button
+						variant="contained"
+						fullWidth
+						size="large"
+						onClick={handleLogin}
+						disabled={loading || !formData.nick || !formData.password}
+						className={'login-button'}
+						sx={{ mt: 2, mb: 2 }}
+					>
+						{loading ? (
+							<>
+								<CircularProgress size={20} sx={{ mr: 1 }} color="inherit" />
+								Signing in...
+							</>
+						) : (
+							'Sign In'
+						)}
+					</Button>
+
+					<Divider sx={{ my: 3 }}>
+						<Typography variant="body2" color="text.secondary">
+							OR
+						</Typography>
+					</Divider>
+
+					<Box className={'social-buttons'}>
+						<Button
+							variant="outlined"
+							fullWidth
+							startIcon={<GoogleIcon />}
+							onClick={() => handleSocialLogin('google')}
+							className={'social-button google'}
+							sx={{ mb: 1.5 }}
+						>
+							Continue with Google
+						</Button>
+						<Button
+							variant="outlined"
+							fullWidth
+							startIcon={<FacebookIcon />}
+							onClick={() => handleSocialLogin('facebook')}
+							className={'social-button facebook'}
+						>
+							Continue with Facebook
+						</Button>
+					</Box>
+
+					<Box className={'signup-link'}>
+						<Typography variant="body2" color="text.secondary" textAlign="center">
+							Don't have an account?{' '}
+							<Link href="/account/register" className={'link-text'}>
+								Sign up
+							</Link>
+						</Typography>
+					</Box>
+				</Box>
+			</Box>
+		</Stack>
+	);
+
+	const desktopView = (
+		<Stack className={'login-page'}>
+			<Stack className={'container'}>
+				<Box className={'login-container'}>
+					<Box className={'login-left'}>
+						<Box className={'login-header'}>
+							<Box className={'logo-section'}>
+								<FitnessCenterIcon className={'fitness-icon'} />
+								<Typography variant="h4" className={'logo-text'}>
+									Shark
 								</Typography>
 							</Box>
-
-							<Box className={'login-form'}>
-								{error && (
-									<Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
-										{error}
-									</Alert>
-								)}
-
-								<TextField
-									fullWidth
-									label="Username or Email"
-									variant="outlined"
-									value={formData.nick}
-									onChange={(e) => handleInputChange('nick', e.target.value)}
-									onKeyPress={handleKeyPress}
-									required
-									className={'form-input'}
-									InputProps={{
-										startAdornment: <EmailIcon sx={{ mr: 1, color: 'text.secondary' }} />,
-									}}
-									sx={{ mb: 3 }}
-								/>
-
-								<TextField
-									fullWidth
-									label="Password"
-									type={showPassword ? 'text' : 'password'}
-									variant="outlined"
-									value={formData.password}
-									onChange={(e) => handleInputChange('password', e.target.value)}
-									onKeyPress={handleKeyPress}
-									required
-									className={'form-input'}
-									InputProps={{
-										startAdornment: <LockOutlinedIcon sx={{ mr: 1, color: 'text.secondary' }} />,
-										endAdornment: (
-											<IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-												{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-											</IconButton>
-										),
-									}}
-									sx={{ mb: 2 }}
-								/>
-
-								<Box className={'login-options'}>
-									<FormControlLabel
-										control={
-											<Checkbox
-												checked={formData.rememberMe}
-												onChange={(e) => handleInputChange('rememberMe', e.target.checked)}
-											/>
-										}
-										label="Remember me"
-									/>
-									<Link href="/account/forgot-password" className={'forgot-link'}>
-										Forgot password?
-									</Link>
-								</Box>
-
-								<Button
-									variant="contained"
-									fullWidth
-									size="large"
-									onClick={handleLogin}
-									disabled={loading || !formData.nick || !formData.password}
-									className={'login-button'}
-									sx={{ mt: 3, mb: 2 }}
-								>
-									{loading ? 'Signing in...' : 'Sign In'}
-								</Button>
-
-								<Box className={'signup-link'}>
-									<Typography variant="body2" color="text.secondary">
-										Don't have an account?{' '}
-										<Link href="/account/register" className={'link-text'}>
-											Sign up
-										</Link>
-									</Typography>
-								</Box>
-							</Box>
+							<Typography variant="h3" className={'login-title'}>
+								Welcome Back!
+							</Typography>
+							<Typography variant="body1" className={'login-subtitle'}>
+								Sign in to continue your fitness journey and reach your goals
+							</Typography>
 						</Box>
 
-						<Box className={'login-right'}>
+						<Box className={'login-form'}>
+							{error && (
+								<Alert
+									severity="error"
+									sx={{ mb: 2, borderRadius: 2 }}
+									onClose={() => setError('')}
+									className={'error-alert'}
+								>
+									{error}
+								</Alert>
+							)}
+
+							<TextField
+								fullWidth
+								label={isEmail ? 'Email Address' : 'Username'}
+								variant="outlined"
+								value={formData.nick}
+								onChange={(e) => handleInputChange('nick', e.target.value)}
+								onKeyPress={handleKeyPress}
+								error={!!fieldErrors.nick}
+								helperText={fieldErrors.nick}
+								required
+								className={'form-input'}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											{isEmail ? <EmailIcon sx={{ color: 'text.secondary' }} /> : <PersonIcon sx={{ color: 'text.secondary' }} />}
+										</InputAdornment>
+									),
+								}}
+								sx={{ mb: 2.5 }}
+							/>
+
+							<TextField
+								fullWidth
+								label="Password"
+								type={showPassword ? 'text' : 'password'}
+								variant="outlined"
+								value={formData.password}
+								onChange={(e) => handleInputChange('password', e.target.value)}
+								onKeyPress={handleKeyPress}
+								error={!!fieldErrors.password}
+								helperText={fieldErrors.password}
+								required
+								className={'form-input'}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											<LockOutlinedIcon sx={{ color: 'text.secondary' }} />
+										</InputAdornment>
+									),
+									endAdornment: (
+										<IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+											{showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+										</IconButton>
+									),
+								}}
+								sx={{ mb: 2 }}
+							/>
+
+							<Box className={'login-options'}>
+								<FormControlLabel
+									control={
+										<Checkbox
+											checked={formData.rememberMe}
+											onChange={(e) => handleInputChange('rememberMe', e.target.checked)}
+										/>
+									}
+									label="Remember me"
+								/>
+								<Link href="/account/forgot-password" className={'forgot-link'}>
+									Forgot password?
+								</Link>
+							</Box>
+
+							<Button
+								variant="contained"
+								fullWidth
+								size="large"
+								onClick={handleLogin}
+								disabled={loading || !formData.nick || !formData.password}
+								className={'login-button'}
+								sx={{ mt: 3, mb: 2 }}
+							>
+								{loading ? (
+									<>
+										<CircularProgress size={20} sx={{ mr: 1 }} color="inherit" />
+										Signing in...
+									</>
+								) : (
+									'Sign In'
+								)}
+							</Button>
+
+							<Divider sx={{ my: 3 }}>
+								<Typography variant="body2" color="text.secondary">
+									OR
+								</Typography>
+							</Divider>
+
+							<Box className={'social-buttons'}>
+								<Button
+									variant="outlined"
+									fullWidth
+									startIcon={<GoogleIcon />}
+									onClick={() => handleSocialLogin('google')}
+									className={'social-button google'}
+									sx={{ mb: 1.5 }}
+								>
+									Continue with Google
+								</Button>
+								<Button
+									variant="outlined"
+									fullWidth
+									startIcon={<FacebookIcon />}
+									onClick={() => handleSocialLogin('facebook')}
+									className={'social-button facebook'}
+								>
+									Continue with Facebook
+								</Button>
+							</Box>
+
+							<Box className={'signup-link'}>
+								<Typography variant="body2" color="text.secondary" textAlign="center">
+									Don't have an account?{' '}
+									<Link href="/account/register" className={'link-text'}>
+										Sign up
+									</Link>
+								</Typography>
+							</Box>
+						</Box>
+					</Box>
+
+					<Box className={'login-right'}>
+						<Box className={'login-image-wrapper'}>
 							<Box
 								className={'login-image'}
 								style={{
@@ -182,15 +429,30 @@ const LoginPage: NextPage = () => {
 									backgroundPosition: 'center',
 								}}
 							/>
+							<Box className={'image-overlay'}>
+								<Box className={'overlay-content'}>
+									<FitnessCenterIcon className={'overlay-icon'} />
+									<Typography variant="h4" className={'overlay-title'}>
+										Transform Your Body
+									</Typography>
+									<Typography variant="body1" className={'overlay-text'}>
+										Join thousands of members achieving their fitness goals
+									</Typography>
+								</Box>
+							</Box>
 						</Box>
 					</Box>
-				</Stack>
+				</Box>
 			</Stack>
-		);
-	}
+		</Stack>
+	);
+
+	return device === 'mobile' ? mobileView : desktopView;
 };
 
 export default withLayoutBasic(LoginPage);
+
+
 
 
 

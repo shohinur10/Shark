@@ -1,10 +1,10 @@
-import { ChallengeDifficulty, ChallengeType } from '../../enums/challenge.enum';
+import { ChallengeDifficulty, ChallengeStatus, ChallengeType } from '../../enums/challenge.enum';
 import { Direction } from '../../enums/common.enum';
 
 export interface ChallengeInput {
 	challengeTitle: string;
-	challengeType: ChallengeType;
-	challengeDifficulty: ChallengeDifficulty;
+	challengeType: string;
+	challengeDifficulty: string;
 	challengeDesc: string;
 	challengeImage?: string;
 	targetValue: number;
@@ -13,11 +13,13 @@ export interface ChallengeInput {
 	endDate: Date;
 	challengeRules?: string[];
 	isCommunity?: boolean;
+	rewardPoints?: number;
 	createdBy?: string;
 }
 
-interface CISearch {
+export interface ChallengeSearch {
 	challengeType?: ChallengeType;
+	challengeStatus?: ChallengeStatus;
 }
 
 export interface ChallengesInquiry {
@@ -25,6 +27,7 @@ export interface ChallengesInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: CISearch;
+	challengeStatus?: ChallengeStatus;
+	isCommunity?: boolean;
+	search?: ChallengeSearch;
 }
-

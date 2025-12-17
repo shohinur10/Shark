@@ -16,6 +16,7 @@ export enum BookingType {
 	FACILITY_RENTAL = 'FACILITY_RENTAL',     // Rent a studio/space
 	ONLINE_SESSION = 'ONLINE_SESSION',       // Virtual training
 	CONSULTATION = 'CONSULTATION',           // Fitness consultation
+	ONLINE = 'ONLINE',   
 }
 
 

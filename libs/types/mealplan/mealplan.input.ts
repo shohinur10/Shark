@@ -1,30 +1,31 @@
 import { Direction } from '../../enums/common.enum';
-import { DietaryPreference, MealType, NutritionGoal } from '../../enums/nutrition.enum';
+import { DietaryPreference, MealPlanStatus, MealType, NutritionGoal } from '../../enums/nutrition.enum';
 
 export interface MacrosInput {
-    protein: number;
-    carbs: number;
-    fats: number;
+	protein: number;
+	carbs: number;
+	fats: number;
 }
 
 export interface MealInput {
-    day: number;
-    mealType: MealType;
-    mealName: string;
-    ingredients: string[];
-    instructions: string;
-    calories: number;
-    protein: number;
-    carbs: number;
-    fats: number;
-    imageUrl?: string;
+	day: number;
+	mealType: MealType;
+	mealName: string;
+	ingredients?: string[];
+	instructions?: string;
+	calories: number;
+	protein: number;
+	carbs: number;
+	fats: number;
+	imageUrl?: string;
 }
 
 export interface MealPlanInput {
 	mealPlanTitle: string;
+	mealPlanStatus?: MealPlanStatus;
 	mealPlanDesc?: string;
 	nutritionGoal: NutritionGoal;
-	dietaryPreference: DietaryPreference[];
+	dietaryPreference?: DietaryPreference[];
 	duration: number;
 	calorieTarget: number;
 	macros: MacrosInput;
@@ -34,7 +35,7 @@ export interface MealPlanInput {
 	createdBy?: string;
 }
 
-interface MPISearch {
+export interface MPISearch {
 	nutritionGoal?: NutritionGoal;
 	dietaryPreferenceList?: DietaryPreference[];
 	text?: string;
@@ -45,5 +46,5 @@ export interface MealPlansInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: MPISearch;
+	search?: MPISearch;
 }

@@ -7,34 +7,34 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper';
 import TopAgentCard from './TopAgentCard';
 import { Member } from '../../types/member/member';
-import { AgentsInquiry } from '../../types/member/member.input';
+import { TrainersInquiry } from '../../types/member/member.input';
 import { useQuery } from '@apollo/client';
 import { T } from '../../types/common';
-import { GET_AGENTS } from '../../../apollo/user/query';
+import { GET_TRAINERS } from '../../../apollo/user/query';
 import Link from 'next/link';
 
-interface TopAgentsProps {
-	initialInput: AgentsInquiry;
+interface TopTrainersProps {
+	initialInput: TrainersInquiry;
 }
 
-const TopAgents = (props: TopAgentsProps) => {
+const TopAgents = (props: TopTrainersProps) => {
 	const { initialInput } = props;
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const [topAgents, setTopAgents] = useState<Member[]>([]);
+	const [topTrainers, setTopTrainers] = useState<Member[]>([]);
 
 	/** APOLLO REQUESTS **/
 	const {
-		loading: getAgentsLoading,
-		data: getAgentsData,
-		error: getAgentsError,
-		refetch: getAgentsRefetch,
-	} = useQuery(GET_AGENTS, {
+		loading: getTrainersLoading,
+		data: getTrainersData,
+		error: getTrainersError,
+		refetch: getTrainersRefetch,
+	} = useQuery(GET_TRAINERS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: initialInput },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setTopAgents(data?.getAgents?.list);
+			setTopTrainers(data?.getTrainers?.list);
 		},
 	});
 
@@ -55,10 +55,10 @@ const TopAgents = (props: TopAgentsProps) => {
 							spaceBetween={29}
 							modules={[Autoplay]}
 						>
-							{topAgents.map((agent: Member) => {
+							{topTrainers.map((trainer: Member) => {
 								return (
-									<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
-										<TopAgentCard agent={agent} key={agent?.memberNick} />
+									<SwiperSlide className={'top-agents-slide'} key={trainer?._id}>
+										<TopAgentCard agent={trainer} key={trainer?.memberNick} />
 									</SwiperSlide>
 								);
 							})}
@@ -100,10 +100,10 @@ const TopAgents = (props: TopAgentsProps) => {
 									prevEl: '.swiper-agents-prev',
 								}}
 							>
-								{topAgents.map((agent: Member) => {
+								{topTrainers.map((trainer: Member) => {
 									return (
-										<SwiperSlide className={'top-agents-slide'} key={agent?._id}>
-											<TopAgentCard agent={agent} key={agent?.memberNick} />
+										<SwiperSlide className={'top-agents-slide'} key={trainer?._id}>
+											<TopAgentCard agent={trainer} key={trainer?.memberNick} />
 										</SwiperSlide>
 									);
 								})}

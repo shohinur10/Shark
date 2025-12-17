@@ -18,7 +18,7 @@ interface AISearch {
 	text?: string;
 }
 
-export interface AgentsInquiry {
+export interface TrainersInquiry {
 	page: number;
 	limit: number;
 	sort?: string;
@@ -37,5 +37,5 @@ export interface MembersInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: MISearch;
+	search?: MISearch;
 }

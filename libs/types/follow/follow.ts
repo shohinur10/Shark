@@ -19,11 +19,6 @@ export interface Follower {
 	followerData?: Member;
 }
 
-export interface Followers {
-	list: Follower[];
-	metaCounter: TotalCounter[];
-}
-
 export interface Following {
 	_id: string;
 	followingId: string;
@@ -38,5 +33,10 @@ export interface Following {
 
 export interface Followings {
 	list: Following[];
+	metaCounter: TotalCounter[];
+}
+
+export interface Followers {
+	list: Follower[];
 	metaCounter: TotalCounter[];
 }

@@ -2,7 +2,8 @@ import { ExerciseStatus, ExerciseType, MuscleGroup } from '../../enums/exercise.
 import { WorkoutEquipment } from '../../enums/workout.enum';
 
 export interface ExerciseUpdate {
-	_id: string;
+	_id?: string;
+	exerciseId?: string;
 	exerciseName?: string;
 	exerciseType?: ExerciseType;
 	exerciseStatus?: ExerciseStatus;
@@ -13,10 +14,11 @@ export interface ExerciseUpdate {
 	exerciseEquipment?: WorkoutEquipment[];
 	exerciseImage?: string;
 	exerciseVideo?: string;
-	exerciseDifficulty?: number;
+	exerciseGif?: string;
+	exerciseDifficulty?: string;
 	exerciseTips?: string[];
 	exerciseWarnings?: string[];
+	commonMistakes?: string[];
 	exerciseTags?: string[];
 	deletedAt?: Date;
 }
-

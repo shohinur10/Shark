@@ -2,7 +2,11 @@
 export enum MuscleGroup {
 	CHEST = 'CHEST',
 	BACK = 'BACK',
+	LATS = 'LATS',                   // Latissimus dorsi
 	SHOULDERS = 'SHOULDERS',
+	FRONT_DELTS = 'FRONT_DELTS',     // Front deltoids
+	SIDE_DELTS = 'SIDE_DELTS',       // Side deltoids
+	REAR_DELTS = 'REAR_DELTS',       // Rear deltoids
 	BICEPS = 'BICEPS',
 	TRICEPS = 'TRICEPS',
 	FOREARMS = 'FOREARMS',
@@ -27,6 +31,7 @@ export enum ExerciseType {
 	ISOMETRIC = 'ISOMETRIC',        // Static holds
 	COMPOUND = 'COMPOUND',          // Multi-joint exercises
 	ISOLATION = 'ISOLATION',        // Single-joint exercises
+	MACHINE = 'MACHINE',            // Machine-based exercises  
 }
 
 

@@ -8,7 +8,7 @@ export interface BoardArticle {
 	articleStatus: BoardArticleStatus;
 	articleTitle: string;
 	articleContent: string;
-	articleImage: string;
+	articleImage?: string;
 	articleViews: number;
 	articleLikes: number;
 	articleComments: number;
@@ -16,7 +16,6 @@ export interface BoardArticle {
 	createdAt: Date;
 	updatedAt: Date;
 	/** from aggregation **/
-	meLiked?: MeLiked[];
 	memberData?: Member;
 }
 

@@ -7,9 +7,10 @@ export interface BookingInput {
 	propertyId?: string;
 	bookingDate: Date;
 	bookingTime: string;
-	sessionDuration: SessionDuration;
+	sessionDuration: number;
 	bookingPrice: number;
 	bookingNotes?: string;
+	meetingLink?: string;
 	clientId?: string;
 }
 
@@ -25,6 +26,9 @@ export interface BookingsInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: BISearch;
+	clientId?: string;
+	providerId?: string;
+	bookingStatus?: BookingStatus;
+	bookingType?: BookingType;
+	search?: BISearch;
 }
-

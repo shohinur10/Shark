@@ -54,6 +54,11 @@ export enum WorkoutEquipment {
 	PULL_UP_BAR = 'PULL_UP_BAR',   // Pull-up bar
 	FULL_GYM = 'FULL_GYM',         // Full gym equipment
 	CARDIO_MACHINE = 'CARDIO_MACHINE', // Treadmill, bike, etc.
+	LAT_PULLDOWN_MACHINE = 'LAT_PULLDOWN_MACHINE', // Lat pulldown machine
+	CABLE_MACHINE = 'CABLE_MACHINE', // Cable machine
+	SMITH_MACHINE = 'SMITH_MACHINE', // Smith machine
+	LEG_PRESS_MACHINE = 'LEG_PRESS_MACHINE', // Leg press machine
+	CHEST_PRESS_MACHINE = 'CHEST_PRESS_MACHINE', // Chest press machine
 	YOGA_MAT = 'YOGA_MAT',         // Yoga mat
 	FOAM_ROLLER = 'FOAM_ROLLER',   // Foam roller
 }

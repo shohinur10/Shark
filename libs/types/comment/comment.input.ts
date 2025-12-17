@@ -1,4 +1,4 @@
-import { CommentGroup } from '../../enums/comment.enum';
+import { CommentGroup, CommentStatus } from '../../enums/comment.enum';
 import { Direction } from '../../enums/common.enum';
 
 export interface CommentInput {
@@ -9,7 +9,8 @@ export interface CommentInput {
 }
 
 interface CISearch {
-	commentRefId: string;
+	commentRefId?: string;
+	commentStatus?: CommentStatus;
 }
 
 export interface CommentsInquiry {
@@ -17,5 +18,7 @@ export interface CommentsInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: CISearch;
+	commentRefId?: string;
+	commentStatus?: CommentStatus;
+	search?: CISearch;
 }

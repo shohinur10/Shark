@@ -34,6 +34,7 @@ export enum ChallengeDifficulty {
 // Achievement/Badge types
 export enum AchievementType {
 	FIRST_WORKOUT = 'FIRST_WORKOUT',           // First workout completed
+	WORKOUT = 'WORKOUT',                       // General workout achievement
 	WEEK_STREAK = 'WEEK_STREAK',              // 7-day streak
 	MONTH_STREAK = 'MONTH_STREAK',            // 30-day streak
 	HUNDRED_WORKOUTS = 'HUNDRED_WORKOUTS',    // 100 workouts
@@ -43,8 +44,9 @@ export enum AchievementType {
 	INFLUENCER = 'INFLUENCER',                // 100 followers
 	EARLY_BIRD = 'EARLY_BIRD',                // Morning workouts
 	NIGHT_OWL = 'NIGHT_OWL',                  // Evening workouts
+	CHALLENGE = 'CHALLENGE',                  // Challenge-related achievement
 	CHALLENGE_MASTER = 'CHALLENGE_MASTER',    // Complete 10 challenges
-	CUSTOM = 'CUSTOM',                         // Custom achievement
+	CUSTOM = 'CUSTOM',                        // Custom achievement
 }
 
 
@@ -52,7 +54,9 @@ export enum AchievementType {
 export enum AchievementStatus {
 	LOCKED = 'LOCKED',                 // Not yet unlocked
 	UNLOCKED = 'UNLOCKED',             // Unlocked
-	IN_PROGRESS = 'IN_PROGRESS',       // Working towards it
+	IN_PROGRESS = 'IN_PROGRESS',  // Working towards it
+	ACTIVE = 'ACTIVE',  
+
 }
 
 

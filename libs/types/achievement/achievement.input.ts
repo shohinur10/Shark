@@ -1,4 +1,4 @@
-import { AchievementType } from '../../enums/challenge.enum';
+import { AchievementStatus, AchievementType } from '../../enums/challenge.enum';
 import { Direction } from '../../enums/common.enum';
 
 export interface AchievementInput {
@@ -6,11 +6,16 @@ export interface AchievementInput {
 	achievementTitle: string;
 	achievementDesc?: string;
 	targetValue?: number;
+	currentValue?: number;
+	points?: number;
+	achievementStatus?: AchievementStatus;
+	challengeId?: string;
 	memberId?: string;
 }
 
-interface AISearch {
+interface AchievementSearch {
 	achievementType?: AchievementType;
+	achievementStatus?: AchievementStatus;
 }
 
 export interface AchievementsInquiry {
@@ -18,6 +23,8 @@ export interface AchievementsInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: AISearch;
+	search?: AchievementSearch;
+	// Support flattened structure for backward compatibility
+	achievementType?: AchievementType;
+	achievementStatus?: AchievementStatus;
 }
-

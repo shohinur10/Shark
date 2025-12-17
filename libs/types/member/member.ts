@@ -25,6 +25,15 @@ export interface Member {
 	memberComments: number;
 	memberWarnings: number;
 	memberBlocks: number;
+	memberWorkouts?: number;
+	memberChallenges?: number;
+	memberAchievements?: number;
+	trainerRating?: number;
+	trainerExperience?: number;
+	trainerSpecialties?: string[];
+	trainerCertifications?: string[];
+	trainerBio?: string;
+	subscriptionId?: string;
 	deletedAt?: Date;
 	createdAt: Date;
 	updatedAt: Date;

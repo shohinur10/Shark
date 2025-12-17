@@ -34,6 +34,7 @@ export enum MeasurementUnit {
 // Goal types
 export enum GoalType {
 	LOSE_WEIGHT = 'LOSE_WEIGHT',
+	WEIGHT_LOSS = 'WEIGHT_LOSS',        // Alias for LOSE_WEIGHT
 	GAIN_MUSCLE = 'GAIN_MUSCLE',
 	GET_FIT = 'GET_FIT',
 	IMPROVE_STRENGTH = 'IMPROVE_STRENGTH',

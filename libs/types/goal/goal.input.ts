@@ -2,7 +2,9 @@ import { Direction } from '../../enums/common.enum';
 import { GoalStatus, GoalType, MeasurementUnit } from '../../enums/progress.enum';
 
 export interface MilestoneInput {
-    value: number;
+	value: number;
+	achieved?: boolean;
+	achievedAt?: Date;
 }
 
 export interface GoalInput {
@@ -10,8 +12,11 @@ export interface GoalInput {
 	goalTitle: string;
 	goalDesc?: string;
 	targetValue: number;
-	unit: MeasurementUnit;
+	unit: string;
+	startDate?: Date;
 	targetDate: Date;
+	currentValue?: number;
+	goalStatus?: GoalStatus;
 	milestones?: MilestoneInput[];
 	memberId?: string;
 }
@@ -26,6 +31,8 @@ export interface GoalsInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: GISearch;
+	memberId?: string;
+	goalStatus?: GoalStatus;
+	goalType?: GoalType;
+	search?: GISearch;
 }
-

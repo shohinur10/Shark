@@ -6,6 +6,7 @@ export interface ReviewUpdate {
 	reviewTitle?: string;
 	reviewContent?: string;
 	reviewImages?: string[];
-	reviewStatus?: ReviewStatus;
+	reviewStatus?: string;
+	flagReason?: string;
 	deletedAt?: Date;
 }

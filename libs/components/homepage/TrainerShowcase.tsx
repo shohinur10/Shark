@@ -3,11 +3,12 @@ import { Stack, Box, Typography, Button, Grid, Card, CardContent, Avatar, Rating
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import Link from 'next/link';
 import { Member } from '../../types/member/member';
-import { AgentsInquiry } from '../../types/member/member.input';
+import { TrainersInquiry } from '../../types/member/member.input';
 import { useQuery } from '@apollo/client';
 import { T } from '../../types/common';
-import { GET_AGENTS } from '../../../apollo/user/query';
+import { GET_TRAINERS } from '../../../apollo/user/query';
 import { REACT_APP_API_URL } from '../../../libs/config';
+import { Direction } from '../../enums/common.enum';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import StarIcon from '@mui/icons-material/Star';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
@@ -16,24 +17,24 @@ const TrainerShowcase = () => {
 	const device = useDeviceDetect();
 	const [trainers, setTrainers] = useState<Member[]>([]);
 
-	const filters: AgentsInquiry = {
+	const filters: TrainersInquiry = {
 		page: 1,
 		limit: 4,
 		sort: 'memberRank',
-		direction: 'DESC',
+		direction: Direction.DESC,
 		search: {},
 	};
 
 	const {
-		loading: getAgentsLoading,
-		data: getAgentsData,
-		error: getAgentsError,
-	} = useQuery(GET_AGENTS, {
+		loading: getTrainersLoading,
+		data: getTrainersData,
+		error: getTrainersError,
+	} = useQuery(GET_TRAINERS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: filters },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setTrainers(data?.getAgents?.list?.slice(0, 4) || []);
+			setTrainers(data?.getTrainers?.list?.slice(0, 4) || []);
 		},
 	});
 
@@ -195,6 +196,11 @@ const TrainerShowcase = () => {
 };
 
 export default TrainerShowcase;
+
+
+
+
+
 
 
 

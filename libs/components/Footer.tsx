@@ -39,9 +39,11 @@ const Footer = () => {
 					<Stack className={'right'}>
 						<Box component={'div'} className={'bottom'}>
 							<div>
-								<strong>Popular Search</strong>
-								<span>Property for Rent</span>
-								<span>Property Low to hide</span>
+								<strong>Popular Workouts</strong>
+								<span>Strength Training</span>
+								<span>Cardio Workouts</span>
+								<span>Yoga & Flexibility</span>
+								<span>HIIT Training</span>
 							</div>
 							<div>
 								<strong>Quick Links</strong>
@@ -53,11 +55,11 @@ const Footer = () => {
 								<span>FAQs</span>
 							</div>
 							<div>
-								<strong>Discover</strong>
-								<span>Seoul</span>
-								<span>Gyeongido</span>
-								<span>Busan</span>
-								<span>Jejudo</span>
+								<strong>Explore</strong>
+								<span>Workouts</span>
+								<span>Nutrition Plans</span>
+								<span>Trainers</span>
+								<span>Gyms & Studios</span>
 							</div>
 						</Box>
 					</Stack>
@@ -104,9 +106,11 @@ const Footer = () => {
 						</Box>
 						<Box component={'div'} className={'bottom'}>
 							<div>
-								<strong>Popular Search</strong>
-								<span>Property for Rent</span>
-								<span>Property Low to hide</span>
+								<strong>Popular Workouts</strong>
+								<span>Strength Training</span>
+								<span>Cardio Workouts</span>
+								<span>Yoga & Flexibility</span>
+								<span>HIIT Training</span>
 							</div>
 							<div>
 								<strong>Quick Links</strong>
@@ -118,11 +122,11 @@ const Footer = () => {
 								<span>FAQs</span>
 							</div>
 							<div>
-								<strong>Discover</strong>
-								<span>Seoul</span>
-								<span>Gyeongido</span>
-								<span>Busan</span>
-								<span>Jejudo</span>
+								<strong>Explore</strong>
+								<span>Workouts</span>
+								<span>Nutrition Plans</span>
+								<span>Trainers</span>
+								<span>Gyms & Studios</span>
 							</div>
 						</Box>
 					</Stack>

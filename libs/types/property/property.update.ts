@@ -8,14 +8,20 @@ export interface PropertyUpdate {
 	propertyAddress?: string;
 	propertyTitle?: string;
 	propertyPrice?: number;
-	propertySquare?: number;
-	propertyBeds?: number;
-	propertyRooms?: number;
+	priceType?: string;
+	womenDiscountPercent?: number;
+	childrenDiscountPercent?: number;
+	childrenAgeLimit?: number;
+	extraClassDiscountPercent?: number;
+	perClassPrice?: number;
+	propertyCapacity?: number;
+	propertyEquipmentList?: string[];
+	propertyAmenities?: string[];
+	propertyOperatingHours?: string;
+	propertyRating?: number;
+	propertyCondition?: string;
 	propertyImages?: string[];
 	propertyDesc?: string;
-	propertyBarter?: boolean;
 	propertyRent?: boolean;
-	soldAt?: Date;
 	deletedAt?: Date;
-	constructedAt?: Date;
 }

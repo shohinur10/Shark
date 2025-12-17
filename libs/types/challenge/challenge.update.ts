@@ -1,7 +1,8 @@
 import { ChallengeDifficulty, ChallengeStatus, ChallengeType } from '../../enums/challenge.enum';
 
 export interface ChallengeUpdate {
-	_id: string;
+	_id?: string;
+	challengeId?: string;
 	challengeTitle?: string;
 	challengeType?: ChallengeType;
 	challengeStatus?: ChallengeStatus;
@@ -14,8 +15,6 @@ export interface ChallengeUpdate {
 	endDate?: Date;
 	challengeRules?: string[];
 	isCommunity?: boolean;
-	rewardBadge?: string;
 	rewardPoints?: number;
 	deletedAt?: Date;
 }
-

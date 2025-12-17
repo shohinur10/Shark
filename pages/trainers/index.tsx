@@ -5,14 +5,15 @@ import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState } from 'react';
 import { Member } from '../../libs/types/member/member';
-import { AgentsInquiry } from '../../libs/types/member/member.input';
-import { GET_AGENTS } from '../../../apollo/user/query';
+import { TrainersInquiry } from '../../libs/types/member/member.input';
+import { GET_TRAINERS } from '../../apollo/user/query';
 import { useQuery } from '@apollo/client';
 import { T } from '../../libs/types/common';
+import { Direction } from '../../libs/enums/common.enum';
 import Link from 'next/link';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import StarIcon from '@mui/icons-material/Star';
-import { REACT_APP_API_URL } from '../../../libs/config';
+import { REACT_APP_API_URL } from '../../libs/config';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -23,25 +24,25 @@ export const getStaticProps = async ({ locale }: any) => ({
 const TrainersPage: NextPage = () => {
 	const device = useDeviceDetect();
 	const [trainers, setTrainers] = useState<Member[]>([]);
-	const [filters, setFilters] = useState<AgentsInquiry>({
+	const [filters, setFilters] = useState<TrainersInquiry>({
 		page: 1,
 		limit: 20,
 		sort: 'memberRank',
-		direction: 'DESC',
+		direction: Direction.DESC,
 		search: {},
 	});
 
 	const {
-		loading: getAgentsLoading,
-		data: getAgentsData,
-		error: getAgentsError,
-		refetch: getAgentsRefetch,
-	} = useQuery(GET_AGENTS, {
+		loading: getTrainersLoading,
+		data: getTrainersData,
+		error: getTrainersError,
+		refetch: getTrainersRefetch,
+	} = useQuery(GET_TRAINERS, {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: filters },
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
-			setTrainers(data?.getAgents?.list || []);
+			setTrainers(data?.getTrainers?.list || []);
 		},
 	});
 

@@ -5,8 +5,9 @@ export interface WorkoutInput {
 	workoutTitle: string;
 	workoutCategory: WorkoutCategory;
 	workoutDifficulty: WorkoutDifficulty;
-	workoutDuration: WorkoutDuration;
-	workoutEquipment?: WorkoutEquipment[];
+	workoutDuration: string;
+	workoutEquipment?: string[];
+	workoutStatus?: string;
 	workoutDesc: string;
 	workoutImage?: string;
 	workoutVideo?: string;
@@ -17,13 +18,15 @@ export interface WorkoutInput {
 	createdBy?: string;
 }
 
-interface WISearch {
+export interface WISearch {
 	createdBy?: string;
 	categoryList?: WorkoutCategory[];
 	difficultyList?: WorkoutDifficulty[];
 	durationList?: WorkoutDuration[];
 	equipmentList?: WorkoutEquipment[];
 	text?: string;
+	workoutStatus?: string;
+	isPremium?: boolean;
 }
 
 export interface WorkoutsInquiry {
@@ -31,11 +34,13 @@ export interface WorkoutsInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: WISearch;
+	workoutStatus?: string;
+	isPremium?: boolean;
+	search?: WISearch;
 }
 
-interface TWISearch {
-	workoutStatus?: WorkoutStatus;
+export interface TrainerWorkoutsSearch {
+	workoutStatus?: string;
 }
 
 export interface TrainerWorkoutsInquiry {
@@ -43,6 +48,7 @@ export interface TrainerWorkoutsInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: TWISearch;
+	trainerId?: string;
+	workoutStatus?: string;
+	search?: TrainerWorkoutsSearch;
 }
-

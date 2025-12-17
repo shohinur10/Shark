@@ -1,13 +1,13 @@
-import { WorkoutCategory, WorkoutDifficulty, WorkoutDuration, WorkoutEquipment, WorkoutStatus } from '../../enums/workout.enum';
+import { WorkoutCategory, WorkoutDifficulty, WorkoutStatus } from '../../enums/workout.enum';
 
 export interface WorkoutUpdate {
 	_id: string;
 	workoutTitle?: string;
 	workoutCategory?: WorkoutCategory;
 	workoutDifficulty?: WorkoutDifficulty;
-	workoutDuration?: WorkoutDuration;
-	workoutEquipment?: WorkoutEquipment[];
-	workoutStatus?: WorkoutStatus;
+	workoutDuration?: string;
+	workoutEquipment?: string[];
+	workoutStatus?: string;
 	workoutDesc?: string;
 	workoutImage?: string;
 	workoutVideo?: string;
@@ -17,4 +17,3 @@ export interface WorkoutUpdate {
 	isPremium?: boolean;
 	deletedAt?: Date;
 }
-

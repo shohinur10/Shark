@@ -2,9 +2,15 @@
 const nextConfig = {
 	reactStrictMode: true,
 	env: {
-		REACT_APP_API_URL: process.env.REACT_APP_API_URL,
-		REACT_APP_API_GRAPHQL_URL: process.env.REACT_APP_API_GRAPHQL_URL,
-		REACT_APP_API_WS: process.env.REACT_APP_API_WS,
+		REACT_APP_API_URL: process.env.REACT_APP_API_URL || process.env.NEXT_PUBLIC_API_URL,
+		REACT_APP_API_GRAPHQL_URL:
+			process.env.REACT_APP_API_GRAPHQL_URL || process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
+		REACT_APP_API_WS: process.env.REACT_APP_API_WS || process.env.NEXT_PUBLIC_API_WS,
+		// Support both naming conventions
+		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_API_URL,
+		NEXT_PUBLIC_API_GRAPHQL_URL:
+			process.env.NEXT_PUBLIC_API_GRAPHQL_URL || process.env.REACT_APP_API_GRAPHQL_URL,
+		NEXT_PUBLIC_API_WS: process.env.NEXT_PUBLIC_API_WS || process.env.REACT_APP_API_WS,
 	},
 };
 

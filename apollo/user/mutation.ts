@@ -6,116 +6,200 @@ import { gql } from '@apollo/client';
 
 export const SIGN_UP = gql`
 	mutation Signup($input: MemberInput!) {
-		signup(input: $input) {
-			_id
-			memberType
-			memberStatus
-			memberAuthType
-			memberPhone
-			memberNick
-			memberFullName
-			memberImage
-			memberAddress
-			memberDesc
-			memberWarnings
-			memberBlocks
-			memberProperties
-			memberRank
-			memberArticles
-			memberPoints
-			memberLikes
-			memberViews
-			deletedAt
-			createdAt
-			updatedAt
-			accessToken
-		}
-	}
+    signup(input: $input) {
+        _id
+        memberType
+        memberStatus
+        memberAuthType
+        memberPhone
+        memberNick
+        memberFullName
+        memberImage
+        memberAddress
+        memberDesc
+        memberProperties
+        memberArticles
+        memberFollowers
+        memberFollowings
+        memberPoints
+        memberLikes
+        memberViews
+        memberComments
+        memberRank
+        memberBlocks
+        memberWarnings
+        deletedAt
+        createdAt
+        updatedAt
+        accessToken
+        memberWorkouts
+        memberChallenges
+        memberAchievements
+        trainerRating
+        subscriptionId
+        trainerBio
+        trainerCertifications
+        trainerSpecialties
+        trainerExperience
+    }
+}
+
 `;
 
 export const LOGIN = gql`
 	mutation Login($input: LoginInput!) {
-		login(input: $input) {
-			_id
-			memberType
-			memberStatus
-			memberAuthType
-			memberPhone
-			memberNick
-			memberFullName
-			memberImage
-			memberAddress
-			memberDesc
-			memberWarnings
-			memberBlocks
-			memberProperties
-			memberRank
-			memberPoints
-			memberLikes
-			memberViews
-			deletedAt
-			createdAt
-			updatedAt
-			accessToken
-		}
-	}
+    login(input: $input) {
+        _id
+        memberType
+        memberStatus
+        memberAuthType
+        memberPhone
+        memberNick
+        memberFullName
+        memberImage
+        memberAddress
+        memberDesc
+        memberProperties
+        memberArticles
+        memberFollowers
+        memberFollowings
+        memberPoints
+        memberLikes
+        memberViews
+        memberComments
+        memberRank
+        memberBlocks
+        memberWarnings
+        deletedAt
+        createdAt
+        updatedAt
+        accessToken
+        meLiked {
+            memberId
+            likeRefId
+            myFavorite
+        }
+        meFollowed {
+            followingId
+            followerId
+            myFollowing
+        }
+        memberWorkouts
+        memberChallenges
+        memberAchievements
+        trainerRating
+        trainerExperience
+        trainerSpecialties
+        trainerCertifications
+        trainerBio
+        subscriptionId
+    }
+}
+
 `;
 
 export const UPDATE_MEMBER = gql`
 	mutation UpdateMember($input: MemberUpdate!) {
-		updateMember(input: $input) {
-			_id
-			memberType
-			memberStatus
-			memberAuthType
-			memberPhone
-			memberNick
-			memberFullName
-			memberImage
-			memberAddress
-			memberDesc
-			memberProperties
-			memberRank
-			memberArticles
-			memberPoints
-			memberLikes
-			memberViews
-			memberWarnings
-			memberBlocks
-			deletedAt
-			createdAt
-			updatedAt
-			accessToken
-		}
-	}
+    updateMember(input: $input) {
+        _id
+        memberType
+        memberStatus
+        memberAuthType
+        memberPhone
+        memberNick
+        memberFullName
+        memberImage
+        memberAddress
+        memberDesc
+        memberProperties
+        memberArticles
+        memberFollowers
+        memberFollowings
+        memberPoints
+        memberLikes
+        memberViews
+        memberComments
+        memberRank
+        memberBlocks
+        memberWarnings
+        memberWorkouts
+        memberChallenges
+        memberAchievements
+        trainerRating
+        trainerExperience
+        trainerSpecialties
+        trainerCertifications
+        trainerBio
+        subscriptionId
+        deletedAt
+        createdAt
+        updatedAt
+        accessToken
+        meLiked {
+            memberId
+            likeRefId
+            myFavorite
+        }
+        meFollowed {
+            followingId
+            followerId
+            myFollowing
+        }
+    }
+}
+
 `;
 
 export const LIKE_TARGET_MEMBER = gql`
-	mutation LikeTargetMember($input: String!) {
-		likeTargetMember(memberId: $input) {
-			_id
-			memberType
-			memberStatus
-			memberAuthType
-			memberPhone
-			memberNick
-			memberFullName
-			memberImage
-			memberAddress
-			memberDesc
-			memberWarnings
-			memberBlocks
-			memberProperties
-			memberRank
-			memberPoints
-			memberLikes
-			memberViews
-			deletedAt
-			createdAt
-			updatedAt
-			accessToken
-		}
-	}
+	mutation LikeTargetMember($memberId:String!) {
+    likeTargetMember(memberId: $memberId) {
+        _id
+        memberType
+        memberStatus
+        memberAuthType
+        memberPhone
+        memberNick
+        memberFullName
+        memberImage
+        memberAddress
+        memberDesc
+        memberProperties
+        memberArticles
+        memberFollowers
+        memberFollowings
+        memberPoints
+        memberLikes
+        memberViews
+        memberComments
+        memberRank
+        memberBlocks
+        memberWarnings
+        memberWorkouts
+        memberChallenges
+        memberAchievements
+        trainerRating
+        trainerExperience
+        trainerSpecialties
+        trainerCertifications
+        trainerBio
+        subscriptionId
+        deletedAt
+        createdAt
+        updatedAt
+        accessToken
+        meLiked {
+            memberId
+            likeRefId
+            myFavorite
+        }
+        meFollowed {
+            followingId
+            followerId
+            myFollowing
+        }
+    }
+}
+
 `;
 
 /**************************
@@ -124,89 +208,216 @@ export const LIKE_TARGET_MEMBER = gql`
 
 export const CREATE_PROPERTY = gql`
 	mutation CreateProperty($input: PropertyInput!) {
-		createProperty(input: $input) {
-			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
-			memberId
-			soldAt
-			deletedAt
-			constructedAt
-			createdAt
-			updatedAt
-		}
-	}
+    createProperty(input: $input) {
+        _id
+        propertyType
+        propertyStatus
+        propertyLocation
+        propertyAddress
+        propertyTitle
+        propertyPrice
+        propertyCapacity
+        propertyEquipmentList
+        propertyAmenities
+        propertyOperatingHours
+        propertyRating
+        propertyViews
+        propertyLikes
+        propertyComments
+        propertyRank
+        propertyImages
+        propertyDesc
+        propertyBarter
+        propertyRent
+        propertyCondition
+        memberId
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
 `;
 
 export const UPDATE_PROPERTY = gql`
-	mutation UpdateProperty($input: PropertyUpdate!) {
-		updateProperty(input: $input) {
-			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
-			memberId
-			soldAt
-			deletedAt
-			constructedAt
-			createdAt
-			updatedAt
-		}
-	}
+mutation UpdateProperty ($input:PropertyUpdate!){
+    updateProperty(input: $input) {
+        _id
+        propertyType
+        propertyStatus
+        propertyLocation
+        propertyAddress
+        propertyTitle
+        propertyPrice
+        priceType
+        womenDiscountPercent
+        childrenDiscountPercent
+        childrenAgeLimit
+        extraClassDiscountPercent
+        perClassPrice
+        propertyCapacity
+        propertyEquipmentList
+        propertyAmenities
+        propertyOperatingHours
+        propertyRating
+        propertyViews
+        propertyLikes
+        propertyComments
+        propertyRank
+        propertyImages
+        propertyDesc
+        propertyRent
+        propertyCondition
+        deletedAt
+        createdAt
+        updatedAt
+        memberId
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
 `;
 
 export const LIKE_TARGET_PROPERTY = gql`
-	mutation LikeTargetProperty($input: String!) {
-		likeTargetProperty(propertyId: $input) {
-			_id
-			propertyType
-			propertyStatus
-			propertyLocation
-			propertyAddress
-			propertyTitle
-			propertyPrice
-			propertySquare
-			propertyBeds
-			propertyRooms
-			propertyViews
-			propertyLikes
-			propertyImages
-			propertyDesc
-			propertyBarter
-			propertyRent
-			memberId
-			soldAt
-			deletedAt
-			constructedAt
-			createdAt
-			updatedAt
-		}
-	}
+	mutation LikeTargetProperty ($input:String!){
+    likeTargetProperty(propertyId: $input) {
+        _id
+        propertyType
+        propertyStatus
+        propertyLocation
+        propertyAddress
+        propertyTitle
+        propertyPrice
+        priceType
+        womenDiscountPercent
+        childrenDiscountPercent
+        childrenAgeLimit
+        extraClassDiscountPercent
+        perClassPrice
+        propertyCapacity
+        propertyEquipmentList
+        propertyAmenities
+        propertyOperatingHours
+        propertyRating
+        propertyViews
+        propertyLikes
+        propertyComments
+        propertyRank
+        propertyImages
+        propertyDesc
+        propertyRent
+        propertyCondition
+        deletedAt
+        createdAt
+        updatedAt
+        memberId
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
 `;
 
 /**************************
@@ -214,21 +425,59 @@ export const LIKE_TARGET_PROPERTY = gql`
  *************************/
 
 export const CREATE_BOARD_ARTICLE = gql`
-	mutation CreateBoardArticle($input: BoardArticleInput!) {
-		createBoardArticle(input: $input) {
-			_id
-			articleCategory
-			articleStatus
-			articleTitle
-			articleContent
-			articleImage
-			articleViews
-			articleLikes
-			memberId
-			createdAt
-			updatedAt
-		}
-	}
+	mutation CreateBoardArticle ($input:BoardArticleInput!){
+    createBoardArticle(input: $input) {
+        _id
+        articleCategory
+        articleStatus
+        articleTitle
+        articleContent
+        articleImage
+        articleViews
+        articleLikes
+        articleComments
+        memberId
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
 `;
 
 export const UPDATE_BOARD_ARTICLE = gql`
@@ -250,21 +499,59 @@ export const UPDATE_BOARD_ARTICLE = gql`
 `;
 
 export const LIKE_TARGET_BOARD_ARTICLE = gql`
-	mutation LikeTargetBoardArticle($input: String!) {
-		likeTargetBoardArticle(articleId: $input) {
-			_id
-			articleCategory
-			articleStatus
-			articleTitle
-			articleContent
-			articleImage
-			articleViews
-			articleLikes
-			memberId
-			createdAt
-			updatedAt
-		}
-	}
+	mutation LikeTargetBoardArticle ($input:String!){
+    likeTargetBoardArticle(articleId: $input) {
+        _id
+        articleCategory
+        articleStatus
+        articleTitle
+        articleContent
+        articleImage
+        articleViews
+        articleLikes
+        articleComments
+        memberId
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
 `;
 
 /**************************
@@ -272,33 +559,107 @@ export const LIKE_TARGET_BOARD_ARTICLE = gql`
  *************************/
 
 export const CREATE_COMMENT = gql`
-	mutation CreateComment($input: CommentInput!) {
-		createComment(input: $input) {
-			_id
-			commentStatus
-			commentGroup
-			commentContent
-			commentRefId
-			memberId
-			createdAt
-			updatedAt
-		}
-	}
+	mutation CreateComment ($input:CommentInput!){
+    createComment(input: $input) {
+        _id
+        commentStatus
+        commentGroup
+        commentContent
+        commentRefId
+        memberId
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
 `;
 
 export const UPDATE_COMMENT = gql`
-	mutation UpdateComment($input: CommentUpdate!) {
-		updateComment(input: $input) {
-			_id
-			commentStatus
-			commentGroup
-			commentContent
-			commentRefId
-			memberId
-			createdAt
-			updatedAt
-		}
-	}
+	mutation UpdateComment ($input:CommentUpdate!){
+    updateComment(input: $input) {
+        _id
+        commentStatus
+        commentGroup
+        commentContent
+        commentRefId
+        memberId
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
 `;
 
 /**************************
@@ -306,25 +667,1838 @@ export const UPDATE_COMMENT = gql`
  *************************/
 
 export const SUBSCRIBE = gql`
-	mutation Subscribe($input: String!) {
-		subscribe(input: $input) {
-			_id
-			followingId
-			followerId
-			createdAt
-			updatedAt
-		}
-	}
+	mutation subscribe ($input:String!){
+    subscribe(input: $input) {
+        _id
+        followingId
+        followerId
+        createdAt
+        updatedAt
+        meLiked {
+            memberId
+            likeRefId
+            myFavorite
+        }
+        meFollowed {
+            followingId
+            followerId
+            myFollowing
+        }
+        followerData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
 `;
 
 export const UNSUBSCRIBE = gql`
-	mutation Unsubscribe($input: String!) {
-		unsubscribe(input: $input) {
-			_id
-			followingId
-			followerId
-			createdAt
-			updatedAt
-		}
-	}
+	mutation Unsubscribe($input:String!) {
+    unsubscribe(input: $input) {
+        _id
+        followingId
+        followerId
+        createdAt
+        updatedAt
+        meLiked {
+            memberId
+            likeRefId
+            myFavorite
+        }
+        meFollowed {
+            followingId
+            followerId
+            myFollowing
+        }
+        followerData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
 `;
+
+export const CREATE_ACHIEVEMENT = gql`
+mutation CreateAchievement($input:AchievementInput!) {
+    createAchievement(input: $input) {
+        _id
+        memberId
+        achievementType
+        achievementStatus
+        achievementTitle
+        achievementDesc
+        achievementBadge
+        targetValue
+        currentValue
+        progressPercentage
+        points
+        challengeId
+        unlockedAt
+        expiresAt
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+
+export const CREATE_GOAL = gql`
+	mutation CreateGoal ($input:GoalInput!){
+    createGoal(input: $input) {
+        _id
+        memberId
+        goalType
+        goalStatus
+        goalTitle
+        goalDesc
+        targetValue
+        currentValue
+        unit
+        startDate
+        targetDate
+        achievedAt
+        progressPercentage
+        createdAt
+        updatedAt
+        milestones {
+            value
+            achieved
+            achievedAt
+        }
+    }
+}
+`;
+
+export const CREATE_FAQ = gql`
+	mutation CreateFaq ($input:FaqInput!){
+    createFaq(input: $input) {
+        _id
+        faqCategory
+        faqStatus
+        question
+        answer
+        keywords
+        relatedWorkouts
+        relatedMealPlans
+        viewCount
+        helpfulCount
+        notHelpfulCount
+        createdBy
+        displayOrder
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+export const MARK_FAQ_HELPFUL = gql`
+	mutation MarkFaqHelpful($faqId: String!, $helpful: Boolean!) {
+	markFaqHelpful(faqId: $faqId, helpful: $helpful) {
+	  _id
+	  faqCategory
+	  faqStatus
+	  question
+	  answer
+	  keywords
+	  relatedWorkouts
+	  relatedMealPlans
+	  viewCount
+	  helpfulCount
+	  notHelpfulCount
+	  createdBy
+	  displayOrder
+	  createdAt
+	  updatedAt
+	}
+  }
+  
+`;
+
+export const CREATE_EXERCISE = gql`
+	mutation CreateExercise ($input: ExerciseInput!){
+    createExercise(input: $input) {
+        _id
+        exerciseName
+        exerciseType
+        exerciseStatus
+        targetMuscles
+        secondaryMuscles
+        exerciseDesc
+        exerciseInstructions
+        exerciseEquipment
+        exerciseImage
+        exerciseVideo
+        exerciseGif
+        exerciseDifficulty
+        exerciseViews
+        exerciseLikes
+        exerciseRating
+        exerciseTips
+        exerciseWarnings
+        commonMistakes
+        createdBy
+        exerciseTags
+        deletedAt
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+
+export const UPDATE_EXERCISE = gql`
+	mutation UpdateExercise ($input: ExerciseUpdate!){
+    updateExercise(input: $input) {
+        _id
+        exerciseName
+        exerciseType
+        exerciseStatus
+        targetMuscles
+        secondaryMuscles
+        exerciseDesc
+        exerciseInstructions
+        exerciseEquipment
+        exerciseImage
+        exerciseVideo
+        exerciseGif
+        exerciseDifficulty
+        exerciseViews
+        exerciseLikes
+        exerciseRating
+        exerciseTips
+        exerciseWarnings
+        commonMistakes
+        createdBy
+        exerciseTags
+        deletedAt
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
+`;
+
+export const CREATE_MEAL_PLAN = gql`
+	mutation CreateMealPlan ($input:MealPlanInput!){
+    createMealPlan(input: $input) {
+        _id
+        mealPlanTitle
+        mealPlanStatus
+        mealPlanDesc
+        nutritionGoal
+        dietaryPreference
+        duration
+        calorieTarget
+        createdBy
+        mealPlanViews
+        mealPlanLikes
+        mealPlanRating
+        mealPlanFollowers
+        isPremium
+        price
+        deletedAt
+        createdAt
+        updatedAt
+        macros {
+            protein
+            carbs
+            fats
+        }
+        meals {
+            day
+            mealType
+            mealName
+            ingredients
+            instructions
+            calories
+            protein
+            carbs
+            fats
+            imageUrl
+        }
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+export const CREATE_PROGRESS = gql`
+	mutation CreateProgress($input:ProgressInput!) {
+    createProgress(input: $input) {
+        _id
+        memberId
+        progressType
+        value
+        unit
+        photoUrl
+        workoutId
+        exerciseId
+        notes
+        measurementDate
+        createdAt
+        updatedAt
+        bodyMeasurements {
+            chest
+            waist
+            hips
+            biceps
+            thighs
+            calves
+        }
+    }
+}
+`;
+
+export const CREATE_PAYMENT = gql`
+	mutation CreatePayment ($input:PaymentInput!){
+    createPayment(input: $input) {
+        _id
+        memberId
+        transactionType
+        paymentStatus
+        paymentMethod
+        amount
+        currency
+        subscriptionId
+        bookingId
+        propertyId
+        mealPlanId
+        stripePaymentId
+        paypalTransactionId
+        receiptUrl
+        invoiceNumber
+        refundAmount
+        refundReason
+        refundedAt
+        description
+        paidAt
+        failedAt
+        failureReason
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
+export const UPDATE_PAYMENT_DUPLICATE = gql`
+	mutation UpdatePayment ($input:PaymentInput!){
+    createPayment(input: $input) {
+        _id
+        memberId
+        transactionType
+        paymentStatus
+        paymentMethod
+        amount
+        currency
+        subscriptionId
+        bookingId
+        propertyId
+        mealPlanId
+        stripePaymentId
+        paypalTransactionId
+        receiptUrl
+        invoiceNumber
+        refundAmount
+        refundReason
+        refundedAt
+        description
+        paidAt
+        failedAt
+        failureReason
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
+export const UPDATE_PAYMENT = gql`
+	mutation UpdatePayment ($input:PaymentUpdate!){
+    updatePayment(input: $input) {
+        _id
+        memberId
+        transactionType
+        paymentStatus
+        paymentMethod
+        amount
+        currency
+        subscriptionId
+        bookingId
+        propertyId
+        mealPlanId
+        stripePaymentId
+        paypalTransactionId
+        receiptUrl
+        invoiceNumber
+        refundAmount
+        refundReason
+        refundedAt
+        description
+        paidAt
+        failedAt
+        failureReason
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+export const CREATE_CHALLENGE = gql`
+	mutation CreateChallenge($input:ChallengeInput!) {
+    createChallenge(input: $input) {
+        _id
+        challengeTitle
+        challengeType
+        challengeStatus
+        challengeDifficulty
+        challengeDesc
+        challengeImage
+        targetValue
+        targetUnit
+        startDate
+        endDate
+        createdBy
+        participantCount
+        completionCount
+        rewardBadge
+        rewardPoints
+        isCommunity
+        challengeRules
+        deletedAt
+        createdAt
+        updatedAt
+        participants {
+            memberId
+            joinedAt
+            currentProgress
+            completed
+            completedAt
+        }
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
+
+`;
+
+export const JOIN_CHALLENGE = gql`
+	mutation JoinChallenge($input:String!) {
+    joinChallenge(challengeId: $input) {
+        _id
+        challengeTitle
+        challengeType
+        challengeStatus
+        challengeDifficulty
+        challengeDesc
+        challengeImage
+        targetValue
+        targetUnit
+        startDate
+        endDate
+        createdBy
+        participantCount
+        completionCount
+        rewardBadge
+        rewardPoints
+        isCommunity
+        challengeRules
+        deletedAt
+        createdAt
+        updatedAt
+        participants {
+            memberId
+            joinedAt
+            currentProgress
+            completed
+            completedAt
+        }
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
+`;
+
+export const RECORD_VIEW = gql`
+	mutation RecordView ($input:ViewInput!){
+    recordView(input: $input)
+}
+
+`;
+
+
+export const CREATE_WORKOUT = gql`
+	mutation CreateWorkout ($input:WorkoutInput!){
+    createWorkout(input: $input) {
+        _id
+        workoutTitle
+        workoutCategory
+        workoutDifficulty
+        workoutDuration
+        workoutEquipment
+        workoutStatus
+        workoutDesc
+        workoutImage
+        workoutVideo
+        workoutExercises
+        workoutCaloriesBurn
+        workoutViews
+        workoutLikes
+        workoutComments
+        workoutRating
+        workoutCompletions
+        workoutRank
+        createdBy
+        workoutTags
+        isPremium
+        deletedAt
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+export const UPDATE_WORKOUT = gql`
+	mutation UpdateWorkout($input:WorkoutUpdate!) {
+    updateWorkout(input: $input) {
+        _id
+        workoutTitle
+        workoutCategory
+        workoutDifficulty
+        workoutDuration
+        workoutEquipment
+        workoutStatus
+        workoutDesc
+        workoutImage
+        workoutVideo
+        workoutExercises
+        workoutCaloriesBurn
+        workoutViews
+        workoutLikes
+        workoutComments
+        workoutRating
+        workoutCompletions
+        workoutRank
+        createdBy
+        workoutTags
+        isPremium
+        deletedAt
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+export const LIKE_TARGET_WORKOUT = gql`
+	mutation LikeTargetWorkout($input:String!) {
+    likeTargetWorkout(workoutId: $input) {
+        _id
+        workoutTitle
+        workoutCategory
+        workoutDifficulty
+        workoutDuration
+        workoutEquipment
+        workoutStatus
+        workoutDesc
+        workoutImage
+        workoutVideo
+        workoutExercises
+        workoutCaloriesBurn
+        workoutViews
+        workoutLikes
+        workoutComments
+        workoutRating
+        workoutCompletions
+        workoutRank
+        createdBy
+        workoutTags
+        isPremium
+        deletedAt
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+
+export const CREATE_SUBSCRIPTION = gql`
+	mutation CreateSubscription($input:SubscriptionInput!) {
+    createSubscription(input:$input) {
+        _id
+        memberId
+        subscriptionPlan
+        subscriptionPeriod
+        subscriptionStatus
+        subscriptionDiscount
+        basePrice
+        discountPercentage
+        finalPrice
+        startDate
+        endDate
+        trialEndDate
+        cancelledAt
+        lastPaymentDate
+        nextPaymentDate
+        autoRenewal
+        paymentMethodId
+        subscriptionNotes
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
+`;
+
+
+export const SUBSCRIBE_DUPLICATE = gql`
+	mutation subscribe ($input:String!){
+    subscribe(input: $input) {
+        _id
+        followingId
+        followerId
+        createdAt
+        updatedAt
+        meLiked {
+            memberId
+            likeRefId
+            myFavorite
+        }
+        meFollowed {
+            followingId
+            followerId
+            myFollowing
+        }
+        followerData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+export const CANCEL_SUBSCRIPTION = gql`
+	mutation CancelSubscription ($input:String!){
+    cancelSubscription(subscriptionId: $input) { 
+        _id
+        memberId
+        subscriptionPlan
+        subscriptionPeriod
+        subscriptionStatus
+        subscriptionDiscount
+        basePrice
+        discountPercentage
+        finalPrice
+        startDate
+        endDate
+        trialEndDate
+        cancelledAt
+        lastPaymentDate
+        nextPaymentDate
+        autoRenewal
+        paymentMethodId
+        subscriptionNotes
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+
+
+export const UPDATE_SUBSCRIPTION = gql`
+	mutation UpdateSubscription($input:SubscriptionUpdate!) {
+    updateSubscription(input: $input) {
+        _id
+        memberId
+        subscriptionPlan
+        subscriptionPeriod
+        subscriptionStatus
+        subscriptionDiscount
+        basePrice
+        discountPercentage
+        finalPrice
+        startDate
+        endDate
+        trialEndDate
+        cancelledAt
+        lastPaymentDate
+        nextPaymentDate
+        autoRenewal
+        paymentMethodId
+        subscriptionNotes
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+
+export const CREATE_BOOKING = gql`
+	mutation CreateBooking ($input: BookingInput!){ 
+    createBooking(input: $input) {
+        _id
+        bookingType
+        bookingStatus
+        clientId
+        providerId
+        propertyId
+        bookingDate
+        bookingTime
+        sessionDuration
+        bookingPrice
+        paymentId
+        bookingNotes
+        providerNotes
+        meetingLink
+        cancellationReason
+        cancelledBy
+        cancelledAt
+        completedAt
+        reviewId
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+	`;
+
+
+export const UPDATE_BOOKING = gql`
+	mutation UpdateBooking ($input: BookingUpdate!){ 
+    updateBooking(input: $input) {
+        _id
+        bookingType
+        bookingStatus
+        clientId
+        providerId
+        propertyId
+        bookingDate
+        bookingTime
+        sessionDuration
+        bookingPrice
+        paymentId
+        bookingNotes
+        providerNotes
+        meetingLink
+        cancellationReason
+        cancelledBy
+        cancelledAt
+        completedAt
+        reviewId
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+
+
+export const CREATE_REVIEW = gql`
+	mutation CreateReview ($input:ReviewInput!){
+    createReview(input: $input) {
+        _id
+        reviewGroup
+        reviewStatus
+        reviewerId
+        propertyId
+        trainerId
+        workoutId
+        mealPlanId
+        bookingId
+        rating
+        reviewTitle
+        reviewContent
+        reviewImages
+        helpfulCount
+        notHelpfulCount
+        flaggedCount
+        flagReason
+        moderatedBy
+        moderatedAt
+        deletedAt
+        createdAt
+        updatedAt
+        response {
+            responderId
+            responseText
+            respondedAt
+        }
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+	
+`;
+
+
+export const UPDATE_REVIEW = gql`
+	mutation UpdateReview ($input:ReviewUpdate!){ 
+    updateReview(input: $input) {
+        _id
+        reviewGroup
+        reviewStatus
+        reviewerId
+        propertyId
+        trainerId
+        workoutId
+        mealPlanId
+        bookingId
+        rating
+        reviewTitle
+        reviewContent
+        reviewImages
+        helpfulCount
+        notHelpfulCount
+        flaggedCount
+        flagReason
+        moderatedBy
+        moderatedAt
+        deletedAt
+        createdAt
+        updatedAt
+        response {
+            responderId
+            responseText
+            respondedAt
+        }
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+
+
+export const DELETE_REVIEW = gql`
+	mutation DeleteReview($input:String!) { 
+    deleteReview(reviewId: $input) {
+        _id
+        reviewGroup
+        reviewStatus
+        reviewerId
+        propertyId
+        trainerId
+        workoutId
+        mealPlanId
+        bookingId
+        rating
+        reviewTitle
+        reviewContent
+        reviewImages
+        helpfulCount
+        notHelpfulCount
+        flaggedCount
+        flagReason
+        moderatedBy
+        moderatedAt
+        deletedAt
+        createdAt
+        updatedAt
+        response {
+            responderId
+            responseText
+            respondedAt
+        }
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+} 
+	`;
+
+export const CREATE_INQUIRY = gql`
+	mutation CreateInquiry ($input:InquiryInput!){
+    createInquiry(input: $input) {
+        _id
+        userId
+        inquiryCategory
+        inquiryStatus
+        inquiryPriority
+        subject
+        question
+        aiResponse
+        aiConfidence
+        wasAiHelpful
+        suggestedFaqs
+        humanResponse
+        respondedBy
+        respondedAt
+        resolvedAt
+        closedAt
+        createdAt
+        updatedAt
+        conversation {
+            sender
+            message
+            isAI
+            timestamp
+        }
+    }
+}
+`;
+
+export const RESPOND_TO_INQUIRY = gql`
+	mutation RespondToInquiry ($input:RespondToInquiryInput!){
+    respondToInquiry(input: $input) {
+        _id
+        userId
+        inquiryCategory
+        inquiryStatus
+        inquiryPriority
+        subject
+        question
+        aiResponse
+        aiConfidence
+        wasAiHelpful
+        suggestedFaqs
+        humanResponse
+        respondedBy
+        respondedAt
+        resolvedAt
+        closedAt
+        createdAt
+        updatedAt
+        conversation {
+            sender
+            message
+            isAI
+            timestamp
+        }
+    }
+}
+
+`;
+
+export const RESOLVE_INQUIRY = gql`
+	mutation ResolveInquiry($input:String!) { 
+    resolveInquiry(inquiryId: $input) {
+        _id
+        userId
+        inquiryCategory
+        inquiryStatus
+        inquiryPriority
+        subject
+        question
+        aiResponse
+        aiConfidence
+        wasAiHelpful
+        suggestedFaqs
+        humanResponse
+        respondedBy
+        respondedAt
+        resolvedAt
+        closedAt
+        createdAt
+        updatedAt
+        conversation {
+            sender
+            message
+            isAI
+            timestamp
+        }
+    }
+}
+
+`;
+
+
+
+
+
+
+export const UPDATE_BOARD_ARTICLE_DUPLICATE = gql`
+	mutation UpdateBoardArticle ($input:BoardArticleUpdate!){
+    updateBoardArticle(input: $input) {
+        _id
+        articleCategory
+        articleStatus
+        articleTitle
+        articleContent
+        articleImage
+        articleViews
+        articleLikes
+        articleComments
+        memberId
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+
+export const UPDATE_GOAL = gql`
+mutation UpdateGoal($input:GoalUpdate!) {
+    updateGoal(input: $input) {
+        _id
+        memberId
+        goalType
+        goalStatus
+        goalTitle
+        goalDesc
+        targetValue
+        currentValue
+        unit
+        startDate
+        targetDate
+        achievedAt
+        progressPercentage
+        createdAt
+        updatedAt
+        milestones {
+            value
+            achieved
+            achievedAt
+        }
+    }
+}
+`;
+
+
+export const DELETE_GOAL = gql`
+mutation DeleteGoal ($input:String!){
+    deleteGoal(goalId: $input) {
+        _id
+        memberId
+        goalType
+        goalStatus
+        goalTitle
+        goalDesc
+        targetValue
+        currentValue
+        unit
+        startDate
+        targetDate
+        achievedAt
+        progressPercentage
+        createdAt
+        updatedAt
+        milestones {
+            value
+            achieved
+            achievedAt
+        }
+    }
+}
+`;
+
+
+export const DELETE_PROGRESS = gql`
+mutation DeleteProgress($input:String!) {
+    deleteProgress(progressId: $input) {
+        _id
+        memberId
+        progressType
+        value
+        unit
+        photoUrl
+        workoutId
+        exerciseId
+        notes
+        measurementDate
+        createdAt
+        updatedAt
+        bodyMeasurements {
+            chest
+            waist
+            hips
+            biceps
+            thighs
+            calves
+        }
+    }
+}
+`;
+
+
+
+export const CANCEL_BOOKING = gql`
+mutation CancelBooking($input:String!) {
+    cancelBooking(bookingId: $input) {
+        _id
+        bookingType
+        bookingStatus
+        clientId
+        providerId
+        propertyId
+        bookingDate
+        bookingTime
+        sessionDuration
+        bookingPrice
+        paymentId
+        bookingNotes
+        providerNotes
+        meetingLink
+        cancellationReason
+        cancelledBy
+        cancelledAt
+        completedAt
+        reviewId
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+
+export const UPDATE_BOOKING_DUPLICATE = gql`
+mutation UpdateBooking ($input:BookingUpdate!){
+    updateBooking(input: $input) {
+        _id
+        bookingType
+        bookingStatus
+        clientId
+        providerId
+        propertyId
+        bookingDate
+        bookingTime
+        sessionDuration
+        bookingPrice
+        paymentId
+        bookingNotes
+        providerNotes
+        meetingLink
+        cancellationReason
+        cancelledBy
+        cancelledAt
+        completedAt
+        reviewId
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+

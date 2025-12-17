@@ -825,33 +825,65 @@ body::-webkit-scrollbar {
 
 	#footer {
 		position: relative;
-		padding: 60px 0px 18px 0px;
+		width: 100vw;
 		width: 100%;
-		height: auto;
-		display: flex;
-		flex-direction: row;
+		margin: 0;
+		padding: 0;
+		left: 0;
+		right: 0;
 		background: #181a20;
+		overflow-x: hidden;
+		
 		.footer-container {
-			width: 1300px;
+			max-width: $container-lg;
+			width: 100%;
 			height: auto;
 			margin: 0 auto;
+			padding: 60px $spacing-lg 18px;
+			box-sizing: border-box;
+			
+			@media (max-width: $breakpoint-lg) {
+				max-width: 100%;
+				padding: 60px $spacing-md 18px;
+			}
+			
+			@media (max-width: $breakpoint-md) {
+				padding: 50px $spacing-md 18px;
+			}
+			
 			.main {
-				display: flex;
-				flex-direction: row;
-				justify-content: space-between;
+				display: grid;
+				grid-template-columns: 1fr 1.5fr;
+				gap: 60px;
+				width: 100%;
+				
+				@media (max-width: $breakpoint-md) {
+					grid-template-columns: 1fr;
+					gap: 40px;
+				}
+				
 				.left {
-					height: 360px;
 					display: flex;
 					flex-direction: column;
 					justify-content: space-between;
+					min-height: 360px;
+					
+					@media (max-width: $breakpoint-md) {
+						min-height: auto;
+						gap: 30px;
+					}
+					
 					.footer-box {
 						display: flex;
 						flex-direction: column;
+						
 						.logo {
 							width: 128px;
 							height: 52px;
 							cursor: pointer;
+							object-fit: contain;
 						}
+						
 						span {
 							color: #bebdbd;
 							font-family: $font;
@@ -860,6 +892,7 @@ body::-webkit-scrollbar {
 							font-weight: 400;
 							text-transform: capitalize;
 						}
+						
 						p {
 							color: #fff;
 							font-family: $font;
@@ -869,23 +902,36 @@ body::-webkit-scrollbar {
 							line-height: normal;
 							text-transform: capitalize;
 						}
+						
 						.media-box {
 							margin-top: 12px;
 							color: #929495;
+							display: flex;
+							flex-direction: row;
+							align-items: center;
+							gap: 22px;
+							
 							svg {
 								font-size: 32px;
-								margin-right: 22px;
 								cursor: pointer;
+								transition: color $transition-base;
+								
+								&:hover {
+									color: #fff;
+								}
 							}
 						}
 					}
 				}
+				
 				.right {
 					display: flex;
 					flex-direction: column;
+					
 					.top {
 						display: flex;
 						flex-direction: column;
+						
 						strong {
 							color: #fff;
 							font-family: $font;
@@ -895,10 +941,12 @@ body::-webkit-scrollbar {
 							line-height: normal;
 							text-transform: capitalize;
 						}
+						
 						div {
 							padding: 20px 30px;
 							margin-top: 20px;
-							width: 667px;
+							width: 100%;
+							max-width: 667px;
 							height: 70px;
 							display: flex;
 							flex-direction: row;
@@ -906,9 +954,16 @@ body::-webkit-scrollbar {
 							box-sizing: border-box;
 							border-radius: 12px;
 							background: #212329;
+							
+							@media (max-width: $breakpoint-md) {
+								max-width: 100%;
+								height: auto;
+								padding: 15px 20px;
+							}
+							
 							input {
 								margin-right: 10px;
-								width: 85%;
+								flex: 1;
 								border: none;
 								outline: none;
 								color: #fff;
@@ -918,7 +973,12 @@ body::-webkit-scrollbar {
 								font-weight: 400;
 								line-height: 26px;
 								background: none;
+								
+								&::placeholder {
+									color: #bebdbd;
+								}
 							}
+							
 							span {
 								color: #fff;
 								font-family: $font;
@@ -927,17 +987,32 @@ body::-webkit-scrollbar {
 								font-weight: 600;
 								line-height: normal;
 								cursor: pointer;
+								white-space: nowrap;
 							}
 						}
 					}
+					
 					.bottom {
 						margin-top: 60px;
-						display: flex;
-						flex-direction: row;
-						justify-content: space-between;
+						display: grid;
+						grid-template-columns: repeat(3, 1fr);
+						gap: 40px;
+						
+						@media (max-width: $breakpoint-md) {
+							grid-template-columns: repeat(2, 1fr);
+							gap: 30px;
+							margin-top: 40px;
+						}
+						
+						@media (max-width: $breakpoint-sm) {
+							grid-template-columns: 1fr;
+							gap: 30px;
+						}
+						
 						div {
 							display: flex;
 							flex-direction: column;
+							
 							strong {
 								margin-bottom: 3px;
 								color: #fff;
@@ -948,6 +1023,7 @@ body::-webkit-scrollbar {
 								line-height: normal;
 								text-transform: capitalize;
 							}
+							
 							span {
 								margin-top: 25px;
 								color: #bebdbd;
@@ -956,6 +1032,8 @@ body::-webkit-scrollbar {
 								font-style: normal;
 								font-weight: 400;
 								cursor: pointer;
+								transition: color $transition-base;
+								
 								&:hover {
 									color: #ffffff;
 									text-decoration-line: underline;
@@ -965,14 +1043,27 @@ body::-webkit-scrollbar {
 					}
 				}
 			}
+			
 			.second {
 				margin-top: 60px;
-				height: 45px;
+				padding-top: 18px;
+				height: auto;
+				min-height: 45px;
 				border-top: 1px solid #212329;
 				display: flex;
 				flex-direction: row;
 				justify-content: space-between;
-				align-items: flex-end;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 20px;
+				
+				@media (max-width: $breakpoint-md) {
+					margin-top: 40px;
+					flex-direction: column;
+					align-items: flex-start;
+					gap: 15px;
+				}
+				
 				span {
 					color: #bebdbd;
 					font-family: $font;

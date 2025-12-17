@@ -11,18 +11,12 @@ export interface MemberUpdate {
 	memberImage?: string;
 	memberAddress?: string;
 	memberDesc?: string;
-	deletedAt?: Date;
-}
-
-export interface AdminMemberUpdate {
-	_id: string;
-	memberType?: MemberType;
-	memberStatus?: MemberStatus;
-	memberPhone?: string;
-	memberNick?: string;
-	memberFullName?: string;
-	memberImage?: string;
-	memberAddress?: string;
-	memberDesc?: string;
+	memberWorkouts?: string[];
+	memberChallenges?: string[];
+	memberAchievements?: string[];
+	trainerExperience?: string;
+	trainerSpecialties?: string[];
+	trainerBio?: string;
+	subscriptionId?: string;
 	deletedAt?: Date;
 }

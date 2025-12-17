@@ -5,21 +5,22 @@ export interface BoardArticleInput {
 	articleCategory: BoardArticleCategory;
 	articleTitle: string;
 	articleContent: string;
-	articleImage: string;
+	articleImage?: string;
 	memberId?: string;
 }
 
 interface BAISearch {
-	articleCategory: BoardArticleCategory;
+	articleCategory?: BoardArticleCategory;
 	text?: string;
+	memberId?: string;
 }
 
 export interface BoardArticlesInquiry {
-	page: number;
-	limit: number;
+	page?: number;
+	limit?: number;
 	sort?: string;
 	direction?: Direction;
-	search: BAISearch;
+	search?: BAISearch;
 }
 
 interface ABAISearch {

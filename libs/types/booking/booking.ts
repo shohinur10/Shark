@@ -4,32 +4,31 @@ import { TotalCounter } from '../property/property';
 
 export interface Booking {
 	_id: string;
-    bookingType: BookingType;
-    bookingStatus: BookingStatus;
+	bookingType: BookingType;
+	bookingStatus: BookingStatus;
 	clientId: string;
 	providerId: string;
 	propertyId?: string;
-    bookingDate: Date;
-    bookingTime: string;
-    sessionDuration: SessionDuration;
-    bookingPrice: number;
+	bookingDate: Date;
+	bookingTime: string;
+	sessionDuration: SessionDuration;
+	bookingPrice: number;
 	paymentId?: string;
-    bookingNotes?: string;
-    providerNotes?: string;
-    meetingLink?: string;
-    cancellationReason?: string;
+	bookingNotes?: string;
+	providerNotes?: string;
+	meetingLink?: string;
+	cancellationReason?: string;
 	cancelledBy?: string;
-    cancelledAt?: Date;
-    completedAt?: Date;
+	cancelledAt?: Date;
+	completedAt?: Date;
 	reviewId?: string;
-    createdAt: Date;
-    updatedAt: Date;
-	/** from aggregation **/
-    memberData?: Member;
+	createdAt: Date;
+	updatedAt: Date;
+	/** from aggregation */
+	memberData?: Member;
 }
 
 export interface Bookings {
 	list: Booking[];
 	metaCounter: TotalCounter[];
 }
-

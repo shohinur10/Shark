@@ -36,6 +36,7 @@ export interface Inquiries {
 	metaCounter: TotalCounter[];
 }
 
+// Smart response object
 export interface SmartResponse {
 	answer: string;
 	confidence: number;

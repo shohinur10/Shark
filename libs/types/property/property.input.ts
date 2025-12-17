@@ -3,31 +3,45 @@ import { Direction } from '../../enums/common.enum';
 
 export interface PropertyInput {
 	propertyType: PropertyType;
+	propertyStatus?: PropertyStatus;
 	propertyLocation: PropertyLocation;
 	propertyAddress: string;
 	propertyTitle: string;
 	propertyPrice: number;
-	propertySquare: number;
-	propertyBeds: number;
-	propertyRooms: number;
-	propertyImages: string[];
+	priceType?: string;
+	womenDiscountPercent?: number;
+	childrenDiscountPercent?: number;
+	childrenAgeLimit?: number;
+	extraClassDiscountPercent?: number;
+	perClassPrice?: number;
+	propertyCapacity?: number;
+	propertyEquipmentList?: string[];
+	propertyAmenities?: string[];
+	propertyOperatingHours?: string;
+	propertyCondition?: string;
+	propertyImages?: string[];
 	propertyDesc?: string;
-	propertyBarter?: boolean;
 	propertyRent?: boolean;
 	memberId?: string;
-	constructedAt?: Date;
+}
+
+export interface PricesRange {
+	start: number;
+	end: number;
+}
+
+export interface PeriodsRange {
+	start: Date;
+	end: Date;
 }
 
 interface PISearch {
 	memberId?: string;
 	locationList?: PropertyLocation[];
 	typeList?: PropertyType[];
-	roomsList?: Number[];
 	options?: string[];
-	bedsList?: Number[];
-	pricesRange?: Range;
+	pricesRange?: PricesRange;
 	periodsRange?: PeriodsRange;
-	squaresRange?: Range;
 	text?: string;
 }
 
@@ -43,12 +57,12 @@ interface APISearch {
 	propertyStatus?: PropertyStatus;
 }
 
-export interface AgentPropertiesInquiry {
+export interface MyPropertiesInquiry {
 	page: number;
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: APISearch;
+	search?: APISearch;
 }
 
 interface ALPISearch {
@@ -61,15 +75,12 @@ export interface AllPropertiesInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: ALPISearch;
+	search?: ALPISearch;
 }
 
-interface Range {
-	start: number;
-	end: number;
-}
-
-interface PeriodsRange {
-	start: Date | number;
-	end: Date | number;
+export interface OrdinaryInquiry {
+	page: number;
+	limit: number;
+	sort?: string;
+	direction?: Direction;
 }

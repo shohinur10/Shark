@@ -1,3 +1,5 @@
+import { Direction } from '../../enums/common.enum';
+
 interface FollowSearch {
 	followingId?: string;
 	followerId?: string;

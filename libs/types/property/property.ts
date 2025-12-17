@@ -19,25 +19,30 @@ export interface Property {
 	propertyAddress: string;
 	propertyTitle: string;
 	propertyPrice: number;
-	propertySquare: number;
-	propertyBeds: number;
-	propertyRooms: number;
+	priceType?: string;
+	womenDiscountPercent?: number;
+	childrenDiscountPercent?: number;
+	childrenAgeLimit?: number;
+	extraClassDiscountPercent?: number;
+	perClassPrice?: number;
+	propertyCapacity?: number;
+	propertyEquipmentList?: string[];
+	propertyAmenities?: string[];
+	propertyOperatingHours?: string;
+	propertyRating?: number;
 	propertyViews: number;
 	propertyLikes: number;
 	propertyComments: number;
 	propertyRank: number;
-	propertyImages: string[];
+	propertyImages?: string[];
 	propertyDesc?: string;
-	propertyBarter: boolean;
 	propertyRent: boolean;
-	memberId: string;
-	soldAt?: Date;
+	propertyCondition?: string;
 	deletedAt?: Date;
-	constructedAt?: Date;
 	createdAt: Date;
-	updatedAt: Date;
-	/** from aggregation **/
-	meLiked?: MeLiked[];
+	updatedAt?: Date;
+	memberId: string;
+	/** from aggregation */
 	memberData?: Member;
 }
 

@@ -2,18 +2,18 @@ import { Direction } from '../../enums/common.enum';
 import { MeasurementUnit, ProgressType } from '../../enums/progress.enum';
 
 export interface BodyMeasurementsInput {
-    chest?: number;
-    waist?: number;
-    hips?: number;
-    biceps?: number;
-    thighs?: number;
-    calves?: number;
+	chest?: number;
+	waist?: number;
+	hips?: number;
+	biceps?: number;
+	thighs?: number;
+	calves?: number;
 }
 
 export interface ProgressInput {
 	progressType: ProgressType;
 	value: number;
-	unit: MeasurementUnit;
+	unit: string;
 	photoUrl?: string;
 	workoutId?: string;
 	exerciseId?: string;
@@ -23,7 +23,7 @@ export interface ProgressInput {
 	memberId?: string;
 }
 
-interface PISearch {
+export interface ProgressSearch {
 	progressType?: ProgressType;
 }
 
@@ -32,5 +32,7 @@ export interface ProgressesInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: PISearch;
+	memberId?: string;
+	progressType?: ProgressType;
+	search?: ProgressSearch;
 }

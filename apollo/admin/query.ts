@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
  *************************/
 
 export const GET_ALL_MEMBERS_BY_ADMIN = gql`
-	query GetAllMembersByAdmin($input: MembersInquiry!) {
+	query GetAllMembersByAdmin($input:MembersInquiry!) {
     getAllMembersByAdmin(input: $input) {
         list {
             _id
@@ -29,26 +29,26 @@ export const GET_ALL_MEMBERS_BY_ADMIN = gql`
             memberRank
             memberBlocks
             memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
             deletedAt
             createdAt
             updatedAt
             accessToken
-            meLiked {
-                memberId
-                likeRefId
-                myFavorite
-            }
-            meFollowed {
-                followingId
-                followerId
-                myFollowing
-            }
         }
         metaCounter {
             total
         }
     }
 }
+
 
 `;
 
@@ -57,7 +57,7 @@ export const GET_ALL_MEMBERS_BY_ADMIN = gql`
  *************************/
 
 export const GET_ALL_PROPERTIES_BY_ADMIN = gql`
-		query GetAllPropertiesByAdmin($input: AllPropertiesInquiry!) {
+	query GetAllPropertiesByAdmin($input:AllPropertiesInquiry! ){
     getAllPropertiesByAdmin(input: $input) {
         list {
             _id
@@ -67,66 +67,36 @@ export const GET_ALL_PROPERTIES_BY_ADMIN = gql`
             propertyAddress
             propertyTitle
             propertyPrice
-            propertySquare
-            propertyBeds
-            propertyRooms
+            priceType
+            womenDiscountPercent
+            childrenDiscountPercent
+            childrenAgeLimit
+            extraClassDiscountPercent
+            perClassPrice
+            propertyCapacity
+            propertyEquipmentList
+            propertyAmenities
+            propertyOperatingHours
+            propertyRating
             propertyViews
             propertyLikes
             propertyComments
             propertyRank
             propertyImages
             propertyDesc
-            propertyBarter
             propertyRent
-            memberId
-            soldAt
+            propertyCondition
             deletedAt
-            constructedAt
             createdAt
             updatedAt
-            memberData {
-                _id
-                memberType
-                memberStatus
-                memberAuthType
-                memberPhone
-                memberNick
-                memberFullName
-                memberImage
-                memberAddress
-                memberDesc
-                memberProperties
-                memberArticles
-                memberFollowers
-                memberFollowings
-                memberPoints
-                memberLikes
-                memberViews
-                memberComments
-                memberRank
-                memberBlocks
-                memberWarnings
-                deletedAt
-                createdAt
-                updatedAt
-                accessToken
-                meLiked {
-                    memberId
-                    likeRefId
-                    myFavorite
-                }
-                meFollowed {
-                    followingId
-                    followerId
-                    myFollowing
-                }
-            }
+            memberId
         }
         metaCounter {
             total
         }
     }
 }
+
 
 `;
 
@@ -150,37 +120,46 @@ export const GET_ALL_BOARD_ARTICLES_BY_ADMIN = gql`
             memberId
             createdAt
             updatedAt
-            memberData {
-                _id
-                memberType
-                memberStatus
-                memberAuthType
-                memberPhone
-                memberNick
-                memberFullName
-                memberImage
-                memberAddress
-                memberDesc
-                memberProperties
-                memberArticles
-                memberFollowers
-                memberFollowings
-                memberPoints
-                memberLikes
-                memberViews
-                memberComments
-                memberRank
-                memberBlocks
-                memberWarnings
-                deletedAt
-                createdAt
-                updatedAt
-                accessToken
-            }
         }
         metaCounter {
             total
         }
     }
 }
+
+`;
+
+
+
+export const GET_SUBSCRIPTIONS_BY_ADMIN = gql`
+	query GetSubscriptionsByAdmin($input:SubscriptionsInquiry!) {
+    getSubscriptionsByAdmin(input: $input) {
+        list {
+            _id
+            memberId
+            subscriptionPlan
+            subscriptionPeriod
+            subscriptionStatus
+            subscriptionDiscount
+            basePrice
+            discountPercentage
+            finalPrice
+            startDate
+            endDate
+            trialEndDate
+            cancelledAt
+            lastPaymentDate
+            nextPaymentDate
+            autoRenewal
+            paymentMethodId
+            subscriptionNotes
+            createdAt
+            updatedAt
+        }
+        metaCounter {
+            total
+        }
+    }
+}
+
 `;

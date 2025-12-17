@@ -1,19 +1,25 @@
 import { Direction } from '../../enums/common.enum';
-import { ReviewGroup } from '../../enums/review.enum';
+import { ReviewGroup, ReviewStatus } from '../../enums/review.enum';
 
 export interface ReviewInput {
-	reviewGroup: ReviewGroup;
-	reviewRefId: string;
+	reviewGroup: string;
+	reviewRefId?: string;
+	propertyId?: string;
+	trainerId?: string;
+	workoutId?: string;
+	mealPlanId?: string;
+	bookingId?: string;
 	rating: number;
 	reviewTitle: string;
 	reviewContent: string;
 	reviewImages?: string[];
 	reviewerId?: string;
+	reviewStatus?: string;
 }
 
-interface RISearch {
+export interface RISearch {
 	reviewerId?: string;
-	reviewGroup?: ReviewGroup;
+	reviewGroup?: string;
 	propertyId?: string;
 	trainerId?: string;
 	rating?: number;
@@ -24,5 +30,14 @@ export interface ReviewsInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: RISearch;
+	reviewerId?: string;
+	reviewGroup?: string;
+	propertyId?: string;
+	trainerId?: string;
+	workoutId?: string;
+	mealPlanId?: string;
+	bookingId?: string;
+	status?: string;
+	reviewStatus?: string;
+	search?: RISearch;
 }

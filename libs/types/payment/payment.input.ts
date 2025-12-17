@@ -2,8 +2,8 @@ import { Direction } from '../../enums/common.enum';
 import { Currency, PaymentMethod, TransactionType } from '../../enums/payment.enum';
 
 export interface PaymentInput {
-	transactionType: TransactionType;
-	paymentMethod: PaymentMethod;
+	transactionType: string;
+	paymentMethod: string;
 	amount: number;
 	currency?: Currency;
 	subscriptionId?: string;
@@ -12,7 +12,7 @@ export interface PaymentInput {
 	memberId?: string;
 }
 
-interface PISearch {
+export interface PaymentSearch {
 	transactionType?: TransactionType;
 }
 
@@ -21,5 +21,5 @@ export interface PaymentsInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-	search: PISearch;
+	search?: PaymentSearch;
 }
