@@ -1,6 +1,7 @@
+import React from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Stack, Box, Typography, Button, Grid, Card, CardContent, Chip, Divider, LinearProgress, IconButton } from '@mui/material';
+import { Stack, Box, Typography, Button, Grid, Card, CardContent, Chip, Divider, LinearProgress, IconButton, CircularProgress } from '@mui/material';
 import useDeviceDetect from '../../../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -14,6 +15,11 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { useQuery } from '@apollo/client';
+import { GET_MEAL_PLAN } from '../../../../apollo/user/query';
+import { MealPlan } from '../../../../libs/types/mealplan/mealplan';
+import { T } from '../../../../libs/types/common';
+import { NutritionGoal, DietaryPreference, MealType } from '../../../../libs/enums/nutrition.enum';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -25,39 +31,105 @@ const MealPlanDetailPage: NextPage = () => {
 	const router = useRouter();
 	const { id } = router.query;
 	const device = useDeviceDetect();
-	const [mealPlan, setMealPlan] = useState<any>(null);
-	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		if (id) {
-			setLoading(false);
-		}
-	}, [id]);
+	// Fetch meal plan data
+	const {
+		loading,
+		data: mealPlanData,
+		error: mealPlanError,
+	} = useQuery(GET_MEAL_PLAN, {
+		skip: !id || typeof id !== 'string',
+		fetchPolicy: 'cache-and-network',
+		variables: { input: id as string },
+		onCompleted: (data: T) => {
+			// Data is available in mealPlanData
+		},
+	});
+
+	const mealPlan: MealPlan | null = mealPlanData?.getMealPlan || null;
+
+	const formatNutritionGoal = (goal: NutritionGoal): string => {
+		return goal.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
+	};
+
+	const formatDietaryPreference = (pref: DietaryPreference): string => {
+		return pref.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
+	};
+
+	const formatMealType = (type: MealType): string => {
+		return type.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
+	};
 
 	if (device === 'mobile') {
-		return <div>MOBILE MEAL PLAN DETAIL</div>;
-	} else {
-		// Sample data for demonstration
-		const sampleMealPlan = {
-			name: 'Muscle Gain Meal Plan',
-			goal: 'Muscle Gain',
-			duration: 30,
-			calories: 2800,
-			protein: 200,
-			carbs: 300,
-			fats: 100,
-			rating: 4.8,
-			views: 1250,
-			description: 'A comprehensive 30-day meal plan designed to support muscle growth and recovery. This plan includes high-protein meals, balanced macros, and nutrient-dense foods to fuel your workouts and maximize gains.',
-			image: '/img/bodybuilders/pexels-gabflicks-13122470.jpg',
-		};
+		if (loading) {
+			return (
+				<Stack className={'meal-plan-detail-page'}>
+					<Stack className={'container'}>
+						<Box display="flex" justifyContent="center" p={4}>
+							<CircularProgress />
+						</Box>
+					</Stack>
+				</Stack>
+			);
+		}
 
-		const dailyMeals = [
-			{ type: 'Breakfast', calories: 650, protein: 45, carbs: 80, fats: 15, items: ['Oatmeal with berries', 'Greek yogurt', 'Scrambled eggs', 'Whole grain toast'] },
-			{ type: 'Lunch', calories: 750, protein: 55, carbs: 90, fats: 20, items: ['Grilled chicken breast', 'Brown rice', 'Steamed vegetables', 'Avocado'] },
-			{ type: 'Dinner', calories: 850, protein: 60, carbs: 100, fats: 25, items: ['Salmon fillet', 'Sweet potato', 'Broccoli', 'Quinoa salad'] },
-			{ type: 'Snacks', calories: 550, protein: 40, carbs: 30, fats: 40, items: ['Protein shake', 'Almonds', 'Banana', 'Protein bar'] },
-		];
+		if (!mealPlan) {
+			return (
+				<Stack className={'meal-plan-detail-page'}>
+					<Stack className={'container'}>
+						<Typography variant="h6" color="error">Meal plan not found</Typography>
+					</Stack>
+				</Stack>
+			);
+		}
+
+		return (
+			<Stack className={'meal-plan-detail-page'}>
+				<Stack className={'container'}>
+					<Typography variant="h4">{mealPlan.mealPlanTitle}</Typography>
+					<Typography variant="body1" color="text.secondary">
+						{mealPlan.mealPlanDesc || 'No description available.'}
+					</Typography>
+					<Button variant="contained" fullWidth startIcon={<PlayArrowIcon />} sx={{ mt: 2 }}>
+						Start This Plan
+					</Button>
+				</Stack>
+			</Stack>
+		);
+	} else {
+		if (loading) {
+			return (
+				<Stack className={'meal-plan-detail-page'}>
+					<Stack className={'container'}>
+						<Box display="flex" justifyContent="center" p={4}>
+							<CircularProgress />
+						</Box>
+					</Stack>
+				</Stack>
+			);
+		}
+
+		if (!mealPlan) {
+			return (
+				<Stack className={'meal-plan-detail-page'}>
+					<Stack className={'container'}>
+						<Typography variant="h4" color="error">Meal plan not found</Typography>
+						<Typography variant="body1" color="text.secondary">
+							The meal plan you're looking for doesn't exist or has been removed.
+						</Typography>
+					</Stack>
+				</Stack>
+			);
+		}
+
+		// Group meals by day
+		const mealsByDay = mealPlan.meals?.reduce((acc: any, meal) => {
+			if (!acc[meal.day]) {
+				acc[meal.day] = [];
+			}
+			acc[meal.day].push(meal);
+			return acc;
+		}, {}) || {};
 
 		return (
 			<Stack className={'meal-plan-detail-page'}>
@@ -67,23 +139,46 @@ const MealPlanDetailPage: NextPage = () => {
 						<Box
 							className={'meal-plan-hero-image'}
 							style={{
-								backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${sampleMealPlan.image})`,
+								backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('/img/bodybuilders/pexels-gabflicks-13122470.jpg')`,
 								backgroundSize: 'cover',
 								backgroundPosition: 'center',
 							}}
 						>
 							<Box className={'hero-overlay'}>
-								<Stack direction="row" spacing={2} mb={2}>
-									<Chip label={sampleMealPlan.goal} className={'goal-chip-hero'} />
-									<Chip label={`${sampleMealPlan.duration} days`} className={'duration-chip-hero'} />
-									<Chip icon={<StarIcon />} label={sampleMealPlan.rating} className={'rating-chip-hero'} />
+								<Stack direction="row" spacing={2} mb={2} flexWrap="wrap">
+									<Chip label={formatNutritionGoal(mealPlan.nutritionGoal)} className={'goal-chip-hero'} />
+									<Chip label={`${mealPlan.duration} days`} className={'duration-chip-hero'} />
+									{mealPlan.mealPlanRating > 0 && (
+										<Chip 
+											icon={<StarIcon />} 
+											label={mealPlan.mealPlanRating.toFixed(1)} 
+											className={'rating-chip-hero'} 
+										/>
+									)}
+									{mealPlan.isPremium && (
+										<Chip label="Premium" color="warning" className={'premium-chip-hero'} />
+									)}
+									{mealPlan.dietaryPreference && mealPlan.dietaryPreference.length > 0 && (
+										mealPlan.dietaryPreference.map((pref, idx) => (
+											<Chip 
+												key={idx}
+												label={formatDietaryPreference(pref)} 
+												className={'diet-chip-hero'} 
+											/>
+										))
+									)}
 								</Stack>
 								<Typography variant="h2" className={'meal-plan-hero-title'}>
-									{sampleMealPlan.name}
+									{mealPlan.mealPlanTitle}
 								</Typography>
 								<Typography variant="body1" className={'meal-plan-hero-description'}>
-									{sampleMealPlan.description}
+									{mealPlan.mealPlanDesc || 'A comprehensive meal plan designed to help you achieve your nutrition goals.'}
 								</Typography>
+								{mealPlan.memberData && (
+									<Typography variant="body2" className={'meal-plan-creator'} mt={1}>
+										By {mealPlan.memberData.memberFullName || mealPlan.memberData.memberNick}
+									</Typography>
+								)}
 								<Stack direction="row" spacing={2} mt={3}>
 									<Button variant="contained" size="large" startIcon={<PlayArrowIcon />} className={'start-plan-btn-hero'}>
 										Start This Plan
@@ -118,7 +213,7 @@ const MealPlanDetailPage: NextPage = () => {
 											</Typography>
 										</Stack>
 										<Typography variant="h3" className={'stat-value'}>
-											{sampleMealPlan.calories}
+											{mealPlan.calorieTarget}
 										</Typography>
 										<Typography variant="caption" className={'stat-unit'}>
 											per day
@@ -126,128 +221,245 @@ const MealPlanDetailPage: NextPage = () => {
 									</CardContent>
 								</Card>
 							</Grid>
-							<Grid item xs={12} md={3}>
-								<Card className={'nutrition-stat-card protein'}>
-									<CardContent>
-										<Stack direction="row" alignItems="center" spacing={1} mb={2}>
-											<RestaurantIcon className={'stat-icon'} />
-											<Typography variant="body2" className={'stat-label'}>
-												Protein
-											</Typography>
-										</Stack>
-										<Typography variant="h3" className={'stat-value'}>
-											{sampleMealPlan.protein}g
-										</Typography>
-										<LinearProgress variant="determinate" value={85} className={'stat-progress'} />
-									</CardContent>
-								</Card>
-							</Grid>
-							<Grid item xs={12} md={3}>
-								<Card className={'nutrition-stat-card carbs'}>
-									<CardContent>
-										<Stack direction="row" alignItems="center" spacing={1} mb={2}>
-											<RestaurantIcon className={'stat-icon'} />
-											<Typography variant="body2" className={'stat-label'}>
-												Carbs
-											</Typography>
-										</Stack>
-										<Typography variant="h3" className={'stat-value'}>
-											{sampleMealPlan.carbs}g
-										</Typography>
-										<LinearProgress variant="determinate" value={75} className={'stat-progress'} />
-									</CardContent>
-								</Card>
-							</Grid>
-							<Grid item xs={12} md={3}>
-								<Card className={'nutrition-stat-card fats'}>
-									<CardContent>
-										<Stack direction="row" alignItems="center" spacing={1} mb={2}>
-											<RestaurantIcon className={'stat-icon'} />
-											<Typography variant="body2" className={'stat-label'}>
-												Fats
-											</Typography>
-										</Stack>
-										<Typography variant="h3" className={'stat-value'}>
-											{sampleMealPlan.fats}g
-										</Typography>
-										<LinearProgress variant="determinate" value={70} className={'stat-progress'} />
-									</CardContent>
-								</Card>
-							</Grid>
+							{mealPlan.macros && (
+								<>
+									<Grid item xs={12} md={3}>
+										<Card className={'nutrition-stat-card protein'}>
+											<CardContent>
+												<Stack direction="row" alignItems="center" spacing={1} mb={2}>
+													<RestaurantIcon className={'stat-icon'} />
+													<Typography variant="body2" className={'stat-label'}>
+														Protein
+													</Typography>
+												</Stack>
+												<Typography variant="h3" className={'stat-value'}>
+													{mealPlan.macros.protein}g
+												</Typography>
+												<LinearProgress variant="determinate" value={85} className={'stat-progress'} />
+											</CardContent>
+										</Card>
+									</Grid>
+									<Grid item xs={12} md={3}>
+										<Card className={'nutrition-stat-card carbs'}>
+											<CardContent>
+												<Stack direction="row" alignItems="center" spacing={1} mb={2}>
+													<RestaurantIcon className={'stat-icon'} />
+													<Typography variant="body2" className={'stat-label'}>
+														Carbs
+													</Typography>
+												</Stack>
+												<Typography variant="h3" className={'stat-value'}>
+													{mealPlan.macros.carbs}g
+												</Typography>
+												<LinearProgress variant="determinate" value={75} className={'stat-progress'} />
+											</CardContent>
+										</Card>
+									</Grid>
+									<Grid item xs={12} md={3}>
+										<Card className={'nutrition-stat-card fats'}>
+											<CardContent>
+												<Stack direction="row" alignItems="center" spacing={1} mb={2}>
+													<RestaurantIcon className={'stat-icon'} />
+													<Typography variant="body2" className={'stat-label'}>
+														Fats
+													</Typography>
+												</Stack>
+												<Typography variant="h3" className={'stat-value'}>
+													{mealPlan.macros.fats}g
+												</Typography>
+												<LinearProgress variant="determinate" value={70} className={'stat-progress'} />
+											</CardContent>
+										</Card>
+									</Grid>
+								</>
+							)}
 						</Grid>
 					</Box>
 
 					{/* Daily Meals */}
-					<Box className={'daily-meals-section'}>
-						<Typography variant="h5" className={'section-title'} gutterBottom>
-							Daily Meal Breakdown
-						</Typography>
-						<Grid container spacing={3} mt={1}>
-							{dailyMeals.map((meal, index) => (
-								<Grid item xs={12} md={6} key={index}>
-									<Card className={'meal-card'}>
-										<CardContent>
-											<Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-												<Typography variant="h6" className={'meal-type'}>
-													{meal.type}
-												</Typography>
-												<Chip
-													icon={<LocalFireDepartmentIcon />}
-													label={`${meal.calories} cal`}
-													size="small"
-													className={'meal-calorie-chip'}
-												/>
-											</Stack>
-											<Grid container spacing={2} mb={2}>
-												<Grid item xs={4}>
-													<Box className={'meal-macro'}>
-														<Typography variant="caption" color="text.secondary">
-															Protein
-														</Typography>
-														<Typography variant="body2" fontWeight={600}>
-															{meal.protein}g
-														</Typography>
-													</Box>
+					{mealPlan.meals && mealPlan.meals.length > 0 && (
+						<Box className={'daily-meals-section'}>
+							<Typography variant="h5" className={'section-title'} gutterBottom>
+								Meal Breakdown
+							</Typography>
+							{Object.keys(mealsByDay).length > 0 ? (
+								Object.keys(mealsByDay).map((day) => (
+									<Box key={day} mb={4}>
+										<Typography variant="h6" className={'day-title'} gutterBottom>
+											Day {day}
+										</Typography>
+										<Grid container spacing={3} mt={1}>
+											{mealsByDay[day].map((meal: any, index: number) => (
+												<Grid item xs={12} md={6} key={index}>
+													<Card className={'meal-card'}>
+														<CardContent>
+															<Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+																<Typography variant="h6" className={'meal-type'}>
+																	{formatMealType(meal.mealType)}
+																</Typography>
+																<Chip
+																	icon={<LocalFireDepartmentIcon />}
+																	label={`${meal.calories} cal`}
+																	size="small"
+																	className={'meal-calorie-chip'}
+																/>
+															</Stack>
+															<Typography variant="h6" className={'meal-name'} mb={2}>
+																{meal.mealName}
+															</Typography>
+															<Grid container spacing={2} mb={2}>
+																<Grid item xs={4}>
+																	<Box className={'meal-macro'}>
+																		<Typography variant="caption" color="text.secondary">
+																			Protein
+																		</Typography>
+																		<Typography variant="body2" fontWeight={600}>
+																			{meal.protein}g
+																		</Typography>
+																	</Box>
+																</Grid>
+																<Grid item xs={4}>
+																	<Box className={'meal-macro'}>
+																		<Typography variant="caption" color="text.secondary">
+																			Carbs
+																		</Typography>
+																		<Typography variant="body2" fontWeight={600}>
+																			{meal.carbs}g
+																		</Typography>
+																	</Box>
+																</Grid>
+																<Grid item xs={4}>
+																	<Box className={'meal-macro'}>
+																		<Typography variant="caption" color="text.secondary">
+																			Fats
+																		</Typography>
+																		<Typography variant="body2" fontWeight={600}>
+																			{meal.fats}g
+																		</Typography>
+																	</Box>
+																</Grid>
+															</Grid>
+															{meal.ingredients && meal.ingredients.length > 0 && (
+																<>
+																	<Divider sx={{ my: 2 }} />
+																	<Typography variant="body2" className={'meal-items-label'} gutterBottom>
+																		Ingredients:
+																	</Typography>
+																	<Stack spacing={1}>
+																		{meal.ingredients.map((ingredient: string, idx: number) => (
+																			<Stack key={idx} direction="row" alignItems="center" spacing={1}>
+																				<CheckCircleIcon className={'check-icon'} fontSize="small" />
+																				<Typography variant="body2">{ingredient}</Typography>
+																			</Stack>
+																		))}
+																	</Stack>
+																</>
+															)}
+															{meal.instructions && (
+																<>
+																	<Divider sx={{ my: 2 }} />
+																	<Typography variant="body2" className={'meal-items-label'} gutterBottom>
+																		Instructions:
+																	</Typography>
+																	<Typography variant="body2" color="text.secondary">
+																		{meal.instructions}
+																	</Typography>
+																</>
+															)}
+														</CardContent>
+													</Card>
 												</Grid>
-												<Grid item xs={4}>
-													<Box className={'meal-macro'}>
-														<Typography variant="caption" color="text.secondary">
-															Carbs
+											))}
+										</Grid>
+									</Box>
+								))
+							) : (
+								<Grid container spacing={3} mt={1}>
+									{mealPlan.meals.map((meal, index) => (
+										<Grid item xs={12} md={6} key={index}>
+											<Card className={'meal-card'}>
+												<CardContent>
+													<Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+														<Typography variant="h6" className={'meal-type'}>
+															{formatMealType(meal.mealType)}
 														</Typography>
-														<Typography variant="body2" fontWeight={600}>
-															{meal.carbs}g
-														</Typography>
-													</Box>
-												</Grid>
-												<Grid item xs={4}>
-													<Box className={'meal-macro'}>
-														<Typography variant="caption" color="text.secondary">
-															Fats
-														</Typography>
-														<Typography variant="body2" fontWeight={600}>
-															{meal.fats}g
-														</Typography>
-													</Box>
-												</Grid>
-											</Grid>
-											<Divider sx={{ my: 2 }} />
-											<Typography variant="body2" className={'meal-items-label'} gutterBottom>
-												Meal Items:
-											</Typography>
-											<Stack spacing={1}>
-												{meal.items.map((item, idx) => (
-													<Stack key={idx} direction="row" alignItems="center" spacing={1}>
-														<CheckCircleIcon className={'check-icon'} fontSize="small" />
-														<Typography variant="body2">{item}</Typography>
+														<Chip
+															icon={<LocalFireDepartmentIcon />}
+															label={`${meal.calories} cal`}
+															size="small"
+															className={'meal-calorie-chip'}
+														/>
 													</Stack>
-												))}
-											</Stack>
-										</CardContent>
-									</Card>
+													<Typography variant="h6" className={'meal-name'} mb={2}>
+														{meal.mealName}
+													</Typography>
+													<Grid container spacing={2} mb={2}>
+														<Grid item xs={4}>
+															<Box className={'meal-macro'}>
+																<Typography variant="caption" color="text.secondary">
+																	Protein
+																</Typography>
+																<Typography variant="body2" fontWeight={600}>
+																	{meal.protein}g
+																</Typography>
+															</Box>
+														</Grid>
+														<Grid item xs={4}>
+															<Box className={'meal-macro'}>
+																<Typography variant="caption" color="text.secondary">
+																	Carbs
+																</Typography>
+																<Typography variant="body2" fontWeight={600}>
+																	{meal.carbs}g
+																</Typography>
+															</Box>
+														</Grid>
+														<Grid item xs={4}>
+															<Box className={'meal-macro'}>
+																<Typography variant="caption" color="text.secondary">
+																	Fats
+																</Typography>
+																<Typography variant="body2" fontWeight={600}>
+																	{meal.fats}g
+																</Typography>
+															</Box>
+														</Grid>
+													</Grid>
+													{meal.ingredients && meal.ingredients.length > 0 && (
+														<>
+															<Divider sx={{ my: 2 }} />
+															<Typography variant="body2" className={'meal-items-label'} gutterBottom>
+																Ingredients:
+															</Typography>
+															<Stack spacing={1}>
+																{meal.ingredients.map((ingredient: string, idx: number) => (
+																	<Stack key={idx} direction="row" alignItems="center" spacing={1}>
+																		<CheckCircleIcon className={'check-icon'} fontSize="small" />
+																		<Typography variant="body2">{ingredient}</Typography>
+																	</Stack>
+																))}
+															</Stack>
+														</>
+													)}
+													{meal.instructions && (
+														<>
+															<Divider sx={{ my: 2 }} />
+															<Typography variant="body2" className={'meal-items-label'} gutterBottom>
+																Instructions:
+															</Typography>
+															<Typography variant="body2" color="text.secondary">
+																{meal.instructions}
+															</Typography>
+														</>
+													)}
+												</CardContent>
+											</Card>
+										</Grid>
+									))}
 								</Grid>
-							))}
-						</Grid>
-					</Box>
+							)}
+						</Box>
+					)}
 				</Stack>
 			</Stack>
 		);

@@ -1,6 +1,4 @@
 import React from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
 import {
 	TableCell,
 	TableHead,
@@ -12,26 +10,16 @@ import {
 	Menu,
 	Fade,
 	MenuItem,
+	Chip,
 } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/material';
-
-interface Data {
-	category: string;
-	qna_case_status: string;
-	title: string;
-	writer: string;
-	date: string;
-	status: string;
-	id?: string;
-}
-
-type Order = 'asc' | 'desc';
+import { Inquiry } from '../../../types/inquiry/inquiry';
+import { InquiryStatus, InquiryCategory, InquiryPriority } from '../../../enums/inquiry.enum';
 
 interface HeadCell {
 	disablePadding: boolean;
-	id: keyof Data;
+	id: string;
 	label: string;
 	numeric: boolean;
 }
@@ -39,55 +27,50 @@ interface HeadCell {
 const headCells: readonly HeadCell[] = [
 	{
 		id: 'category',
-		numeric: true,
+		numeric: false,
 		disablePadding: false,
 		label: 'CATEGORY',
 	},
 	{
-		id: 'title',
-		numeric: true,
+		id: 'subject',
+		numeric: false,
 		disablePadding: false,
-		label: 'TITLE',
+		label: 'SUBJECT',
 	},
 	{
-		id: 'writer',
-		numeric: true,
+		id: 'question',
+		numeric: false,
 		disablePadding: false,
-		label: 'WRITER',
+		label: 'QUESTION',
+	},
+	{
+		id: 'priority',
+		numeric: false,
+		disablePadding: false,
+		label: 'PRIORITY',
+	},
+	{
+		id: 'status',
+		numeric: false,
+		disablePadding: false,
+		label: 'STATUS',
 	},
 	{
 		id: 'date',
-		numeric: true,
+		numeric: false,
 		disablePadding: false,
 		label: 'DATE',
 	},
-	{
-		id: 'qna_case_status',
-		numeric: false,
-		disablePadding: false,
-		label: 'QNA STATUS',
-	},
 ];
 
-interface EnhancedTableProps {
-	numSelected: number;
-	onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	order: Order;
-	orderBy: string;
-	rowCount: number;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-	const { onSelectAllClick } = props;
-
+function EnhancedTableHead() {
 	return (
 		<TableHead>
 			<TableRow>
 				{headCells.map((headCell) => (
 					<TableCell
 						key={headCell.id}
-						align={headCell.numeric ? 'left' : 'center'}
+						align={headCell.numeric ? 'right' : 'left'}
 						padding={headCell.disablePadding ? 'none' : 'normal'}
 					>
 						{headCell.label}
@@ -99,91 +82,108 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 interface InquiryPanelListType {
-	dense?: boolean;
-	membersData?: any;
-	searchMembers?: any;
-	anchorEl?: any;
-	handleMenuIconClick?: any;
-	handleMenuIconClose?: any;
-	generateMentorTypeHandle?: any;
+	inquiries: Inquiry[];
+	anchorEl: any;
+	menuIconClickHandler: any;
+	menuIconCloseHandler: any;
+	updateInquiryHandler: any;
 }
 
 export const InquiryList = (props: InquiryPanelListType) => {
-	const {
-		dense,
-		membersData,
-		searchMembers,
-		anchorEl,
-		handleMenuIconClick,
-		handleMenuIconClose,
-		generateMentorTypeHandle,
-	} = props;
-	const router = useRouter();
+	const { inquiries, anchorEl, menuIconClickHandler, menuIconCloseHandler, updateInquiryHandler } = props;
 
-	/** APOLLO REQUESTS **/
-	/** LIFECYCLES **/
-	/** HANDLERS **/
+	const getPriorityColor = (priority: InquiryPriority) => {
+		switch (priority) {
+			case InquiryPriority.URGENT:
+				return 'error';
+			case InquiryPriority.HIGH:
+				return 'warning';
+			case InquiryPriority.MEDIUM:
+				return 'info';
+			default:
+				return 'default';
+		}
+	};
 
 	return (
 		<Stack>
 			<TableContainer>
-				<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
-					{/*@ts-ignore*/}
+				<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'}>
 					<EnhancedTableHead />
 					<TableBody>
-						{[1, 2, 3, 4, 5].map((ele: any, index: number) => {
-							const member_image = '/img/profile/defaultUser.svg';
+						{inquiries.length === 0 && (
+							<TableRow>
+								<TableCell align="center" colSpan={6}>
+									<span className={'no-data'}>No inquiries found!</span>
+								</TableCell>
+							</TableRow>
+						)}
 
-							let status_class_name = '';
+						{inquiries.length !== 0 &&
+							inquiries.map((inquiry: Inquiry, index: number) => {
+								return (
+									<TableRow hover key={inquiry._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+										<TableCell align="left">
+											<Button className={'badge success'}>{inquiry.inquiryCategory}</Button>
+										</TableCell>
 
-							return (
-								<TableRow hover key={'member._id'} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-									<TableCell align="left">mb id</TableCell>
-									<TableCell align="left">member.mb_full_name</TableCell>
-									<TableCell align="left" className={'name'}>
-										<Stack direction={'row'}>
-											<Link href={`/_admin/users/detail?mb_id=$'{member._id'}`}>
-												<div>
-													<Avatar alt="Remy Sharp" src={member_image} sx={{ ml: '2px', mr: '10px' }} />
-												</div>
-											</Link>
-											<Link href={`/_admin/users/detail?mb_id=${'member._id'}`}>
-												<div>member.mb_nick</div>
-											</Link>
-										</Stack>
-									</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
-									<TableCell align="center">
-										<Button onClick={(e: any) => handleMenuIconClick(e, index)} className={'badge success'}>
-											member.mb_type
-										</Button>
+										<TableCell align="left" sx={{ maxWidth: 200 }}>
+											<Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+												{inquiry.subject}
+											</Typography>
+										</TableCell>
 
-										<Menu
-											className={'menu-modal'}
-											MenuListProps={{
-												'aria-labelledby': 'fade-button',
-											}}
-											anchorEl={anchorEl[index]}
-											open={Boolean(anchorEl[index])}
-											onClose={handleMenuIconClose}
-											TransitionComponent={Fade}
-											sx={{ p: 1 }}
-										>
-											<MenuItem onClick={(e) => generateMentorTypeHandle('member._id', 'mentor', 'originate')}>
-												<Typography variant={'subtitle1'} component={'span'}>
-													MENTOR
-												</Typography>
-											</MenuItem>
-											<MenuItem onClick={(e) => generateMentorTypeHandle('member._id', 'user', 'remove')}>
-												<Typography variant={'subtitle1'} component={'span'}>
-													USER
-												</Typography>
-											</MenuItem>
-										</Menu>
-									</TableCell>
-								</TableRow>
-							);
-						})}
+										<TableCell align="left" sx={{ maxWidth: 300 }}>
+											<Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+												{inquiry.question}
+											</Typography>
+										</TableCell>
+
+										<TableCell align="center">
+											<Chip
+												label={inquiry.inquiryPriority}
+												color={getPriorityColor(inquiry.inquiryPriority)}
+												size="small"
+											/>
+										</TableCell>
+
+										<TableCell align="center">
+											<Button onClick={(e: any) => menuIconClickHandler(e, index)} className={'badge success'}>
+												{inquiry.inquiryStatus}
+											</Button>
+
+											<Menu
+												className={'menu-modal'}
+												MenuListProps={{
+													'aria-labelledby': 'fade-button',
+												}}
+												anchorEl={anchorEl[index]}
+												open={Boolean(anchorEl[index])}
+												onClose={menuIconCloseHandler}
+												TransitionComponent={Fade}
+												sx={{ p: 1 }}
+											>
+												{Object.values(InquiryStatus)
+													.filter((ele) => ele !== inquiry?.inquiryStatus)
+													.map((status: string) => (
+														<MenuItem
+															onClick={() => updateInquiryHandler({ _id: inquiry._id, inquiryStatus: status as InquiryStatus })}
+															key={status}
+														>
+															<Typography variant={'subtitle1'} component={'span'}>
+																{status}
+															</Typography>
+														</MenuItem>
+													))}
+											</Menu>
+										</TableCell>
+
+										<TableCell align="left">
+											{new Date(inquiry.createdAt).toLocaleDateString()}
+										</TableCell>
+									</TableRow>
+								);
+							})}
 					</TableBody>
 				</Table>
 			</TableContainer>

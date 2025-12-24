@@ -34,15 +34,28 @@ const withAdminLayout = (Component: ComponentType) => {
 		/** LIFECYCLES **/
 		useEffect(() => {
 			const jwt = getJwtToken();
-			if (jwt) updateUserInfo(jwt);
+			if (jwt) {
+				updateUserInfo(jwt);
+			}
 			setLoading(false);
 		}, []);
 
 		useEffect(() => {
-			if (!loading && user.memberType !== MemberType.ADMIN) {
-				router.push('/').then();
+			// Only check after loading is complete
+			if (!loading) {
+				const jwt = getJwtToken();
+				// If no JWT token, redirect to home
+				if (!jwt) {
+					router.push('/').then();
+					return;
+				}
+				// If user data is loaded but memberType is not ADMIN, redirect to home
+				// This handles both empty memberType (initial state) and non-admin types
+				if (!user.memberType || user.memberType !== MemberType.ADMIN) {
+					router.push('/').then();
+				}
 			}
-		}, [loading, user, router]);
+		}, [loading, user.memberType, router]);
 
 		/** HANDLERS **/
 		const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -58,7 +71,16 @@ const withAdminLayout = (Component: ComponentType) => {
 			router.push('/').then();
 		};
 
-		if (!user || user?.memberType !== MemberType.ADMIN) return null;
+		// Show loading state while checking authentication
+		if (loading) {
+			return null;
+		}
+		
+		// Check if user is authenticated and is admin
+		const jwt = getJwtToken();
+		if (!jwt || !user || user?.memberType !== MemberType.ADMIN) {
+			return null;
+		}
 
 		return (
 			<main id="pc-wrap" className="admin">

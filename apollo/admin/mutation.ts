@@ -380,4 +380,125 @@ export const REMOVE_COMMENT_BY_ADMIN = gql`
 
 `;
 
+/**************************
+ *          FAQ           *
+ *************************/
+
+export const UPDATE_FAQ_BY_ADMIN = gql`
+	mutation UpdateFaqByAdmin($input:FaqUpdate!) {
+    updateFaqByAdmin(input: $input) {
+        _id
+        faqCategory
+        faqStatus
+        question
+        answer
+        keywords
+        relatedWorkouts
+        relatedMealPlans
+        viewCount
+        helpfulCount
+        notHelpfulCount
+        createdBy
+        displayOrder
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
+export const REMOVE_FAQ_BY_ADMIN = gql`
+	mutation RemoveFaqByAdmin($input:String!) {
+    removeFaqByAdmin(faqId: $input) {
+        _id
+        faqCategory
+        faqStatus
+        question
+        answer
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
+/**************************
+ *        INQUIRY         *
+ *************************/
+
+export const UPDATE_INQUIRY_BY_ADMIN = gql`
+	mutation UpdateInquiryByAdmin($input:InquiryUpdate!) {
+    updateInquiryByAdmin(input: $input) {
+        _id
+        userId
+        inquiryCategory
+        inquiryStatus
+        inquiryPriority
+        subject
+        question
+        aiResponse
+        humanResponse
+        respondedBy
+        respondedAt
+        resolvedAt
+        closedAt
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
+export const REMOVE_INQUIRY_BY_ADMIN = gql`
+	mutation RemoveInquiryByAdmin($input:String!) {
+    removeInquiryByAdmin(inquiryId: $input) {
+        _id
+        inquiryStatus
+        subject
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
+/**************************
+ *        NOTICE          *
+ *************************/
+
+export const UPDATE_NOTICE_BY_ADMIN = gql`
+	mutation UpdateNoticeByAdmin($input:NoticeUpdate!) {
+    updateNoticeByAdmin(input: $input) {
+        _id
+        noticeCategory
+        noticeStatus
+        noticeTitle
+        noticeContent
+        noticeImage
+        noticeUrl
+        viewCount
+        displayOrder
+        startDate
+        endDate
+        createdBy
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
+export const REMOVE_NOTICE_BY_ADMIN = gql`
+	mutation RemoveNoticeByAdmin($input:String!) {
+    removeNoticeByAdmin(noticeId: $input) {
+        _id
+        noticeStatus
+        noticeTitle
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
 

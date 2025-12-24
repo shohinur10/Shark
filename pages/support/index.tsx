@@ -13,6 +13,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import PolicyIcon from '@mui/icons-material/Policy';
 import BuildIcon from '@mui/icons-material/Build';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { InquiryCategory } from '../../libs/enums/inquiry.enum';
 
 export const getStaticProps = async ({ locale }: any) => ({
@@ -27,11 +28,55 @@ const SupportPage: NextPage = () => {
 	const [contactForm, setContactForm] = useState({
 		name: '',
 		email: '',
-		category: InquiryCategory.GENERAL_QUESTION,
-		subject: '',
+		category: 'account',
 		message: '',
 	});
 	const [expandedTroubleshooting, setExpandedTroubleshooting] = useState<string | false>(false);
+	const [issueFeedback, setIssueFeedback] = useState<Record<string, 'yes' | 'no' | null>>({});
+
+	// Smart Help Context - Detect user activity and show relevant help
+	const getSmartHelpContext = () => {
+		// In a real app, this would check user activity from API/localStorage
+		// For now, we'll simulate based on common scenarios
+		// You can replace this with actual user activity detection
+		
+		// Check localStorage for recent activity indicators
+		const recentPaymentFailure = typeof window !== 'undefined' ? localStorage.getItem('recent_payment_failure') : null;
+		const missedWorkouts = typeof window !== 'undefined' ? localStorage.getItem('missed_workouts_count') : null;
+		const isNewUser = typeof window !== 'undefined' ? localStorage.getItem('is_new_user') : null;
+		
+		if (recentPaymentFailure === 'true') {
+			return {
+				message: 'Having trouble with billing?',
+				action: 'Check our payment troubleshooting guide',
+				link: 'troubleshooting',
+				highlight: 'payment',
+			};
+		}
+		
+		if (missedWorkouts && parseInt(missedWorkouts) > 2) {
+			return {
+				message: 'Need help staying consistent?',
+				action: 'Explore our workout tips',
+				link: 'faq',
+				highlight: 'workouts',
+			};
+		}
+		
+		if (isNewUser === 'true') {
+			return {
+				message: 'New here? Start with these guides.',
+				action: 'Get started',
+				link: 'faq',
+				highlight: 'welcome',
+			};
+		}
+		
+		// Default: no context (don't show card)
+		return null;
+	};
+
+	const smartHelpContext = getSmartHelpContext();
 
 	/** HANDLERS **/
 	const changeTabHandler = (tab: string) => {
@@ -53,8 +98,7 @@ const SupportPage: NextPage = () => {
 		setContactForm({
 			name: '',
 			email: '',
-			category: InquiryCategory.GENERAL_QUESTION,
-			subject: '',
+			category: 'account',
 			message: '',
 		});
 	};
@@ -63,39 +107,79 @@ const SupportPage: NextPage = () => {
 		setExpandedTroubleshooting(isExpanded ? panel : false);
 	};
 
+	const handleIssueFeedback = (issueId: string, solved: boolean) => {
+		setIssueFeedback({ ...issueFeedback, [issueId]: solved ? 'yes' : 'no' });
+	};
+
 	const tab = router.query.tab ?? 'faq';
 
-	// Troubleshooting guide data
+	// Troubleshooting guide data with step-by-step solutions
 	const troubleshootingGuides = [
 		{
 			id: 'trouble-1',
 			title: 'Workout videos not loading',
-			content: 'Try clearing your browser cache, check your internet connection, or try using a different browser. If the issue persists, contact support.',
+			steps: [
+				'Check your internet connection - make sure you\'re connected to WiFi or have good data signal',
+				'Refresh the page (press F5 or click the refresh button)',
+				'Clear your browser cache - go to Settings > Privacy > Clear browsing data',
+				'Try a different browser (Chrome, Firefox, or Safari)',
+				'If you\'re on mobile, close and reopen the app completely',
+			],
 		},
 		{
 			id: 'trouble-2',
 			title: 'Progress not saving',
-			content: 'Make sure you are logged in and have an active internet connection. Try refreshing the page or logging out and back in.',
+			steps: [
+				'Make sure you\'re logged in - check the top right corner for your profile',
+				'Verify your internet connection is active',
+				'Wait a few seconds after completing a workout - it saves automatically',
+				'Try logging out and back in to refresh your session',
+				'Check if you see a "Saved" confirmation message',
+			],
 		},
 		{
 			id: 'trouble-3',
 			title: 'Payment issues',
-			content: 'Check your payment method, ensure sufficient funds, and verify your card details. Contact your bank if the issue continues.',
+			steps: [
+				'Double-check your card number, expiry date, and CVV are correct',
+				'Make sure your card has sufficient funds or credit limit',
+				'Try a different payment method (another card or PayPal)',
+				'Contact your bank to ensure the card isn\'t blocked for online purchases',
+				'Wait a few minutes and try again - sometimes payments take a moment to process',
+			],
 		},
 		{
 			id: 'trouble-4',
 			title: 'App crashes or freezes',
-			content: 'Update to the latest version, clear app cache, restart your device, or reinstall the app if problems persist.',
+			steps: [
+				'Close the app completely and reopen it',
+				'Update to the latest version from the App Store or Google Play',
+				'Restart your device (turn it off and on again)',
+				'Clear the app cache: Settings > Apps > [App Name] > Clear Cache',
+				'If it still crashes, uninstall and reinstall the app (your data is saved in the cloud)',
+			],
 		},
 		{
 			id: 'trouble-5',
 			title: 'Can\'t access premium features',
-			content: 'Verify your subscription status in account settings. If you have an active subscription, try logging out and back in.',
+			steps: [
+				'Go to Account Settings and check your subscription status',
+				'Make sure your payment went through - check your email for confirmation',
+				'Log out completely and log back in to refresh your account',
+				'Wait 5-10 minutes - sometimes it takes a moment for premium access to activate',
+				'Check if your subscription expired - you might need to renew',
+			],
 		},
 		{
 			id: 'trouble-6',
-			title: 'Meal plan calculator not working',
-			content: 'Ensure all fields are filled correctly, check your internet connection, and try refreshing the page.',
+			title: 'Meal plan not working',
+			steps: [
+				'Make sure all required fields are filled in (age, weight, height, activity level)',
+				'Check your internet connection is stable',
+				'Refresh the page and try again',
+				'Clear your browser cache and cookies',
+				'Try using the meal plan on a different device to see if it\'s device-specific',
+			],
 		},
 	];
 
@@ -104,26 +188,26 @@ const SupportPage: NextPage = () => {
 		{
 			id: 'privacy',
 			title: 'Privacy Policy',
-			description: 'How we collect, use, and protect your personal information',
-			content: 'Our Privacy Policy outlines how we collect, use, store, and protect your personal information. We are committed to protecting your privacy and ensuring the security of your data...',
+			description: 'We only collect what we need to make your experience better. Your data stays safe and we never sell it to third parties.',
+			tags: ['Easy to understand', 'No hidden rules'],
 		},
 		{
 			id: 'terms',
 			title: 'Terms of Service',
-			description: 'Terms and conditions for using our platform',
-			content: 'By using our platform, you agree to our Terms of Service. These terms govern your use of our services, including workouts, meal plans, and community features...',
+			description: 'Simple rules for using our platform. We want you to have a great experience while keeping things fair for everyone.',
+			tags: ['Easy to understand', 'No hidden rules'],
 		},
 		{
 			id: 'refund',
 			title: 'Refund Policy',
-			description: 'Information about refunds and cancellations',
-			content: 'We offer a 30-day money-back guarantee for all subscriptions. Refunds are processed within 5-7 business days. Cancellations can be made at any time...',
+			description: 'Not happy? Get a full refund within 30 days, no questions asked. Cancel your subscription anytime with just a few clicks.',
+			tags: ['Cancel anytime', 'No hidden rules'],
 		},
 		{
 			id: 'cookie',
 			title: 'Cookie Policy',
-			description: 'How we use cookies and tracking technologies',
-			content: 'We use cookies to enhance your experience, analyze site usage, and assist in marketing efforts. You can manage cookie preferences in your browser settings...',
+			description: 'We use cookies to remember your preferences and improve the app. You can control which cookies we use in your settings.',
+			tags: ['Easy to understand', 'No hidden rules'],
 		},
 	];
 
@@ -133,85 +217,113 @@ const SupportPage: NextPage = () => {
 		return (
 			<Stack className={'support-page'}>
 				<Stack className={'container'}>
-					<Box component={'div'} className={'support-main-info'}>
-						<Box component={'div'} className={'info'}>
-							<span>Support Center</span>
-							<p>We're here to help answer your questions</p>
+					<Box component={'div'} className={'support-header'}>
+						<Box component={'div'} className={'header-info'}>
+							<Typography variant="h3" className={'page-title'}>
+								Support Center
+							</Typography>
+							<Typography variant="body1" className={'page-subtitle'}>
+								We're here to help answer your questions
+							</Typography>
 						</Box>
-						<Box component={'div'} className={'btns'}>
-							<div
-								className={tab == 'faq' ? 'active' : ''}
-								onClick={() => {
-									changeTabHandler('faq');
-								}}
+						<Box component={'div'} className={'tab-navigation'}>
+							<button
+								className={`tab-button ${tab === 'faq' ? 'active' : ''}`}
+								onClick={() => changeTabHandler('faq')}
 							>
-								<HelpIcon sx={{ mr: 1 }} />
-								FAQ
-							</div>
-							<div
-								className={tab == 'contact' ? 'active' : ''}
-								onClick={() => {
-									changeTabHandler('contact');
-								}}
+								<HelpIcon className="tab-icon" />
+								<span>FAQ</span>
+							</button>
+							<button
+								className={`tab-button ${tab === 'contact' ? 'active' : ''}`}
+								onClick={() => changeTabHandler('contact')}
 							>
-								<ContactMailIcon sx={{ mr: 1 }} />
-								Contact
-							</div>
-							<div
-								className={tab == 'policies' ? 'active' : ''}
-								onClick={() => {
-									changeTabHandler('policies');
-								}}
+								<ContactMailIcon className="tab-icon" />
+								<span>Contact</span>
+							</button>
+							<button
+								className={`tab-button ${tab === 'policies' ? 'active' : ''}`}
+								onClick={() => changeTabHandler('policies')}
 							>
-								<PolicyIcon sx={{ mr: 1 }} />
-								Policies
-							</div>
-							<div
-								className={tab == 'troubleshooting' ? 'active' : ''}
-								onClick={() => {
-									changeTabHandler('troubleshooting');
-								}}
+								<PolicyIcon className="tab-icon" />
+								<span>Policies</span>
+							</button>
+							<button
+								className={`tab-button ${tab === 'troubleshooting' ? 'active' : ''}`}
+								onClick={() => changeTabHandler('troubleshooting')}
 							>
-								<BuildIcon sx={{ mr: 1 }} />
-								Troubleshooting
-							</div>
+								<BuildIcon className="tab-icon" />
+								<span>Troubleshooting</span>
+							</button>
 						</Box>
 					</Box>
 
 					<Box component={'div'} className={'support-content'}>
-						{tab === 'faq' && <Faq />}
+						{smartHelpContext && (
+							<Box className={'smart-help-context'}>
+								<Card className={'smart-help-card'}>
+									<CardContent className={'smart-help-content'}>
+										<LightbulbIcon className={'smart-help-icon'} />
+										<Box className={'smart-help-text'}>
+											<Typography variant="body2" className={'smart-help-message'}>
+												{smartHelpContext.message}
+											</Typography>
+											<Button
+												size="small"
+												className={'smart-help-action'}
+												onClick={() => changeTabHandler(smartHelpContext.link)}
+											>
+												{smartHelpContext.action} →
+											</Button>
+										</Box>
+									</CardContent>
+								</Card>
+							</Box>
+						)}
+
+						{tab === 'faq' && (
+							<Box className={'section-container'}>
+								<Faq />
+							</Box>
+						)}
 
 						{tab === 'contact' && (
-							<Box className={'contact-form-section'}>
-								<Typography variant="h5" className={'section-title'} gutterBottom>
-									Contact Us
-								</Typography>
-								<Typography variant="body2" color="text.secondary" paragraph sx={{ mb: 4 }}>
-									Have a question or need help? Fill out the form below and we'll get back to you as soon as possible.
-								</Typography>
+							<Box className={'section-container contact-section'}>
+								<Box className={'contact-header'}>
+									<Typography variant="h4" className={'contact-title'}>
+										Contact Support
+									</Typography>
+									<Typography variant="body1" className={'contact-subtitle'}>
+										We usually respond within 24 hours.
+									</Typography>
+								</Box>
 								<Card className={'contact-form-card'}>
-									<CardContent>
-										<form onSubmit={handleContactSubmit}>
+									<CardContent className={'contact-form-content'}>
+										<form onSubmit={handleContactSubmit} className={'contact-form'}>
 											<Grid container spacing={3}>
 												<Grid item xs={12} sm={6}>
 													<TextField
 														fullWidth
-														label="Your Name"
+														label="Name"
 														required
 														value={contactForm.name}
 														onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
 														variant="outlined"
+														className={'contact-field'}
+														size="medium"
 													/>
 												</Grid>
 												<Grid item xs={12} sm={6}>
 													<TextField
 														fullWidth
-														label="Email Address"
+														label="Email"
 														type="email"
 														required
 														value={contactForm.email}
 														onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
 														variant="outlined"
+														className={'contact-field'}
+														size="medium"
 													/>
 												</Grid>
 												<Grid item xs={12}>
@@ -221,31 +333,19 @@ const SupportPage: NextPage = () => {
 														label="Category"
 														required
 														value={contactForm.category}
-														onChange={(e) => setContactForm({ ...contactForm, category: e.target.value as InquiryCategory })}
+														onChange={(e) => setContactForm({ ...contactForm, category: e.target.value })}
 														variant="outlined"
+														className={'contact-field'}
+														size="medium"
 														SelectProps={{
 															native: true,
 														}}
 													>
-														<option value={InquiryCategory.GENERAL_QUESTION}>General Question</option>
-														<option value={InquiryCategory.WORKOUT_HELP}>Workout Help</option>
-														<option value={InquiryCategory.NUTRITION_HELP}>Nutrition Help</option>
-														<option value={InquiryCategory.BOOKING_ISSUE}>Booking Issue</option>
-														<option value={InquiryCategory.PAYMENT_ISSUE}>Payment Issue</option>
-														<option value={InquiryCategory.TECHNICAL_ISSUE}>Technical Issue</option>
-														<option value={InquiryCategory.COMPLAINT}>Complaint</option>
-														<option value={InquiryCategory.OTHER}>Other</option>
+														<option value="account">Account</option>
+														<option value="billing">Billing</option>
+														<option value="workouts">Workouts</option>
+														<option value="technical">Technical</option>
 													</TextField>
-												</Grid>
-												<Grid item xs={12}>
-													<TextField
-														fullWidth
-														label="Subject"
-														required
-														value={contactForm.subject}
-														onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
-														variant="outlined"
-													/>
 												</Grid>
 												<Grid item xs={12}>
 													<TextField
@@ -257,20 +357,33 @@ const SupportPage: NextPage = () => {
 														value={contactForm.message}
 														onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
 														variant="outlined"
-														placeholder="Please describe your question or issue in detail..."
+														placeholder="Tell us how we can help..."
+														className={'contact-field'}
 													/>
 												</Grid>
 												<Grid item xs={12}>
-													<Button
-														type="submit"
-														variant="contained"
-														size="large"
-														startIcon={<SendIcon />}
-														className={'submit-btn'}
-														fullWidth
-													>
-														Send Message
-													</Button>
+													<Box className={'contact-form-footer'}>
+														<Button
+															type="submit"
+															variant="contained"
+															size="large"
+															startIcon={<SendIcon />}
+															className={'contact-submit-button'}
+															fullWidth
+														>
+															Send Message
+														</Button>
+														<Typography variant="body2" className={'trust-microcopy'}>
+															Your message goes directly to our support team.
+														</Typography>
+														<Box className={'contact-info'}>
+															<Typography variant="body2" className={'response-time'}>
+																Estimated response time: <strong>24 hours</strong>
+															</Typography>
+															{/* Optional: Add premium badge here if user is premium */}
+															{/* <Chip label="Priority Support" size="small" className={'priority-badge'} /> */}
+														</Box>
+													</Box>
 												</Grid>
 											</Grid>
 										</form>
@@ -280,28 +393,42 @@ const SupportPage: NextPage = () => {
 						)}
 
 						{tab === 'policies' && (
-							<Box className={'policies-section'}>
-								<Typography variant="h5" className={'section-title'} gutterBottom>
-									Policy Pages
-								</Typography>
-								<Typography variant="body2" color="text.secondary" paragraph sx={{ mb: 4 }}>
-									Review our policies to understand how we operate and protect your rights
-								</Typography>
-								<Grid container spacing={3}>
+							<Box className={'section-container policies-section'}>
+								<Box className={'section-header'}>
+									<Typography variant="h4" className={'section-title'}>
+										Our Policies
+									</Typography>
+									<Typography variant="body1" className={'section-description'}>
+										Clear, simple, and transparent. No legal jargon, just straight talk.
+									</Typography>
+								</Box>
+								<Grid container spacing={3} className={'policies-grid'}>
 									{policyPages.map((policy) => (
 										<Grid item xs={12} md={6} key={policy.id}>
 											<Card className={'policy-card'}>
-												<CardContent>
-													<Typography variant="h6" className={'policy-title'} gutterBottom>
+												<CardContent className={'policy-card-content'}>
+													<Typography variant="h5" className={'policy-title'} gutterBottom>
 														{policy.title}
 													</Typography>
-													<Typography variant="body2" color="text.secondary" paragraph>
+													<Typography variant="body1" className={'policy-description'} paragraph>
 														{policy.description}
 													</Typography>
-													<Typography variant="body2" paragraph>
-														{policy.content}
-													</Typography>
-													<Button variant="outlined" size="small" sx={{ mt: 2 }}>
+													<Box className={'policy-tags'}>
+														{policy.tags.map((tag, index) => (
+															<Chip
+																key={index}
+																label={tag}
+																size="small"
+																className={'transparency-tag'}
+															/>
+														))}
+													</Box>
+													<Button 
+														variant="outlined" 
+														size="medium" 
+														className={'policy-button'}
+														fullWidth
+													>
 														Read Full Policy
 													</Button>
 												</CardContent>
@@ -313,30 +440,92 @@ const SupportPage: NextPage = () => {
 						)}
 
 						{tab === 'troubleshooting' && (
-							<Box className={'troubleshooting-section'}>
-								<Typography variant="h5" className={'section-title'} gutterBottom>
-									Troubleshooting Guide
-								</Typography>
-								<Typography variant="body2" color="text.secondary" paragraph sx={{ mb: 4 }}>
-									Common issues and their solutions
-								</Typography>
-								<Box className={'troubleshooting-accordions'}>
+							<Box className={'section-container troubleshooting-section'}>
+								<Box className={'section-header'}>
+									<Typography variant="h4" className={'section-title'}>
+										Troubleshooting Guide
+									</Typography>
+									<Typography variant="body1" className={'section-description'}>
+										Fix common issues in seconds
+									</Typography>
+								</Box>
+								<Box className={'troubleshooting-list'}>
 									{troubleshootingGuides.map((guide) => (
 										<Accordion
 											key={guide.id}
 											expanded={expandedTroubleshooting === guide.id}
 											onChange={handleTroubleshootingChange(guide.id)}
-											className={'troubleshooting-accordion'}
+											className={'troubleshooting-card'}
 										>
-											<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+											<AccordionSummary expandIcon={<ExpandMoreIcon className={'accordion-icon'} />}>
 												<Typography variant="h6" className={'troubleshooting-title'}>
 													{guide.title}
 												</Typography>
 											</AccordionSummary>
-											<AccordionDetails>
-												<Typography variant="body2" color="text.secondary">
-													{guide.content}
-												</Typography>
+											<AccordionDetails className={'troubleshooting-details'}>
+												<Box className={'troubleshooting-solution'}>
+													<Typography variant="body2" className={'solution-intro'}>
+														Follow these steps in order:
+													</Typography>
+													<Box component="ol" className={'solution-steps'}>
+														{guide.steps.map((step, index) => (
+															<Typography key={index} component="li" variant="body1" className={'solution-step'}>
+																{step}
+															</Typography>
+														))}
+													</Box>
+													{expandedTroubleshooting === guide.id && (
+														<Box className={'issue-feedback'}>
+															<Typography variant="body2" className={'feedback-question'}>
+																Did this solve your issue?
+															</Typography>
+															<Box className={'feedback-buttons'}>
+																{issueFeedback[guide.id] !== 'yes' && (
+																	<Button
+																		variant="contained"
+																		size="small"
+																		className={'feedback-button feedback-yes'}
+																		onClick={() => handleIssueFeedback(guide.id, true)}
+																		startIcon={<span>👍</span>}
+																	>
+																		Yes
+																	</Button>
+																)}
+																{issueFeedback[guide.id] !== 'no' && (
+																	<Button
+																		variant="outlined"
+																		size="small"
+																		className={'feedback-button feedback-no'}
+																		onClick={() => handleIssueFeedback(guide.id, false)}
+																		startIcon={<span>👎</span>}
+																	>
+																		No
+																	</Button>
+																)}
+															</Box>
+															{issueFeedback[guide.id] === 'yes' && (
+																<Typography variant="body2" className={'feedback-success'}>
+																	Great! Glad we could help. 🎉
+																</Typography>
+															)}
+															{issueFeedback[guide.id] === 'no' && (
+																<Box className={'contact-support-cta'}>
+																	<Typography variant="body2" className={'feedback-message'}>
+																		No worries! Let's get you in touch with our support team.
+																	</Typography>
+																	<Button
+																		variant="contained"
+																		size="medium"
+																		className={'contact-support-button'}
+																		onClick={() => changeTabHandler('contact')}
+																	>
+																		Contact Support
+																	</Button>
+																</Box>
+															)}
+														</Box>
+													)}
+												</Box>
 											</AccordionDetails>
 										</Accordion>
 									))}

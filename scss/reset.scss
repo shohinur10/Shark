@@ -1,5 +1,75 @@
 /* RESET */
 
+/* Global root and body resets for full-width layout */
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden;
+  line-height: 1;
+  font-family: $font;
+  box-sizing: border-box !important;
+}
+
+/* Root containers - ensure full width */
+#__next,
+#pc-wrap,
+#mobile-wrap {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 100vh;
+  position: relative;
+  box-sizing: border-box !important;
+}
+
+/* Ensure no side spacing on root elements */
+#__next {
+  overflow-x: hidden;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Override any MUI Stack default styles for header and footer */
+#pc-wrap #top,
+#pc-wrap #footer,
+#mobile-wrap #top,
+#mobile-wrap #footer {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Force MUI Stack components in header/footer to be full width */
+#pc-wrap #top .MuiStack-root,
+#pc-wrap #footer .MuiStack-root,
+#pc-wrap #top > div,
+#pc-wrap #footer > div {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 html,
 body,
 div,

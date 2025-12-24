@@ -1,0 +1,161 @@
+/** TRAINER PAGE - PREMIUM DESIGN **/
+
+.trainers-page {
+	width: 100%;
+	min-height: calc(100vh - 200px);
+	background-color: #FAFAFA;
+	padding-top: $spacing-2xl;
+	padding-bottom: $spacing-3xl;
+	padding-left: $spacing-md;
+	padding-right: $spacing-md;
+
+	// Main container with max-width
+	> .MuiBox-root {
+		max-width: 1300px;
+		width: 100%;
+		margin: 0 auto;
+		padding-left: $spacing-md;
+		padding-right: $spacing-md;
+
+		@media (max-width: $breakpoint-md) {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+
+	// Compact Trainer Card
+	.trainer-card-compact {
+		display: flex;
+		flex-direction: column;
+		padding: $spacing-md;
+		border-radius: $radius-md;
+		border: 1px solid #E5E5E5;
+		background-color: #FFFFFF;
+		transition: all $transition-base;
+		cursor: pointer;
+		text-decoration: none;
+		color: inherit;
+		height: 100%;
+
+		&:hover {
+			border-color: $fitness-orange;
+			box-shadow: 0 4px 12px rgba(241, 119, 66, 0.15);
+			transform: translateY(-2px);
+		}
+	}
+
+	// Two-column grid container
+	.MuiGrid-container,
+	> .MuiBox-root > .MuiBox-root {
+		&[style*="grid"] {
+			max-width: 100%;
+			margin: 0 auto;
+		}
+	}
+}
+
+// Trainer Detail Page
+.trainer-detail-page {
+	width: 100%;
+	min-height: calc(100vh - 200px);
+	background-color: #FAFAFA;
+	padding-top: $spacing-2xl;
+	padding-bottom: $spacing-3xl;
+	padding-left: $spacing-md;
+	padding-right: $spacing-md;
+
+	// Main container with max-width
+	> .MuiBox-root {
+		max-width: 1300px;
+		width: 100%;
+		margin: 0 auto;
+		padding-left: $spacing-md;
+		padding-right: $spacing-md;
+
+		@media (max-width: $breakpoint-md) {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+
+	// Profile Header
+	.trainer-profile-header {
+		display: flex;
+		flex-direction: row;
+		gap: $spacing-lg;
+		padding: $spacing-lg;
+		background-color: #FFFFFF;
+		border-radius: $radius-md;
+		border: 1px solid #E5E5E5;
+		margin-bottom: $spacing-lg;
+
+		.MuiAvatar-root {
+			border: 3px solid #F5F5F5;
+			flex-shrink: 0;
+		}
+
+		@media (max-width: $breakpoint-md) {
+			flex-direction: column;
+			text-align: center;
+
+			.MuiAvatar-root {
+				margin: 0 auto;
+			}
+		}
+	}
+
+	// Program Map
+	.trainer-program-map {
+		padding: $spacing-lg;
+		background-color: #FFFFFF;
+		border-radius: $radius-md;
+		border: 1px solid #E5E5E5;
+	}
+
+	// Workouts Grid
+	.trainer-workouts-grid {
+		.MuiCard-root {
+			border-radius: $radius-md;
+			border: 1px solid #E5E5E5;
+			overflow: hidden;
+			transition: all $transition-base;
+			cursor: pointer;
+
+			&:hover {
+				border-color: $fitness-orange;
+				box-shadow: 0 4px 12px rgba(241, 119, 66, 0.15);
+				transform: translateY(-2px);
+			}
+		}
+	}
+}
+
+// DNA Component
+.trainer-dna {
+	display: flex;
+	flex-direction: column;
+	gap: $spacing-xs;
+	align-items: flex-end;
+	flex-shrink: 0;
+}
+
+// Responsive Design
+@media (max-width: $breakpoint-md) {
+	.trainers-page {
+		padding-top: $spacing-lg;
+		padding-bottom: $spacing-xl;
+		padding-left: $spacing-sm;
+		padding-right: $spacing-sm;
+
+		.trainer-card-compact {
+			width: 100%;
+		}
+	}
+
+	.trainer-detail-page {
+		padding-top: $spacing-lg;
+		padding-bottom: $spacing-xl;
+		padding-left: $spacing-sm;
+		padding-right: $spacing-sm;
+	}
+}

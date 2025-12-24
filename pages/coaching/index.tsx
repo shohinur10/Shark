@@ -1,5 +1,6 @@
+import React from 'react';
 import { NextPage } from 'next';
-import { Stack, Box, Typography, Button, Grid, Card, CardContent, CardMedia, Chip, Avatar, Rating, Tabs, Tab } from '@mui/material';
+import { Stack, Box, Typography, Button, Grid, Card, CardContent, CardMedia, Chip, Avatar, Rating, Tabs, Tab, CircularProgress } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -13,6 +14,16 @@ import StarIcon from '@mui/icons-material/Star';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import BusinessIcon from '@mui/icons-material/Business';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_TRAINERS } from '../../apollo/user/query';
+import { CREATE_BOOKING } from '../../apollo/user/mutation';
+import { Member } from '../../libs/types/member/member';
+import { TrainersInquiry } from '../../libs/types/member/member.input';
+import { Direction } from '../../libs/enums/common.enum';
+import { T } from '../../libs/types/common';
+import { userVar } from '../../apollo/store';
+import { useReactiveVar } from '@apollo/client';
+import { getJwtToken } from '../../libs/auth';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -242,18 +253,90 @@ const gymPartners: GymPartner[] = [
 	},
 ];
 
+// Map API trainers to Trainer interface - defined outside component
+const mapTrainerFromMember = (member: Member): Trainer => {
+	return {
+		id: member._id,
+		name: member.memberFullName || member.memberNick,
+		photo: member.memberImage || '/img/profile/defaultUser.svg',
+		experience: member.trainerExperience 
+			? `${member.trainerExperience} years` 
+			: member.memberWorkouts 
+				? `${member.memberWorkouts} workouts created` 
+				: 'Experienced trainer',
+		certifications: member.trainerCertifications || [],
+		specialization: member.trainerSpecialties || [],
+		pricePerSession: 75, // Default price, should come from trainer settings or subscription
+		packagePrice: 600,
+		packageSessions: 10,
+		availability: 'Available Now', // Could be calculated from booking availability
+		rating: member.trainerRating || 0,
+		reviews: member.memberComments || 0, // Using memberComments as review count
+		location: member.memberAddress || 'Location not specified',
+		isOnline: true, // Could be determined from subscription or settings
+		isVerified: member.memberStatus === 'ACTIVE' && (member.memberRank > 0 || (member.trainerRating && member.trainerRating > 0)),
+	};
+};
+
 const CoachingPage: NextPage = () => {
 	const device = useDeviceDetect();
 	const [tabValue, setTabValue] = useState(0);
+	const [apiTrainers, setApiTrainers] = useState<Member[]>([]);
+	const user = useReactiveVar(userVar);
+	const isLoggedIn = !!getJwtToken() && !!user._id;
+
+	// Prepare trainers query input
+	const trainersQueryInput: TrainersInquiry = {
+		page: 1,
+		limit: 20,
+		sort: 'trainerRating',
+		direction: Direction.DESC,
+		search: {},
+	};
+
+	// Fetch trainers if logged in
+	const {
+		loading: trainersLoading,
+		data: trainersData,
+		error: trainersError,
+	} = useQuery(GET_TRAINERS, {
+		skip: !isLoggedIn,
+		fetchPolicy: 'cache-and-network',
+		variables: { input: trainersQueryInput },
+		onCompleted: (data: T) => {
+			setApiTrainers(data?.getTrainers?.list || []);
+		},
+	});
+
+	// Note: Gym partners will use hardcoded data for now
+	// In the future, this can be connected to a properties query
+
+	// Create booking mutation
+	const [createBooking, { loading: bookingLoading }] = useMutation(CREATE_BOOKING);
 
 	const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
 		setTabValue(newValue);
 	};
 
-	const handleBookSession = (trainerId: string) => {
+	const handleBookSession = async (trainerId: string) => {
+		if (!isLoggedIn) {
+			// Redirect to login if not logged in
+			window.location.href = `/account/login?redirect=/coaching`;
+			return;
+		}
+
 		// Navigate to booking page
-		window.location.href = `/coaching/book?trainerId=${trainerId}`;
+		window.location.href = `/bookings/new?trainerId=${trainerId}`;
 	};
+
+
+	// Use API data if logged in, otherwise use hardcoded data
+	const displayTrainers = isLoggedIn && apiTrainers.length > 0 
+		? apiTrainers.map(mapTrainerFromMember)
+		: trainers;
+
+	// Gym partners use hardcoded data for now (can be connected to properties API later)
+	const displayGymPartners = gymPartners;
 
 	if (device === 'mobile') {
 		return (
@@ -290,11 +373,23 @@ const CoachingPage: NextPage = () => {
 					{/* Personal Trainers Section */}
 					{tabValue === 0 && (
 						<Box className={'trainers-section'}>
-							<Grid container spacing={3}>
-								{trainers.map((trainer) => (
-									<Grid item xs={12} sm={6} md={4} key={trainer.id}>
-										<Card className={'trainer-card'}>
-											<Box className={'trainer-header'}>
+							{isLoggedIn && trainersLoading ? (
+								<Box display="flex" justifyContent="center" p={4}>
+									<CircularProgress />
+								</Box>
+							) : displayTrainers.length === 0 ? (
+								<Box className={'empty-state'} p={4}>
+									<Typography variant="h6">No trainers found</Typography>
+									<Typography variant="body2" color="text.secondary">
+										{isLoggedIn ? 'Try adjusting your search.' : 'Please log in to see available trainers.'}
+									</Typography>
+								</Box>
+							) : (
+								<Grid container spacing={3}>
+									{displayTrainers.map((trainer) => (
+										<Grid item xs={12} sm={6} md={4} key={trainer.id}>
+											<Card className={'trainer-card'}>
+												<Box className={'trainer-header'}>
 												<CardMedia
 													component="div"
 													className={'trainer-photo'}
@@ -318,8 +413,8 @@ const CoachingPage: NextPage = () => {
 														/>
 													)}
 												</CardMedia>
-											</Box>
-											<CardContent>
+												</Box>
+												<CardContent>
 												<Stack spacing={1.5}>
 													<Box>
 														<Typography variant="h5" className={'trainer-name'}>
@@ -361,9 +456,50 @@ const CoachingPage: NextPage = () => {
 															Certifications:
 														</Typography>
 														<Typography variant="body2" className={'certs-text'}>
-															{trainer.certifications.join(', ')}
+															{trainer.certifications.length > 0 
+																? trainer.certifications.join(', ') 
+																: 'Certifications coming soon'}
 														</Typography>
 													</Box>
+													{/* Additional trainer info from API - using all available data */}
+													{(() => {
+														const apiTrainer = apiTrainers.find(t => t._id === trainer.id);
+														if (!apiTrainer) return null;
+														
+														return (
+															<>
+																{(apiTrainer.trainerBio || apiTrainer.memberDesc) && (
+																	<Box className={'trainer-bio'} mt={1}>
+																		<Typography variant="caption" className={'label'}>
+																			About:
+																		</Typography>
+																		<Typography variant="body2" className={'bio-text'}>
+																			{apiTrainer.trainerBio || apiTrainer.memberDesc}
+																		</Typography>
+																	</Box>
+																)}
+																<Box className={'trainer-stats'} mt={1}>
+																	<Stack direction="row" spacing={2} flexWrap="wrap">
+																		{apiTrainer.memberWorkouts > 0 && (
+																			<Typography variant="caption" color="text.secondary">
+																				{apiTrainer.memberWorkouts} Workouts
+																			</Typography>
+																		)}
+																		{apiTrainer.memberFollowers && apiTrainer.memberFollowers > 0 && (
+																			<Typography variant="caption" color="text.secondary">
+																				{apiTrainer.memberFollowers} Followers
+																			</Typography>
+																		)}
+																		{apiTrainer.memberPoints > 0 && (
+																			<Typography variant="caption" color="text.secondary">
+																				{apiTrainer.memberPoints} Points
+																			</Typography>
+																		)}
+																	</Stack>
+																</Box>
+															</>
+														);
+													})()}
 
 													<Box className={'trainer-availability'}>
 														<CalendarTodayIcon className={'icon'} />
@@ -404,10 +540,11 @@ const CoachingPage: NextPage = () => {
 													</Button>
 												</Stack>
 											</CardContent>
-										</Card>
-									</Grid>
-								))}
-							</Grid>
+											</Card>
+										</Grid>
+									))}
+								</Grid>
+							)}
 						</Box>
 					)}
 
@@ -480,7 +617,7 @@ const CoachingPage: NextPage = () => {
 					{tabValue === 2 && (
 						<Box className={'gym-partners-section'}>
 							<Grid container spacing={3}>
-								{gymPartners.map((gym) => (
+								{displayGymPartners.map((gym) => (
 									<Grid item xs={12} sm={6} md={4} key={gym.id}>
 										<Card className={'gym-card'}>
 											<CardMedia

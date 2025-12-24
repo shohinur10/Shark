@@ -11,7 +11,6 @@ import {
 	Checkbox,
 	FormControlLabel,
 	Alert,
-	Divider,
 	CircularProgress,
 	InputAdornment,
 } from '@mui/material';
@@ -26,9 +25,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
-import GoogleIcon from '@mui/icons-material/Google';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -111,27 +107,16 @@ const LoginPage: NextPage = () => {
 		}
 	};
 
-	const handleSocialLogin = (provider: 'google' | 'facebook') => {
-		// TODO: Implement social login
-		console.log(`${provider} login clicked`);
-		// Placeholder for social login implementation
-	};
 
 	const mobileView = (
 		<Stack className={'login-page mobile'}>
 			<Box className={'mobile-container'}>
 				<Box className={'mobile-header'}>
-					<Box className={'logo-section'}>
-						<img src="/img/logo/logoText.svg" alt="Shark" className={'logo-img'} />
-						<Typography variant="h5" className={'logo-text'}>
-							Shark
-						</Typography>
-					</Box>
 					<Typography variant="h4" className={'mobile-title'}>
-						Welcome Back
+						Welcome back
 					</Typography>
 					<Typography variant="body2" className={'mobile-subtitle'}>
-						Sign in to continue your fitness journey
+						Let's continue your training.
 					</Typography>
 				</Box>
 
@@ -144,7 +129,7 @@ const LoginPage: NextPage = () => {
 
 					<TextField
 						fullWidth
-						label={isEmail ? 'Email Address' : 'Username'}
+						label="Nickname or Email"
 						variant="outlined"
 						value={formData.nick}
 						onChange={(e) => handleInputChange('nick', e.target.value)}
@@ -160,7 +145,7 @@ const LoginPage: NextPage = () => {
 								</InputAdornment>
 							),
 						}}
-						sx={{ mb: 2 }}
+						sx={{ mb: 2.5 }}
 					/>
 
 					<TextField
@@ -187,7 +172,7 @@ const LoginPage: NextPage = () => {
 								</IconButton>
 							),
 						}}
-						sx={{ mb: 2 }}
+						sx={{ mb: 2.5 }}
 					/>
 
 					<Box className={'mobile-options'}>
@@ -202,7 +187,7 @@ const LoginPage: NextPage = () => {
 							label={<Typography variant="body2">Remember me</Typography>}
 						/>
 						<Link href="/account/forgot-password" className={'forgot-link'}>
-							<Typography variant="body2">Forgot?</Typography>
+							<Typography variant="body2">Forgot password?</Typography>
 						</Link>
 					</Box>
 
@@ -213,7 +198,7 @@ const LoginPage: NextPage = () => {
 						onClick={handleLogin}
 						disabled={loading || !formData.nick || !formData.password}
 						className={'login-button'}
-						sx={{ mt: 2, mb: 2 }}
+						sx={{ mt: 3, mb: 3 }}
 					>
 						{loading ? (
 							<>
@@ -221,43 +206,19 @@ const LoginPage: NextPage = () => {
 								Signing in...
 							</>
 						) : (
-							'Sign In'
+							'Continue Training'
 						)}
 					</Button>
 
-					<Divider sx={{ my: 3 }}>
-						<Typography variant="body2" color="text.secondary">
-							OR
-						</Typography>
-					</Divider>
-
-					<Box className={'social-buttons'}>
-						<Button
-							variant="outlined"
-							fullWidth
-							startIcon={<GoogleIcon />}
-							onClick={() => handleSocialLogin('google')}
-							className={'social-button google'}
-							sx={{ mb: 1.5 }}
-						>
-							Continue with Google
-						</Button>
-						<Button
-							variant="outlined"
-							fullWidth
-							startIcon={<FacebookIcon />}
-							onClick={() => handleSocialLogin('facebook')}
-							className={'social-button facebook'}
-						>
-							Continue with Facebook
-						</Button>
-					</Box>
+					<Typography variant="caption" className={'security-microcopy'}>
+						Your progress is saved securely.
+					</Typography>
 
 					<Box className={'signup-link'}>
 						<Typography variant="body2" color="text.secondary" textAlign="center">
-							Don't have an account?{' '}
+							New here?{' '}
 							<Link href="/account/register" className={'link-text'}>
-								Sign up
+								Create an account
 							</Link>
 						</Typography>
 					</Box>
@@ -270,19 +231,13 @@ const LoginPage: NextPage = () => {
 		<Stack className={'login-page'}>
 			<Stack className={'container'}>
 				<Box className={'login-container'}>
-					<Box className={'login-left'}>
+					<Box className={'login-card'}>
 						<Box className={'login-header'}>
-							<Box className={'logo-section'}>
-								<FitnessCenterIcon className={'fitness-icon'} />
-								<Typography variant="h4" className={'logo-text'}>
-									Shark
-								</Typography>
-							</Box>
 							<Typography variant="h3" className={'login-title'}>
-								Welcome Back!
+								Welcome back
 							</Typography>
 							<Typography variant="body1" className={'login-subtitle'}>
-								Sign in to continue your fitness journey and reach your goals
+								Let's continue your training.
 							</Typography>
 						</Box>
 
@@ -290,7 +245,7 @@ const LoginPage: NextPage = () => {
 							{error && (
 								<Alert
 									severity="error"
-									sx={{ mb: 2, borderRadius: 2 }}
+									sx={{ mb: 3, borderRadius: 2 }}
 									onClose={() => setError('')}
 									className={'error-alert'}
 								>
@@ -300,7 +255,7 @@ const LoginPage: NextPage = () => {
 
 							<TextField
 								fullWidth
-								label={isEmail ? 'Email Address' : 'Username'}
+								label="Nickname or Email"
 								variant="outlined"
 								value={formData.nick}
 								onChange={(e) => handleInputChange('nick', e.target.value)}
@@ -343,7 +298,7 @@ const LoginPage: NextPage = () => {
 										</IconButton>
 									),
 								}}
-								sx={{ mb: 2 }}
+								sx={{ mb: 2.5 }}
 							/>
 
 							<Box className={'login-options'}>
@@ -368,7 +323,7 @@ const LoginPage: NextPage = () => {
 								onClick={handleLogin}
 								disabled={loading || !formData.nick || !formData.password}
 								className={'login-button'}
-								sx={{ mt: 3, mb: 2 }}
+								sx={{ mt: 3, mb: 3 }}
 							>
 								{loading ? (
 									<>
@@ -376,69 +331,21 @@ const LoginPage: NextPage = () => {
 										Signing in...
 									</>
 								) : (
-									'Sign In'
+									'Continue Training'
 								)}
 							</Button>
 
-							<Divider sx={{ my: 3 }}>
-								<Typography variant="body2" color="text.secondary">
-									OR
-								</Typography>
-							</Divider>
-
-							<Box className={'social-buttons'}>
-								<Button
-									variant="outlined"
-									fullWidth
-									startIcon={<GoogleIcon />}
-									onClick={() => handleSocialLogin('google')}
-									className={'social-button google'}
-									sx={{ mb: 1.5 }}
-								>
-									Continue with Google
-								</Button>
-								<Button
-									variant="outlined"
-									fullWidth
-									startIcon={<FacebookIcon />}
-									onClick={() => handleSocialLogin('facebook')}
-									className={'social-button facebook'}
-								>
-									Continue with Facebook
-								</Button>
-							</Box>
+							<Typography variant="caption" className={'security-microcopy'}>
+								Your progress is saved securely.
+							</Typography>
 
 							<Box className={'signup-link'}>
 								<Typography variant="body2" color="text.secondary" textAlign="center">
-									Don't have an account?{' '}
+									New here?{' '}
 									<Link href="/account/register" className={'link-text'}>
-										Sign up
+										Create an account
 									</Link>
 								</Typography>
-							</Box>
-						</Box>
-					</Box>
-
-					<Box className={'login-right'}>
-						<Box className={'login-image-wrapper'}>
-							<Box
-								className={'login-image'}
-								style={{
-									backgroundImage: 'url(/img/banner/joinBg.svg)',
-									backgroundSize: 'cover',
-									backgroundPosition: 'center',
-								}}
-							/>
-							<Box className={'image-overlay'}>
-								<Box className={'overlay-content'}>
-									<FitnessCenterIcon className={'overlay-icon'} />
-									<Typography variant="h4" className={'overlay-title'}>
-										Transform Your Body
-									</Typography>
-									<Typography variant="body1" className={'overlay-text'}>
-										Join thousands of members achieving their fitness goals
-									</Typography>
-								</Box>
 							</Box>
 						</Box>
 					</Box>

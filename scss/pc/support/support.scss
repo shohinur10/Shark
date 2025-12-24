@@ -1,12 +1,21 @@
-/** SUPPORT PAGE STYLES **/
+/** SUPPORT PAGE STYLES - REDESIGNED **/
+
+// Design System Colors
+$support-primary: #E10600;
+$support-bg: #F7F7F7;
+$support-card-bg: #FFFFFF;
+$support-text-primary: #111111;
+$support-text-secondary: #6B6B6B;
+$support-border: #E5E5E5;
+$support-radius: 16px;
 
 #pc-wrap {
 	.support-page {
 		position: relative;
-		padding: 60px 0px 60px;
+		padding: 80px 0px 100px;
 		width: 100%;
-		height: auto;
-		background: #ffffff;
+		min-height: calc(100vh - 200px);
+		background: $support-bg;
 
 		.container {
 			@include container;
@@ -14,175 +23,930 @@
 			display: flex;
 			flex-direction: column;
 
-			.support-main-info {
+			// Header Section
+			.support-header {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 				margin-bottom: $spacing-3xl;
 
-				.info {
+				.header-info {
 					display: flex;
 					flex-direction: column;
 					align-items: center;
 					text-align: center;
-					margin-bottom: $spacing-xl;
+					margin-bottom: $spacing-2xl;
 
-					span {
-						color: $gray-900;
+					.page-title {
+						color: $support-text-primary;
 						font-family: $font;
-						font-size: 42px;
+						font-size: 48px;
 						font-style: normal;
 						font-weight: 700;
-						line-height: normal;
+						line-height: 1.2;
 						letter-spacing: -0.5px;
-						margin-bottom: $spacing-sm;
+						margin-bottom: $spacing-md;
 					}
 
-					p {
-						color: $gray-600;
+					.page-subtitle {
+						color: $support-text-secondary;
 						font-family: $font;
 						font-size: 18px;
 						font-style: normal;
 						font-weight: 400;
-						line-height: normal;
+						line-height: 1.6;
+						max-width: 600px;
 					}
 				}
 
-				.btns {
-					margin-top: $spacing-lg;
+				// Pill Tab Navigation
+				.tab-navigation {
 					display: flex;
 					flex-direction: row;
 					justify-content: center;
-					gap: 0;
-					border-radius: $radius-md;
-					overflow: hidden;
-					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+					align-items: center;
+					gap: $spacing-sm;
+					background: $support-card-bg;
+					padding: $spacing-xs;
+					border-radius: 999px;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+					border: 1px solid $support-border;
 
-					div {
-						width: 200px;
-						height: 50px;
+					.tab-button {
 						display: flex;
-						justify-content: center;
 						align-items: center;
-						border: 1px solid $gray-200;
+						justify-content: center;
+						gap: $spacing-sm;
+						padding: $spacing-md $spacing-xl;
+						border: none;
+						background: transparent;
+						border-radius: 999px;
 						cursor: pointer;
-						color: $gray-600;
+						color: $support-text-secondary;
 						font-family: $font;
-						font-size: 14px;
+						font-size: 15px;
 						font-style: normal;
-						font-weight: 600;
+						font-weight: 500;
 						line-height: normal;
-						background: #ffffff;
 						transition: all $transition-base;
+						white-space: nowrap;
+						position: relative;
 
-						&:first-child {
-							border-radius: $radius-md 0 0 $radius-md;
-						}
-
-						&:last-child {
-							border-radius: 0 $radius-md $radius-md 0;
+						.tab-icon {
+							font-size: 20px;
+							transition: all $transition-base;
 						}
 
 						&:hover {
-							background: $gray-50;
-							color: $gray-900;
+							color: $support-text-primary;
+							background: rgba($support-primary, 0.05);
 						}
 
 						&.active {
-							border: 1px solid $gray-900;
-							background: $gray-900;
-							color: #ffffff;
-							z-index: 1;
-						}
+							background: $support-text-primary;
+							color: $support-card-bg;
+							font-weight: 600;
+							box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
-						svg {
-							font-size: 18px;
+							.tab-icon {
+								color: $support-card-bg;
+							}
+
+							&:hover {
+								background: darken($support-text-primary, 5%);
+							}
 						}
 					}
 				}
 			}
 
+			// Smart Help Context - Global feature for all sections
+			.smart-help-context {
+				width: 100%;
+				margin-bottom: $spacing-2xl;
+				display: flex;
+				justify-content: center;
+				animation: fadeInSmartHelp 0.5s ease-in-out;
+			}
+
+			@keyframes fadeInSmartHelp {
+				from {
+					opacity: 0;
+					transform: translateY(-10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			.smart-help-card {
+				background: linear-gradient(135deg, rgba($support-primary, 0.08) 0%, rgba($support-primary, 0.03) 100%);
+				border: 1px solid rgba($support-primary, 0.15);
+				border-radius: 12px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+				max-width: 600px;
+				width: 100%;
+				transition: all $transition-base;
+				backdrop-filter: blur(10px);
+
+				&:hover {
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+					border-color: rgba($support-primary, 0.25);
+					transform: translateY(-2px);
+				}
+
+				.smart-help-content {
+					display: flex;
+					align-items: center;
+					gap: $spacing-md;
+					padding: $spacing-md $spacing-lg !important;
+
+					@media (max-width: $breakpoint-sm) {
+						padding: $spacing-sm $spacing-md !important;
+						gap: $spacing-sm;
+					}
+
+					.smart-help-icon {
+						color: $support-primary;
+						font-size: 24px;
+						flex-shrink: 0;
+						opacity: 0.8;
+
+						@media (max-width: $breakpoint-sm) {
+							font-size: 20px;
+						}
+					}
+
+					.smart-help-text {
+						flex: 1;
+						display: flex;
+						flex-direction: column;
+						gap: $spacing-xs;
+
+						.smart-help-message {
+							color: $support-text-primary;
+							font-family: $font;
+							font-size: 14px;
+							font-weight: 500;
+							line-height: 1.5;
+							margin: 0;
+
+							@media (max-width: $breakpoint-sm) {
+								font-size: 13px;
+							}
+						}
+
+						.smart-help-action {
+							color: $support-primary;
+							font-family: $font;
+							font-size: 13px;
+							font-weight: 600;
+							text-transform: none;
+							padding: 0;
+							min-width: auto;
+							align-self: flex-start;
+							transition: all $transition-base;
+							margin-top: 2px;
+
+							&:hover {
+								color: darken($support-primary, 10%);
+								background: transparent;
+								transform: translateX(4px);
+							}
+
+							@media (max-width: $breakpoint-sm) {
+								font-size: 12px;
+							}
+						}
+					}
+				}
+			}
+
+			// Content Section
 			.support-content {
-				margin-top: $spacing-2xl;
+				width: 100%;
 				display: flex;
 				flex-direction: column;
 
-				.section-title {
-					font-family: $font;
-					font-weight: 700;
-					color: $gray-900;
-					font-size: 28px;
-					margin-bottom: $spacing-md;
+				.section-container {
+					width: 100%;
+					animation: fadeIn 0.4s ease-in-out;
 				}
 
-				// Contact Form Section
-				.contact-form-section {
-					.contact-form-card {
-						background: #ffffff;
-						border-radius: $radius-lg;
-						box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-						border: 1px solid $gray-200;
+				@keyframes fadeIn {
+					from {
+						opacity: 0;
+						transform: translateY(10px);
+					}
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
 
-						.submit-btn {
-							background: $gray-900;
-							color: #ffffff;
-							font-weight: 600;
-							text-transform: none;
-							padding: $spacing-md $spacing-xl;
+				// Section Header (shared across all sections)
+				.section-header {
+					margin-bottom: $spacing-2xl;
+					text-align: center;
 
-							&:hover {
-								background: $gray-800;
-								box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-							}
+					.section-title {
+						color: $support-text-primary;
+						font-family: $font;
+						font-size: 32px;
+						font-style: normal;
+						font-weight: 700;
+						line-height: 1.3;
+						margin-bottom: $spacing-md;
+					}
+
+					.section-description {
+						color: $support-text-secondary;
+						font-family: $font;
+						font-size: 16px;
+						font-style: normal;
+						font-weight: 400;
+						line-height: 1.6;
+						max-width: 700px;
+						margin: 0 auto;
+					}
+				}
+
+				// Shared Card Styles
+				.content-card {
+					background: $support-card-bg;
+					border-radius: $support-radius;
+					border: 1px solid $support-border;
+					box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+					transition: all $transition-base;
+					overflow: hidden;
+
+					&:hover {
+						box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+						transform: translateY(-2px);
+					}
+
+					.card-content {
+						padding: $spacing-2xl;
+					}
+
+					.card-title {
+						color: $support-text-primary;
+						font-family: $font;
+						font-size: 22px;
+						font-weight: 600;
+						line-height: 1.4;
+						margin-bottom: $spacing-md;
+					}
+
+					.card-description {
+						color: $support-text-secondary;
+						font-family: $font;
+						font-size: 14px;
+						line-height: 1.6;
+						margin-bottom: $spacing-md;
+					}
+
+					.card-text {
+						color: $support-text-primary;
+						font-family: $font;
+						font-size: 14px;
+						line-height: 1.7;
+						margin-bottom: $spacing-lg;
+					}
+
+					.card-button {
+						color: $support-primary;
+						border-color: $support-primary;
+						font-family: $font;
+						font-weight: 500;
+						text-transform: none;
+						border-radius: 8px;
+						padding: $spacing-sm $spacing-lg;
+						transition: all $transition-base;
+
+						&:hover {
+							background: $support-primary;
+							color: $support-card-bg;
+							border-color: $support-primary;
+							transform: translateY(-1px);
+							box-shadow: 0 4px 12px rgba($support-primary, 0.2);
 						}
 					}
 				}
 
-				// Policies Section
-				.policies-section {
-					.policy-card {
-						background: #ffffff;
-						border-radius: $radius-lg;
-						box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-						border: 1px solid $gray-200;
+				// Contact Section - Personal & Reassuring
+				.contact-section {
+					.contact-header {
+						text-align: center;
+						margin-bottom: $spacing-3xl;
+
+						.contact-title {
+							color: $support-text-primary;
+							font-family: $font;
+							font-size: 36px;
+							font-weight: 700;
+							line-height: 1.3;
+							margin-bottom: $spacing-md;
+						}
+
+						.contact-subtitle {
+							color: $support-text-secondary;
+							font-family: $font;
+							font-size: 18px;
+							font-weight: 400;
+							line-height: 1.6;
+						}
+					}
+
+					.contact-form-card {
+						background: $support-card-bg;
+						border-radius: $support-radius;
+						border: 1px solid $support-border;
+						box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+						max-width: 800px;
+						margin: 0 auto;
 						transition: all $transition-base;
-						height: 100%;
 
 						&:hover {
-							transform: translateY(-4px);
-							box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-							border-color: $gray-300;
+							box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+						}
+
+						.contact-form-content {
+							padding: $spacing-3xl;
+
+							@media (max-width: $breakpoint-sm) {
+								padding: $spacing-xl;
+							}
+						}
+					}
+
+					.contact-form {
+						.contact-field {
+							.MuiOutlinedInput-root {
+								border-radius: 12px;
+								background: $support-card-bg;
+								font-size: 16px;
+								padding: 0;
+
+								.MuiOutlinedInput-input {
+									padding: 16px 20px;
+									font-family: $font;
+									color: $support-text-primary;
+									font-size: 16px;
+								}
+
+								&:hover .MuiOutlinedInput-notchedOutline {
+									border-color: darken($support-border, 10%);
+								}
+
+								&.Mui-focused .MuiOutlinedInput-notchedOutline {
+									border-color: $support-primary;
+									border-width: 2px;
+								}
+							}
+
+							.MuiInputLabel-root {
+								font-family: $font;
+								color: $support-text-secondary;
+								font-size: 15px;
+								font-weight: 500;
+
+								&.Mui-focused {
+									color: $support-primary;
+									font-weight: 600;
+								}
+							}
+
+							.MuiInputBase-input {
+								font-family: $font;
+								color: $support-text-primary;
+							}
+
+							textarea.MuiOutlinedInput-input {
+								min-height: 140px;
+								resize: vertical;
+							}
+						}
+					}
+
+					.contact-form-footer {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						gap: $spacing-md;
+						margin-top: $spacing-lg;
+					}
+
+					.contact-submit-button {
+						background: $support-text-primary;
+						color: $support-card-bg;
+						font-family: $font;
+						font-weight: 600;
+						font-size: 17px;
+						text-transform: none;
+						border-radius: 12px;
+						padding: 16px 32px;
+						box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+						transition: all $transition-base;
+						min-height: 56px;
+
+						&:hover {
+							background: darken($support-text-primary, 5%);
+							box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+							transform: translateY(-2px);
+						}
+
+						&:active {
+							transform: translateY(0);
+						}
+					}
+
+					.trust-microcopy {
+						color: $support-text-secondary;
+						font-family: $font;
+						font-size: 14px;
+						text-align: center;
+						margin-top: $spacing-sm;
+						line-height: 1.6;
+					}
+
+					.contact-info {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						gap: $spacing-sm;
+						margin-top: $spacing-md;
+						padding-top: $spacing-lg;
+						border-top: 1px solid $support-border;
+
+						.response-time {
+							color: $support-text-secondary;
+							font-family: $font;
+							font-size: 14px;
+							text-align: center;
+
+							strong {
+								color: $support-text-primary;
+								font-weight: 600;
+							}
+						}
+
+						.priority-badge {
+							background: $support-primary;
+							color: $support-card-bg;
+							font-family: $font;
+							font-size: 12px;
+							font-weight: 600;
+							padding: 4px 12px;
+							border-radius: 999px;
+						}
+					}
+				}
+
+				// Policies Section - Clear & Transparent
+				.policies-section {
+					.policies-grid {
+						margin-top: $spacing-2xl;
+					}
+
+					.policy-card {
+						height: 100%;
+						display: flex;
+						flex-direction: column;
+						background: $support-card-bg;
+						border-radius: $support-radius;
+						border: 1px solid $support-border;
+						box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+						transition: all $transition-base;
+
+						&:hover {
+							box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+							transform: translateY(-2px);
+							border-color: darken($support-border, 10%);
+						}
+
+						.policy-card-content {
+							display: flex;
+							flex-direction: column;
+							flex-grow: 1;
+							padding: $spacing-2xl;
+							height: 100%;
+
+							@media (max-width: $breakpoint-sm) {
+								padding: $spacing-xl;
+							}
 						}
 
 						.policy-title {
+							color: $support-text-primary;
+							font-family: $font;
+							font-size: 24px;
+							font-weight: 700;
+							line-height: 1.3;
+							margin-bottom: $spacing-md;
+						}
+
+						.policy-description {
+							color: $support-text-secondary;
+							font-family: $font;
+							font-size: 16px;
+							line-height: 1.7;
+							margin-bottom: $spacing-lg;
+							flex-grow: 1;
+						}
+
+						.policy-tags {
+							display: flex;
+							flex-wrap: wrap;
+							gap: $spacing-sm;
+							margin-bottom: $spacing-xl;
+
+							.transparency-tag {
+								background: rgba($support-primary, 0.08);
+								color: $support-primary;
+								border: 1px solid rgba($support-primary, 0.2);
+								font-family: $font;
+								font-size: 12px;
+								font-weight: 600;
+								height: 28px;
+								border-radius: 999px;
+								padding: 0 $spacing-md;
+
+								.MuiChip-label {
+									padding: 0;
+								}
+							}
+						}
+
+						.policy-button {
+							color: $support-text-primary;
+							border-color: $support-border;
 							font-family: $font;
 							font-weight: 600;
-							color: $gray-900;
+							font-size: 15px;
+							text-transform: none;
+							border-radius: 12px;
+							padding: $spacing-md $spacing-lg;
+							border-width: 2px;
+							margin-top: auto;
+							transition: all $transition-base;
+
+							&:hover {
+								background: $support-text-primary;
+								color: $support-card-bg;
+								border-color: $support-text-primary;
+								transform: translateY(-1px);
+								box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+							}
 						}
 					}
 				}
 
-				// Troubleshooting Section
+				// Troubleshooting Section - Smart Help Guide
 				.troubleshooting-section {
-					.troubleshooting-accordions {
-						.troubleshooting-accordion {
-							background: #ffffff;
-							border-radius: $radius-md;
-							box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-							border: 1px solid $gray-200;
+					.troubleshooting-list {
+						display: flex;
+						flex-direction: column;
+						gap: $spacing-md;
+						max-width: 900px;
+						margin: 0 auto;
+					}
+
+					.troubleshooting-card {
+						background: $support-card-bg;
+						border-radius: $support-radius;
+						border: 1px solid $support-border;
+						box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+						transition: all $transition-base;
+						overflow: hidden;
+
+						&:before {
+							display: none;
+						}
+
+						&:hover {
+							box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+							border-color: darken($support-border, 10%);
+						}
+
+						.MuiAccordionSummary-root {
+							padding: $spacing-lg $spacing-xl;
+							min-height: 72px;
+
+							&:hover {
+								background: rgba($support-primary, 0.02);
+							}
+						}
+
+						.troubleshooting-title {
+							color: $support-text-primary;
+							font-family: $font;
+							font-size: 18px;
+							font-weight: 600;
+							line-height: 1.4;
+						}
+
+						.accordion-icon {
+							color: $support-text-secondary;
+							font-size: 24px;
+							transition: all $transition-base;
+						}
+
+						.Mui-expanded .accordion-icon {
+							color: $support-primary;
+							transform: rotate(180deg);
+						}
+
+						.troubleshooting-details {
+							padding: 0 $spacing-xl $spacing-xl;
+						}
+
+						.troubleshooting-solution {
+							padding-top: $spacing-sm;
+							animation: fadeInSolution 0.3s ease-in-out;
+						}
+
+						@keyframes fadeInSolution {
+							from {
+								opacity: 0;
+								transform: translateY(-10px);
+							}
+							to {
+								opacity: 1;
+								transform: translateY(0);
+							}
+						}
+
+						.solution-intro {
+							color: $support-text-secondary;
+							font-family: $font;
+							font-size: 14px;
+							font-weight: 600;
 							margin-bottom: $spacing-md;
+							text-transform: uppercase;
+							letter-spacing: 0.5px;
+						}
+
+						.solution-steps {
+							margin: 0;
+							padding-left: $spacing-xl;
+							margin-bottom: $spacing-xl;
+
+							.solution-step {
+								color: $support-text-primary;
+								font-family: $font;
+								font-size: 15px;
+								line-height: 1.8;
+								margin-bottom: $spacing-md;
+								padding-left: $spacing-sm;
+
+								&:last-child {
+									margin-bottom: 0;
+								}
+							}
+						}
+
+						.issue-feedback {
+							margin-top: $spacing-xl;
+							padding-top: $spacing-xl;
+							border-top: 1px solid $support-border;
+						}
+
+						.feedback-question {
+							color: $support-text-primary;
+							font-family: $font;
+							font-size: 15px;
+							font-weight: 600;
+							margin-bottom: $spacing-md;
+						}
+
+						.feedback-buttons {
+							display: flex;
+							gap: $spacing-md;
+							margin-bottom: $spacing-md;
+						}
+
+						.feedback-button {
+							font-family: $font;
+							font-weight: 600;
+							text-transform: none;
+							border-radius: 8px;
+							padding: $spacing-sm $spacing-lg;
+							font-size: 14px;
+
+							&.feedback-yes {
+								background: #4CAF50;
+								color: $support-card-bg;
+								border: none;
+
+								&:hover {
+									background: darken(#4CAF50, 5%);
+									transform: translateY(-1px);
+									box-shadow: 0 2px 8px rgba(#4CAF50, 0.3);
+								}
+							}
+
+							&.feedback-no {
+								color: $support-text-primary;
+								border-color: $support-border;
+								border-width: 2px;
+
+								&:hover {
+									background: rgba($support-primary, 0.05);
+									border-color: $support-primary;
+									color: $support-primary;
+								}
+							}
+
+							span {
+								font-size: 18px;
+								margin-right: $spacing-xs;
+							}
+						}
+
+						.feedback-success {
+							color: #4CAF50;
+							font-family: $font;
+							font-size: 15px;
+							font-weight: 500;
+							padding: $spacing-md;
+							background: rgba(#4CAF50, 0.1);
+							border-radius: 8px;
+							text-align: center;
+						}
+
+						.contact-support-cta {
+							margin-top: $spacing-md;
+							padding: $spacing-lg;
+							background: rgba($support-primary, 0.05);
+							border-radius: 12px;
+							text-align: center;
+						}
+
+						.feedback-message {
+							color: $support-text-secondary;
+							font-family: $font;
+							font-size: 14px;
+							margin-bottom: $spacing-md;
+							line-height: 1.6;
+						}
+
+						.contact-support-button {
+							background: $support-primary;
+							color: $support-card-bg;
+							font-family: $font;
+							font-weight: 600;
+							text-transform: none;
+							border-radius: 12px;
+							padding: $spacing-md $spacing-xl;
+							box-shadow: 0 2px 8px rgba($support-primary, 0.2);
 							transition: all $transition-base;
 
 							&:hover {
-								box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+								background: darken($support-primary, 5%);
+								box-shadow: 0 4px 16px rgba($support-primary, 0.3);
+								transform: translateY(-2px);
+							}
+						}
+					}
+				}
+
+				// FAQ Section - Modern Card-Based Design
+				.faq-content {
+					width: 100%;
+
+					.categories {
+						display: flex;
+						flex-direction: row;
+						justify-content: center;
+						flex-wrap: wrap;
+						gap: $spacing-sm;
+						margin-bottom: $spacing-3xl;
+						padding: $spacing-md;
+						background: $support-card-bg;
+						border-radius: $support-radius;
+						border: 1px solid $support-border;
+						box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+						.category-button {
+							padding: $spacing-sm $spacing-lg;
+							border-radius: 999px;
+							color: $support-text-secondary;
+							font-family: $font;
+							font-size: 14px;
+							font-weight: 500;
+							cursor: pointer;
+							transition: all $transition-base;
+							border: 1px solid transparent;
+							background: transparent;
+							white-space: nowrap;
+							min-width: 120px;
+
+							&:hover {
+								color: $support-text-primary;
+								background: rgba($support-primary, 0.05);
 							}
 
-							.troubleshooting-title {
-								font-family: $font;
+							&.active {
+								background: $support-primary;
+								color: $support-card-bg;
+								border-color: $support-primary;
 								font-weight: 600;
-								color: $gray-900;
-								font-size: 16px;
+								box-shadow: 0 2px 8px rgba($support-primary, 0.2);
 							}
+						}
+					}
+
+					.faq-cards {
+						margin-top: 0;
+						width: 100%;
+
+						.faq-card {
+							background: $support-card-bg;
+							border-radius: $support-radius;
+							border: 1px solid $support-border;
+							box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+							margin-bottom: $spacing-md;
+							transition: all $transition-base;
+							overflow: hidden;
+
+							&:before {
+								display: none;
+							}
+
+							&:hover {
+								box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+								border-color: darken($support-border, 10%);
+							}
+
+							.faq-question {
+								padding: $spacing-lg $spacing-xl;
+								min-height: 72px;
+								background: transparent;
+								border-radius: $support-radius;
+
+								&:hover {
+									background: rgba($support-primary, 0.02);
+								}
+
+								.faq-question-text {
+									color: $support-text-primary;
+									font-family: $font;
+									font-size: 17px;
+									font-weight: 600;
+									line-height: 1.5;
+									flex: 1;
+								}
+
+								.faq-chevron {
+									transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+									color: $support-text-secondary;
+									font-size: 24px !important;
+									margin-left: $spacing-md;
+								}
+
+								&.Mui-expanded {
+									.faq-chevron {
+										transform: rotate(90deg) !important;
+										color: $support-primary !important;
+									}
+								}
+							}
+
+							.faq-answer {
+								padding: 0 $spacing-xl $spacing-xl;
+								background: transparent;
+
+								.faq-answer-text {
+									color: $support-text-secondary;
+									font-family: $font;
+									font-size: 15px;
+									line-height: 1.7;
+									padding-top: $spacing-sm;
+								}
+							}
+
+							&.Mui-expanded {
+								background: $support-card-bg;
+								box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+								border-color: rgba($support-primary, 0.2);
+
+								.faq-answer {
+									animation: fadeInAnswer 0.3s ease-in-out;
+								}
+							}
+						}
+					}
+
+					@keyframes fadeInAnswer {
+						from {
+							opacity: 0;
+							transform: translateY(-10px);
+						}
+						to {
+							opacity: 1;
+							transform: translateY(0);
 						}
 					}
 				}
@@ -195,43 +959,50 @@
 @media (max-width: $breakpoint-md) {
 	#pc-wrap {
 		.support-page {
-			padding: $spacing-lg 0;
+			padding: $spacing-2xl 0 $spacing-3xl;
 
 			.container {
-				.support-main-info {
-					.info {
-						span {
-							font-size: 32px;
+				.support-header {
+					.header-info {
+						.page-title {
+							font-size: 36px;
 						}
 
-						p {
+						.page-subtitle {
 							font-size: 16px;
 						}
 					}
 
-					.btns {
+					.tab-navigation {
 						flex-wrap: wrap;
-						border-radius: $radius-md;
+						gap: $spacing-xs;
+						padding: $spacing-xs;
 
-						div {
-							width: 50%;
-							border-radius: 0;
+						.tab-button {
+							padding: $spacing-sm $spacing-lg;
+							font-size: 14px;
 
-							&:first-child {
-								border-radius: $radius-md 0 0 0;
+							.tab-icon {
+								font-size: 18px;
 							}
+						}
+					}
+				}
 
-							&:nth-child(2) {
-								border-radius: 0 $radius-md 0 0;
-							}
+				.support-content {
+					.section-header {
+						.section-title {
+							font-size: 28px;
+						}
 
-							&:nth-child(3) {
-								border-radius: 0 0 0 $radius-md;
-							}
+						.section-description {
+							font-size: 15px;
+						}
+					}
 
-							&:last-child {
-								border-radius: 0 0 $radius-md 0;
-							}
+					.content-card {
+						.card-content {
+							padding: $spacing-xl;
 						}
 					}
 				}
@@ -240,11 +1011,24 @@
 	}
 }
 
+@media (max-width: $breakpoint-sm) {
+	#pc-wrap {
+		.support-page {
+			.container {
+				.support-header {
+					.tab-navigation {
+						.tab-button {
+							flex: 1 1 calc(50% - $spacing-xs);
+							min-width: 0;
+							padding: $spacing-sm $spacing-md;
 
-
-
-
-
-
-
-
+							span {
+								font-size: 13px;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

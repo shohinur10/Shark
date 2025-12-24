@@ -2,30 +2,35 @@
 	#write-article-page {
 		width: 100%;
 		height: auto;
+		padding: 0;
+		
 		.main-title-box {
-			width: auto;
+			width: 100%;
 			height: auto;
 			flex-direction: row;
 			justify-content: space-between;
+			margin-bottom: 32px;
+			
 			.right-box {
-				width: 315px;
+				width: 100%;
 				.main-title {
 					color: #181a20;
 					font-family: $font;
-					font-size: 30px;
+					font-size: 32px;
 					font-style: normal;
-					font-weight: 600;
-					line-height: normal;
-					letter-spacing: 0.6px;
-					text-transform: capitalize;
+					font-weight: 700;
+					line-height: 1.2;
+					letter-spacing: -0.5px;
+					text-transform: none;
+					margin-bottom: 8px;
 				}
 				.sub-title {
-					color: #181a20;
+					color: #5a6c7d;
 					font-family: $font;
-					font-size: 14px;
+					font-size: 15px;
 					font-style: normal;
 					font-weight: 400;
-					line-height: 26px;
+					line-height: 1.6;
 				}
 			}
 		}
@@ -43,39 +48,172 @@
 				.btn-next {
 					background: #87cdf9;
 					color: #000000;
+					border-radius: 8px;
+					font-weight: 600;
+					text-transform: none;
+					transition: all 0.3s ease;
+					&:hover {
+						background: #6bb3e8;
+						transform: translateY(-2px);
+						box-shadow: 0 4px 12px rgba(135, 205, 249, 0.4);
+					}
 				}
 			}
 			.select {
 				width: 214px;
-				height: 40px;
+				height: 48px;
 				font-size: 14px;
 			}
 			.input-tit {
 				font-size: 14px;
 				padding: 0 16px;
 				margin-top: 16px;
-				border: 1px solid #eee;
-				border-radius: 4px;
+				border: 1px solid #e0e0e0;
+				border-radius: 8px;
+				transition: all 0.3s ease;
+				&:focus {
+					border-color: #87cdf9;
+					box-shadow: 0 0 0 3px rgba(135, 205, 249, 0.1);
+				}
 			}
-			.btn-flex { margin-top: 40px; }
+			.btn-flex { 
+				margin-top: 40px; 
+			}
 		}
+		
+		// Toast UI Editor Customization
+		.toastui-editor {
+			border-radius: 8px;
+			overflow: hidden;
+			border: 1px solid #e0e0e0;
+			
+			.toastui-editor-toolbar {
+				background-color: #f8f9fa;
+				border-bottom: 1px solid #e0e0e0;
+				padding: 12px;
+				
+				.toastui-editor-toolbar-group {
+					.toastui-editor-toolbar-button {
+						border-radius: 6px;
+						transition: all 0.2s ease;
+						
+						&:hover {
+							background-color: #e9ecef;
+						}
+						
+						&.active {
+							background-color: #87cdf9;
+							color: white;
+						}
+					}
+				}
+			}
+			
+			.toastui-editor-contents {
+				padding: 24px;
+				font-size: 15px;
+				line-height: 1.8;
+				color: #2c3e50;
+				
+				p {
+					margin-bottom: 16px;
+				}
+				
+				h1, h2, h3, h4, h5, h6 {
+					margin-top: 24px;
+					margin-bottom: 16px;
+					font-weight: 700;
+					color: #181a20;
+				}
+				
+				img {
+					border-radius: 8px;
+					max-width: 100%;
+					height: auto;
+				}
+			}
+		}
+		
 		.css-guvl2y-MuiButtonBase-root-MuiButton-root {
 			background: #87cdf9;
+			border-radius: 8px;
+			font-weight: 600;
+			text-transform: none;
+			transition: all 0.3s ease;
+			
+			&:hover {
+				background: #6bb3e8;
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(135, 205, 249, 0.4);
+			}
+			
 			svg {
 				fill: #000000;
 			}
 		}
-		.toastui-editor-popup-body { padding: 20px; }
+		
+		.toastui-editor-popup-body { 
+			padding: 20px; 
+			border-radius: 8px;
+		}
+		
 		.youtube-input {
-			padding: 8px 16px;
-			border: 1px solid #ddd;
+			padding: 10px 16px;
+			border: 1px solid #e0e0e0;
+			border-radius: 6px;
+			font-size: 14px;
+			transition: all 0.3s ease;
+			
+			&:focus {
+				outline: none;
+				border-color: #87cdf9;
+				box-shadow: 0 0 0 3px rgba(135, 205, 249, 0.1);
+			}
 		}
+		
 		.youtube-div {
-			display:flex;
+			display: flex;
 			flex-direction: column;
+			gap: 12px;
 		}
+		
 		.toastui-editor-defaultUI button {
-			padding: 4px;
+			padding: 6px 12px;
+			border-radius: 6px;
+			transition: all 0.2s ease;
+			
+			&:hover {
+				background-color: #f0f0f0;
+			}
+		}
+		
+		// Card styling improvements
+		.MuiCard-root {
+			transition: all 0.3s ease;
+			
+			&:hover {
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+			}
+		}
+		
+		// Form field improvements
+		.MuiTextField-root,
+		.MuiFormControl-root {
+			.MuiOutlinedInput-root {
+				transition: all 0.3s ease;
+				
+				&:hover {
+					.MuiOutlinedInput-notchedOutline {
+						border-color: #87cdf9;
+					}
+				}
+			}
+		}
+		
+		// Alert styling
+		.MuiAlert-root {
+			border-radius: 8px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 		}
 	}
 }

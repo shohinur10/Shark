@@ -1,10 +1,12 @@
 import { NextPage } from 'next';
-import { Stack, Box, Typography, Button, Grid, Card, CardContent, List, ListItem, ListItemIcon, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { Stack, Box, Typography, Button, Grid, Card, CardContent, List, ListItem, ListItemIcon, Chip, ToggleButtonGroup, ToggleButton, Divider } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CloseIcon from '@mui/icons-material/Close';
+import StarIcon from '@mui/icons-material/Star';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { useState } from 'react';
 
 export const getStaticProps = async ({ locale }: any) => ({
@@ -23,113 +25,78 @@ const PricingPage: NextPage = () => {
 		}
 	};
 
-	// Pricing plans
+	// Pricing plans - Redesigned with equal heights and visual balance
 	const plans = [
 		{
 			id: 'free',
-			name: 'Free',
+			name: 'Starter',
 			monthlyPrice: 0,
 			yearlyPrice: 0,
-			description: 'Perfect for getting started',
+			tagline: 'Build your habit',
 			features: [
-				{ name: 'Access to basic workouts', included: true },
-				{ name: 'Progress tracking', included: true },
-				{ name: 'Community access', included: true },
-				{ name: 'Basic meal plans', included: true },
-				{ name: 'Ad-free experience', included: false },
-				{ name: 'Premium workouts', included: false },
-				{ name: 'Personalized meal plans', included: false },
-				{ name: 'Trainer consultations', included: false },
-				{ name: 'Advanced analytics', included: false },
-				{ name: 'Priority support', included: false },
+				'Basic workouts',
+				'Progress tracking',
+				'Community access',
+				'Basic meal plans',
 			],
 			popular: false,
 			buttonText: 'Start Free',
+			buttonVariant: 'outlined' as const,
 		},
 		{
 			id: 'monthly',
-			name: 'Monthly',
+			name: 'Member',
 			monthlyPrice: 19.99,
 			yearlyPrice: 199.99, // $16.67/month when billed yearly (30% discount)
-			description: 'Full access, billed monthly',
+			tagline: 'Consistency with structure',
 			features: [
-				{ name: 'Access to basic workouts', included: true },
-				{ name: 'Progress tracking', included: true },
-				{ name: 'Community access', included: true },
-				{ name: 'Basic meal plans', included: true },
-				{ name: 'Ad-free experience', included: true },
-				{ name: 'Premium workouts', included: true },
-				{ name: 'Personalized meal plans', included: true },
-				{ name: 'Trainer consultations', included: true },
-				{ name: 'Advanced analytics', included: true },
-				{ name: 'Priority support', included: true },
+				'Everything in Starter',
+				'Premium workouts',
+				'Personalized meal plans',
+				'Trainer consultations',
+				'Advanced analytics',
+				'Ad-free experience',
 			],
 			popular: true,
-			buttonText: 'Start Now',
+			popularBadge: 'Most Chosen',
+			buttonText: 'Start Training',
+			buttonVariant: 'contained' as const,
 		},
 		{
 			id: 'yearly',
-			name: 'Yearly',
+			name: 'Member',
 			monthlyPrice: 19.99,
 			yearlyPrice: 199.99, // $16.67/month when billed yearly (30% discount)
-			description: 'Best value - Save 30%',
+			tagline: 'Consistency with structure',
 			features: [
-				{ name: 'Access to basic workouts', included: true },
-				{ name: 'Progress tracking', included: true },
-				{ name: 'Community access', included: true },
-				{ name: 'Basic meal plans', included: true },
-				{ name: 'Ad-free experience', included: true },
-				{ name: 'Premium workouts', included: true },
-				{ name: 'Personalized meal plans', included: true },
-				{ name: 'Trainer consultations', included: true },
-				{ name: 'Advanced analytics', included: true },
-				{ name: 'Priority support', included: true },
+				'Everything in Starter',
+				'Premium workouts',
+				'Personalized meal plans',
+				'Trainer consultations',
+				'Advanced analytics',
+				'Ad-free experience',
 			],
 			popular: false,
-			buttonText: 'Start Now',
-			discount: '30% OFF',
+			buttonText: 'Start Training',
+			buttonVariant: 'contained' as const,
+			discount: 'Save 30%',
 		},
 		{
 			id: 'trainer',
-			name: 'Trainer',
+			name: 'For Coaches',
 			monthlyPrice: 49.99,
 			yearlyPrice: 499.99, // $41.67/month when billed yearly
-			description: 'For fitness professionals',
+			tagline: 'Train others professionally',
 			features: [
-				{ name: 'Access to basic workouts', included: true },
-				{ name: 'Progress tracking', included: true },
-				{ name: 'Community access', included: true },
-				{ name: 'Basic meal plans', included: true },
-				{ name: 'Ad-free experience', included: true },
-				{ name: 'Premium workouts', included: true },
-				{ name: 'Personalized meal plans', included: true },
-				{ name: 'Trainer consultations', included: true },
-				{ name: 'Advanced analytics', included: true },
-				{ name: 'Priority support', included: true },
-				{ name: 'Client management tools', included: true },
-				{ name: 'Custom branding', included: true },
-				{ name: 'Revenue sharing', included: true },
+				'Client management',
+				'Trainer analytics',
+				'Program publishing',
+				'Priority support',
 			],
 			popular: false,
-			buttonText: 'Start Now',
+			buttonText: 'Become a Trainer',
+			buttonVariant: 'outlined' as const,
 		},
-	];
-
-	// Comparison features
-	const comparisonFeatures = [
-		{ name: 'Access to basic workouts', free: true, monthly: true, yearly: true, trainer: true },
-		{ name: 'Progress tracking', free: true, monthly: true, yearly: true, trainer: true },
-		{ name: 'Community access', free: true, monthly: true, yearly: true, trainer: true },
-		{ name: 'Basic meal plans', free: true, monthly: true, yearly: true, trainer: true },
-		{ name: 'Ad-free experience', free: false, monthly: true, yearly: true, trainer: true },
-		{ name: 'Premium workouts', free: false, monthly: true, yearly: true, trainer: true },
-		{ name: 'Personalized meal plans', free: false, monthly: true, yearly: true, trainer: true },
-		{ name: 'Trainer consultations', free: false, monthly: true, yearly: true, trainer: true },
-		{ name: 'Advanced analytics', free: false, monthly: true, yearly: true, trainer: true },
-		{ name: 'Priority support', free: false, monthly: true, yearly: true, trainer: true },
-		{ name: 'Client management tools', free: false, monthly: false, yearly: false, trainer: true },
-		{ name: 'Custom branding', free: false, monthly: false, yearly: false, trainer: true },
-		{ name: 'Revenue sharing', free: false, monthly: false, yearly: false, trainer: true },
 	];
 
 	if (device === 'mobile') {
@@ -152,149 +119,404 @@ const PricingPage: NextPage = () => {
 		});
 
 		return (
-			<Stack className={'pricing-page'}>
-				<Stack className={'container'}>
-					{/* Page Header */}
-					<Stack className={'page-header'} sx={{ textAlign: 'center', mb: 6 }}>
-						<Typography variant="h3" className={'page-title'}>
-							Simple, Transparent Pricing
-						</Typography>
-						<Typography variant="body1" className={'page-subtitle'}>
-							Choose the plan that works best for you
-						</Typography>
-					</Stack>
+			<Box
+				className={'pricing-page'}
+				sx={{
+					backgroundColor: '#F7F7F7',
+					minHeight: '100vh',
+					paddingTop: '100px',
+					paddingBottom: '80px',
+				}}
+			>
+				<Stack className={'container'} spacing={6}>
+					{/* Premium Hero Section */}
+					<Card
+						elevation={0}
+						sx={{
+							backgroundColor: '#FFFFFF',
+							borderRadius: '24px',
+							border: '1px solid #E5E5E5',
+							padding: { xs: '48px 32px', md: '80px 48px' },
+							background: 'linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%)',
+							position: 'relative',
+							overflow: 'hidden',
+							'&::after': {
+								content: '""',
+								position: 'absolute',
+								bottom: 0,
+								left: 0,
+								right: 0,
+								height: '1px',
+								background: 'linear-gradient(90deg, transparent 0%, #E5E5E5 20%, #E5E5E5 80%, transparent 100%)',
+							},
+						}}
+					>
+						<Stack spacing={4} alignItems="center" textAlign="center">
+							{/* Title */}
+							<Typography
+								variant="h1"
+								sx={{
+									fontSize: { xs: '40px', md: '56px' },
+									fontWeight: 700,
+									color: '#111111',
+									lineHeight: 1.2,
+									letterSpacing: '-0.8px',
+									maxWidth: '800px',
+								}}
+							>
+								Choose Your Training Path
+							</Typography>
+
+							{/* Subtitle */}
+							<Typography
+								sx={{
+									fontSize: { xs: '18px', md: '22px' },
+									color: '#6B6B6B',
+									lineHeight: 1.6,
+									maxWidth: '700px',
+									fontWeight: 400,
+								}}
+							>
+								Only pay for the level of guidance you actually need.
+							</Typography>
+
+							{/* Trust Microcopy */}
+							<Typography
+								sx={{
+									fontSize: '15px',
+									color: '#6B6B6B',
+									fontWeight: 400,
+									lineHeight: 1.6,
+									letterSpacing: '0.2px',
+								}}
+							>
+								No contracts • Cancel anytime • Used by 12,000+ active members
+							</Typography>
+
+							{/* Motivation Line */}
+							<Box
+								sx={{
+									mt: 2,
+									pt: 3,
+									borderTop: '1px solid #E5E5E5',
+									width: '100%',
+									maxWidth: '600px',
+								}}
+							>
+								<Typography
+									sx={{
+										fontSize: '15px',
+										color: '#6B6B6B',
+										fontWeight: 400,
+										fontStyle: 'italic',
+										lineHeight: 1.6,
+									}}
+								>
+									Most members upgrade after 14 days of consistency.
+								</Typography>
+							</Box>
+						</Stack>
+					</Card>
 
 					{/* Billing Period Toggle */}
-					<Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-						<ToggleButtonGroup
-							value={billingPeriod}
-							exclusive
-							onChange={handleBillingPeriodChange}
-							aria-label="billing period"
+					<Box sx={{ display: 'flex', justifyContent: 'center' }}>
+						<Card
+							elevation={0}
 							sx={{
-								'& .MuiToggleButton-root': {
-									padding: '8px 24px',
-									fontWeight: 600,
-									textTransform: 'none',
-								},
+								backgroundColor: '#FFFFFF',
+								borderRadius: '16px',
+								border: '1px solid #E5E5E5',
+								padding: '8px',
+								display: 'inline-flex',
 							}}
 						>
-							<ToggleButton value="monthly" aria-label="monthly">
-								Monthly
-							</ToggleButton>
-							<ToggleButton value="yearly" aria-label="yearly">
-								Yearly <Chip label="Save 30%" size="small" color="success" sx={{ ml: 1, height: 20 }} />
-							</ToggleButton>
-						</ToggleButtonGroup>
+							<ToggleButtonGroup
+								value={billingPeriod}
+								exclusive
+								onChange={handleBillingPeriodChange}
+								aria-label="billing period"
+								sx={{
+									'& .MuiToggleButton-root': {
+										padding: '10px 32px',
+										fontWeight: 600,
+										textTransform: 'none',
+										fontSize: '15px',
+										border: 'none',
+										borderRadius: '12px',
+										color: '#6B6B6B',
+										'&.Mui-selected': {
+											backgroundColor: '#E10600',
+											color: '#FFFFFF',
+											'&:hover': {
+												backgroundColor: '#C10500',
+											},
+										},
+										'&:hover': {
+											backgroundColor: 'rgba(225, 6, 0, 0.08)',
+										},
+									},
+								}}
+							>
+								<ToggleButton value="monthly" aria-label="monthly">
+									Monthly
+								</ToggleButton>
+								<ToggleButton value="yearly" aria-label="yearly">
+									Yearly
+									<Chip
+										label="Save 30%"
+										size="small"
+										sx={{
+											ml: 1.5,
+											height: '22px',
+											backgroundColor: 'rgba(76, 175, 80, 0.1)',
+											color: '#4CAF50',
+											fontSize: '11px',
+											fontWeight: 700,
+											'& .MuiChip-label': {
+												padding: '0 8px',
+											},
+										}}
+									/>
+								</ToggleButton>
+							</ToggleButtonGroup>
+						</Card>
 					</Box>
 
 					{/* Pricing Cards */}
-					<Grid container spacing={4} justifyContent="center" sx={{ mb: 8 }}>
+					<Grid container spacing={4} justifyContent="center" sx={{ alignItems: 'stretch' }}>
 						{displayPlans.map((plan) => {
 							const price = billingPeriod === 'yearly' && plan.id !== 'free' ? plan.yearlyPrice : plan.monthlyPrice;
 							const monthlyEquivalent = plan.id === 'yearly' ? (plan.yearlyPrice / 12).toFixed(2) : null;
+							const isPopular = plan.popular;
 
 							return (
-								<Grid item xs={12} sm={6} md={plan.id === 'free' || plan.id === 'trainer' ? 6 : 6} key={plan.id}>
+								<Grid item xs={12} sm={6} md={4} key={plan.id} sx={{ display: 'flex' }}>
 									<Card
 										className={'pricing-card'}
+										elevation={0}
 										sx={{
+											width: '100%',
 											height: '100%',
 											position: 'relative',
-											border: plan.popular ? '2px solid' : '1px solid',
-											borderColor: plan.popular ? 'primary.main' : 'divider',
+											backgroundColor: '#FFFFFF',
+											borderRadius: '16px',
+											border: isPopular ? '2px solid #E10600' : '1px solid #E5E5E5',
+											borderTop: isPopular ? '3px solid #E10600' : undefined,
+											boxShadow: isPopular
+												? '0 8px 24px rgba(225, 6, 0, 0.15), 0 0 0 1px rgba(225, 6, 0, 0.1), inset 0 3px 0 0 rgba(225, 6, 0, 0.2)'
+												: '0 2px 8px rgba(0, 0, 0, 0.08)',
 											transition: 'all 0.3s ease',
-											'&:hover': {
+											overflow: 'visible',
+											display: 'flex',
+											flexDirection: 'column',
+											...(isPopular && {
 												transform: 'translateY(-4px)',
-												boxShadow: 4,
+											}),
+											'&:hover': {
+												transform: isPopular ? 'translateY(-8px)' : 'translateY(-4px)',
+												boxShadow: isPopular
+													? '0 16px 48px rgba(225, 6, 0, 0.25), 0 0 0 1px rgba(225, 6, 0, 0.15), inset 0 3px 0 0 rgba(225, 6, 0, 0.3)'
+													: '0 8px 24px rgba(0, 0, 0, 0.12)',
 											},
 										}}
 									>
-										{plan.popular && (
+										{/* Popular Badge */}
+										{isPopular && plan.popularBadge && (
 											<Chip
-												label="MOST POPULAR"
-												color="primary"
+												label={plan.popularBadge}
 												sx={{
 													position: 'absolute',
 													top: -12,
 													left: '50%',
 													transform: 'translateX(-50%)',
-													fontWeight: 600,
-													fontSize: '0.7rem',
+													backgroundColor: '#E10600',
+													color: '#FFFFFF',
+													fontWeight: 700,
+													fontSize: '11px',
+													height: '24px',
+													px: 2,
+													boxShadow: '0 4px 12px rgba(225, 6, 0, 0.3)',
+													textTransform: 'uppercase',
+													letterSpacing: '0.5px',
 												}}
 											/>
 										)}
 										{plan.discount && (
 											<Chip
 												label={plan.discount}
-												color="success"
 												sx={{
 													position: 'absolute',
 													top: 16,
 													right: 16,
-													fontWeight: 600,
+													backgroundColor: 'rgba(76, 175, 80, 0.1)',
+													color: '#4CAF50',
+													fontWeight: 700,
+													fontSize: '11px',
+													height: '24px',
 												}}
 											/>
 										)}
-										<CardContent sx={{ p: 4 }}>
-											<Typography variant="h5" gutterBottom align="center" fontWeight={600}>
-												{plan.name}
-											</Typography>
-											<Typography variant="body2" color="text.secondary" align="center" gutterBottom>
-												{plan.description}
-											</Typography>
-											<Box sx={{ textAlign: 'center', my: 3 }}>
+										<CardContent
+											sx={{
+												p: { xs: 3, md: 4 },
+												height: '100%',
+												display: 'flex',
+												flexDirection: 'column',
+												flex: 1,
+											}}
+										>
+											{/* Plan Name & Tagline */}
+											<Stack spacing={1} mb={3}>
+												<Typography
+													variant="h4"
+													sx={{
+														fontSize: '24px',
+														fontWeight: 700,
+														color: '#111111',
+														lineHeight: 1.2,
+													}}
+												>
+													{plan.name}
+												</Typography>
+												<Typography
+													sx={{
+														fontSize: '15px',
+														color: '#6B6B6B',
+														fontWeight: 400,
+														lineHeight: 1.5,
+													}}
+												>
+													{plan.tagline}
+												</Typography>
+											</Stack>
+
+											{/* Price */}
+											<Box sx={{ mb: 3 }}>
 												{plan.id === 'free' ? (
-													<>
-														<Typography variant="h2" component="span" fontWeight={700}>
+													<Stack spacing={0.5}>
+														<Typography
+															variant="h2"
+															sx={{
+																fontSize: '42px',
+																fontWeight: 700,
+																color: '#111111',
+																lineHeight: 1,
+															}}
+														>
 															Free
 														</Typography>
-														<Typography variant="body2" color="text.secondary" display="block" mt={1}>
-															Forever
+														<Typography
+															sx={{
+																fontSize: '14px',
+																color: '#6B6B6B',
+																fontWeight: 400,
+															}}
+														>
+															/ Forever
 														</Typography>
-													</>
+													</Stack>
 												) : (
-													<>
-														<Typography variant="h2" component="span" fontWeight={700}>
-															${price}
-														</Typography>
-														<Typography variant="body2" color="text.secondary" component="span" ml={1}>
-															/{billingPeriod === 'yearly' ? 'year' : 'month'}
-														</Typography>
+													<Stack spacing={0.5}>
+														<Stack direction="row" alignItems="baseline" spacing={1}>
+															<Typography
+																variant="h2"
+																sx={{
+																	fontSize: '42px',
+																	fontWeight: 700,
+																	color: '#111111',
+																	lineHeight: 1,
+																}}
+															>
+																${price}
+															</Typography>
+															<Typography
+																sx={{
+																	fontSize: '16px',
+																	color: '#6B6B6B',
+																	fontWeight: 400,
+																}}
+															>
+																/ {billingPeriod === 'yearly' ? 'year' : 'month'}
+															</Typography>
+														</Stack>
 														{monthlyEquivalent && (
-															<Typography variant="body2" color="text.secondary" display="block" mt={1}>
+															<Typography
+																sx={{
+																	fontSize: '13px',
+																	color: '#4CAF50',
+																	fontWeight: 600,
+																	mt: 0.5,
+																}}
+															>
 																${monthlyEquivalent}/month when billed yearly
 															</Typography>
 														)}
-													</>
+													</Stack>
 												)}
 											</Box>
-											<List sx={{ mb: 3 }}>
+
+											<Divider sx={{ mb: 3, borderColor: '#E5E5E5' }} />
+
+											{/* Features - Grouped, not long list */}
+											<Stack spacing={2} sx={{ mb: 4, flex: 1 }}>
 												{plan.features.map((feature, idx) => (
-													<ListItem key={idx} sx={{ px: 0, py: 0.75 }}>
-														<ListItemIcon sx={{ minWidth: 32 }}>
-															{feature.included ? (
-																<CheckCircleIcon color="success" fontSize="small" />
-															) : (
-																<CloseIcon color="disabled" fontSize="small" />
-															)}
-														</ListItemIcon>
-														<Typography variant="body2" sx={{ textDecoration: feature.included ? 'none' : 'line-through', opacity: feature.included ? 1 : 0.5 }}>
-															{feature.name}
+													<Stack key={idx} direction="row" spacing={1.5} alignItems="flex-start">
+														<CheckCircleIcon
+															sx={{
+																fontSize: '18px',
+																color: '#4CAF50',
+																mt: 0.25,
+																flexShrink: 0,
+															}}
+														/>
+														<Typography
+															sx={{
+																fontSize: '15px',
+																color: '#111111',
+																fontWeight: 400,
+																lineHeight: 1.6,
+															}}
+														>
+															{feature}
 														</Typography>
-													</ListItem>
+													</Stack>
 												))}
-											</List>
+											</Stack>
+
+											{/* CTA Button */}
 											<Button
-												variant={plan.popular ? 'contained' : 'outlined'}
+												variant={plan.buttonVariant}
 												fullWidth
 												size="large"
-												className={'start-now-btn'}
 												sx={{
-													mt: 2,
-													py: 1.5,
+													mt: 'auto',
+													py: 1.75,
 													fontWeight: 600,
 													textTransform: 'none',
+													fontSize: '15px',
+													borderRadius: '12px',
+													...(plan.buttonVariant === 'contained'
+														? {
+																backgroundColor: '#111111',
+																color: '#FFFFFF',
+																boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+																'&:hover': {
+																	backgroundColor: '#000000',
+																	boxShadow: '0 6px 16px rgba(0, 0, 0, 0.2)',
+																	transform: 'translateY(-1px)',
+																},
+														  }
+														: {
+																borderColor: '#E5E5E5',
+																borderWidth: '1.5px',
+																color: '#111111',
+																'&:hover': {
+																	borderColor: '#111111',
+																	backgroundColor: 'rgba(0, 0, 0, 0.04)',
+																	color: '#111111',
+																},
+														  }),
+													transition: 'all 0.2s ease',
 												}}
 											>
 												{plan.buttonText}
@@ -306,51 +528,358 @@ const PricingPage: NextPage = () => {
 						})}
 					</Grid>
 
-					{/* Comparison Chart */}
-					<Box className={'comparison-section'}>
-						<Typography variant="h4" className={'section-title'} align="center" gutterBottom>
-							Compare Plans
+					{/* Who This Plan Is Best For Section */}
+					<Box sx={{ mt: 6 }}>
+						<Typography
+							sx={{
+								fontSize: '24px',
+								fontWeight: 700,
+								color: '#111111',
+								textAlign: 'center',
+								mb: 4,
+							}}
+						>
+							Who This Plan Is Best For
 						</Typography>
-						<Typography variant="body2" color="text.secondary" align="center" paragraph sx={{ mb: 4 }}>
-							See what's included in each plan
-						</Typography>
-						<TableContainer component={Paper} variant="outlined">
-							<Table>
-								<TableHead>
-									<TableRow>
-										<TableCell><strong>Feature</strong></TableCell>
-										<TableCell align="center"><strong>Free</strong></TableCell>
-										<TableCell align="center"><strong>Monthly</strong></TableCell>
-										<TableCell align="center"><strong>Yearly</strong></TableCell>
-										<TableCell align="center"><strong>Trainer</strong></TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{comparisonFeatures.map((feature, index) => (
-										<TableRow key={index} hover>
-											<TableCell component="th" scope="row">
-												{feature.name}
-											</TableCell>
-											<TableCell align="center">
-												{feature.free ? <CheckCircleIcon color="success" /> : <CloseIcon color="disabled" />}
-											</TableCell>
-											<TableCell align="center">
-												{feature.monthly ? <CheckCircleIcon color="success" /> : <CloseIcon color="disabled" />}
-											</TableCell>
-											<TableCell align="center">
-												{feature.yearly ? <CheckCircleIcon color="success" /> : <CloseIcon color="disabled" />}
-											</TableCell>
-											<TableCell align="center">
-												{feature.trainer ? <CheckCircleIcon color="success" /> : <CloseIcon color="disabled" />}
-											</TableCell>
-										</TableRow>
-									))}
-								</TableBody>
-							</Table>
-						</TableContainer>
+						<Grid container spacing={3}>
+							{/* Starter Plan */}
+							<Grid item xs={12} md={4}>
+								<Card
+									elevation={0}
+									sx={{
+										backgroundColor: '#FFFFFF',
+										borderRadius: '16px',
+										border: '1px solid #E5E5E5',
+										padding: { xs: '24px', md: '32px' },
+										height: '100%',
+										transition: 'all 0.3s ease',
+										'&:hover': {
+											boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+											transform: 'translateY(-2px)',
+										},
+									}}
+								>
+									<Stack spacing={2}>
+										<Typography
+											sx={{
+												fontSize: '18px',
+												fontWeight: 700,
+												color: '#111111',
+												mb: 1,
+											}}
+										>
+											Starter
+										</Typography>
+										<Typography
+											sx={{
+												fontSize: '15px',
+												color: '#6B6B6B',
+												lineHeight: 1.7,
+												fontWeight: 400,
+											}}
+										>
+											Best if you are just starting and want to build consistency without pressure.
+										</Typography>
+									</Stack>
+								</Card>
+							</Grid>
+
+							{/* Member Plan */}
+							<Grid item xs={12} md={4}>
+								<Card
+									elevation={0}
+									sx={{
+										backgroundColor: '#FFFFFF',
+										borderRadius: '16px',
+										border: '1px solid #E10600',
+										borderTop: '3px solid #E10600',
+										padding: { xs: '24px', md: '32px' },
+										height: '100%',
+										boxShadow: '0 4px 16px rgba(225, 6, 0, 0.1)',
+										transition: 'all 0.3s ease',
+										'&:hover': {
+											boxShadow: '0 8px 24px rgba(225, 6, 0, 0.15)',
+											transform: 'translateY(-2px)',
+										},
+									}}
+								>
+									<Stack spacing={2}>
+										<Typography
+											sx={{
+												fontSize: '18px',
+												fontWeight: 700,
+												color: '#111111',
+												mb: 1,
+											}}
+										>
+											Member
+										</Typography>
+										<Typography
+											sx={{
+												fontSize: '15px',
+												color: '#6B6B6B',
+												lineHeight: 1.7,
+												fontWeight: 400,
+											}}
+										>
+											Best if you train 3–5 times per week and want visible progress.
+										</Typography>
+									</Stack>
+								</Card>
+							</Grid>
+
+							{/* Trainer Plan */}
+							<Grid item xs={12} md={4}>
+								<Card
+									elevation={0}
+									sx={{
+										backgroundColor: '#FFFFFF',
+										borderRadius: '16px',
+										border: '1px solid #E5E5E5',
+										padding: { xs: '24px', md: '32px' },
+										height: '100%',
+										transition: 'all 0.3s ease',
+										'&:hover': {
+											boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+											transform: 'translateY(-2px)',
+										},
+									}}
+								>
+									<Stack spacing={2}>
+										<Typography
+											sx={{
+												fontSize: '18px',
+												fontWeight: 700,
+												color: '#111111',
+												mb: 1,
+											}}
+										>
+											For Coaches
+										</Typography>
+										<Typography
+											sx={{
+												fontSize: '15px',
+												color: '#6B6B6B',
+												lineHeight: 1.7,
+												fontWeight: 400,
+											}}
+										>
+											Best if fitness is your profession or side business.
+										</Typography>
+									</Stack>
+								</Card>
+							</Grid>
+						</Grid>
 					</Box>
+
+					{/* Reassurance Section */}
+					<Card
+						elevation={0}
+						sx={{
+							backgroundColor: '#FAFAFA',
+							borderRadius: '20px',
+							border: '1px solid #E5E5E5',
+							padding: { xs: '40px 32px', md: '56px 48px' },
+							mt: 6,
+						}}
+					>
+						<Stack spacing={4} alignItems="center" textAlign="center">
+							<Typography
+								sx={{
+									fontSize: { xs: '28px', md: '32px' },
+									fontWeight: 600,
+									color: '#111111',
+									lineHeight: 1.3,
+								}}
+							>
+								Train with confidence
+							</Typography>
+							<Grid container spacing={3} justifyContent="center" sx={{ maxWidth: '800px' }}>
+								<Grid item xs={12} sm={6} md={3}>
+									<Stack spacing={1.5} alignItems="center" textAlign="center">
+										<CheckCircleIcon
+											sx={{
+												fontSize: '28px',
+												color: '#4CAF50',
+											}}
+										/>
+										<Typography
+											sx={{
+												fontSize: '15px',
+												color: '#6B6B6B',
+												fontWeight: 400,
+												lineHeight: 1.6,
+											}}
+										>
+											Cancel anytime
+										</Typography>
+									</Stack>
+								</Grid>
+								<Grid item xs={12} sm={6} md={3}>
+									<Stack spacing={1.5} alignItems="center" textAlign="center">
+										<CheckCircleIcon
+											sx={{
+												fontSize: '28px',
+												color: '#4CAF50',
+											}}
+										/>
+										<Typography
+											sx={{
+												fontSize: '15px',
+												color: '#6B6B6B',
+												fontWeight: 400,
+												lineHeight: 1.6,
+											}}
+										>
+											No hidden fees
+										</Typography>
+									</Stack>
+								</Grid>
+								<Grid item xs={12} sm={6} md={3}>
+									<Stack spacing={1.5} alignItems="center" textAlign="center">
+										<CheckCircleIcon
+											sx={{
+												fontSize: '28px',
+												color: '#4CAF50',
+											}}
+										/>
+										<Typography
+											sx={{
+												fontSize: '15px',
+												color: '#6B6B6B',
+												fontWeight: 400,
+												lineHeight: 1.6,
+											}}
+										>
+											Progress data stays yours
+										</Typography>
+									</Stack>
+								</Grid>
+								<Grid item xs={12} sm={6} md={3}>
+									<Stack spacing={1.5} alignItems="center" textAlign="center">
+										<CheckCircleIcon
+											sx={{
+												fontSize: '28px',
+												color: '#4CAF50',
+											}}
+										/>
+										<Typography
+											sx={{
+												fontSize: '15px',
+												color: '#6B6B6B',
+												fontWeight: 400,
+												lineHeight: 1.6,
+											}}
+										>
+											Upgrade or downgrade anytime
+										</Typography>
+									</Stack>
+								</Grid>
+							</Grid>
+						</Stack>
+					</Card>
+
+					{/* Trust Section */}
+					<Card
+						elevation={0}
+						sx={{
+							backgroundColor: '#FFFFFF',
+							borderRadius: '20px',
+							border: '1px solid #E5E5E5',
+							padding: { xs: '32px', md: '48px' },
+							mt: 4,
+						}}
+					>
+						<Stack spacing={3} alignItems="center" textAlign="center">
+							<Typography
+								sx={{
+									fontSize: '24px',
+									fontWeight: 700,
+									color: '#111111',
+									mb: 1,
+								}}
+							>
+								Join thousands transforming their fitness
+							</Typography>
+							<Typography
+								sx={{
+									fontSize: '16px',
+									color: '#6B6B6B',
+									maxWidth: '600px',
+									lineHeight: 1.6,
+								}}
+							>
+								Every journey starts with a single step. Whether you're exploring fitness for the first time or ready to commit to transformation, we're here to support you every step of the way.
+							</Typography>
+							<Stack direction="row" spacing={4} mt={2} flexWrap="wrap" justifyContent="center">
+								<Stack spacing={0.5} alignItems="center">
+									<Typography
+										sx={{
+											fontSize: '32px',
+											fontWeight: 700,
+											color: '#E10600',
+											lineHeight: 1,
+										}}
+									>
+										50K+
+									</Typography>
+									<Typography
+										sx={{
+											fontSize: '14px',
+											color: '#6B6B6B',
+											fontWeight: 500,
+										}}
+									>
+										Active Members
+									</Typography>
+								</Stack>
+								<Stack spacing={0.5} alignItems="center">
+									<Typography
+										sx={{
+											fontSize: '32px',
+											fontWeight: 700,
+											color: '#E10600',
+											lineHeight: 1,
+										}}
+									>
+										4.9/5
+									</Typography>
+									<Typography
+										sx={{
+											fontSize: '14px',
+											color: '#6B6B6B',
+											fontWeight: 500,
+										}}
+									>
+										Member Rating
+									</Typography>
+								</Stack>
+								<Stack spacing={0.5} alignItems="center">
+									<Typography
+										sx={{
+											fontSize: '32px',
+											fontWeight: 700,
+											color: '#E10600',
+											lineHeight: 1,
+										}}
+									>
+										99.9%
+									</Typography>
+									<Typography
+										sx={{
+											fontSize: '14px',
+											color: '#6B6B6B',
+											fontWeight: 500,
+										}}
+									>
+										Uptime
+									</Typography>
+								</Stack>
+							</Stack>
+						</Stack>
+					</Card>
 				</Stack>
-			</Stack>
+			</Box>
 		);
 	}
 };

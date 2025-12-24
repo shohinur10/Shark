@@ -1,260 +1,212 @@
 #pc-wrap {
 	#community-list-page {
 		position: relative;
+		background-color: #F7F7F7;
+		min-height: 100vh;
+
 		.container {
 			padding-top: 100px;
+			padding-bottom: 60px;
 			flex-direction: column;
-			gap: 64px;
+			gap: 0;
+
 			.main-box {
 				flex-direction: row;
-				gap: 31px;
+				gap: 24px;
+				align-items: flex-start;
+
 				.left-config {
-					width: 266px;
+					width: 280px;
 					height: fit-content;
-					gap: 30px;
-					padding: 30px 15px 57px 21px;
-					margin-top: 100px;
-					margin-bottom: 50px;
-					border-radius: 12px;
-					border: 1px solid rgba(196, 196, 196, 0.79);
-					background: #fff;
-					box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
-					.image-info {
-						width: 100%;
-						flex-direction: row;
-						gap: 11px;
-						img {
-							width: 80px;
-							height: 80px;
-							border-radius: 50%;
-							object-fit: cover;
-						}
-						.community-name {
-							.name {
-								margin-top: 15px;
-								color: #181a20;
-								font-family: $font;
-								font-size: 15px;
-								font-style: normal;
-								font-weight: 600;
-								line-height: normal;
-							}
-						}
-					}
+					position: sticky;
+					top: 120px;
+
+					// Tab button styles
 					.tab-button {
-						width: 216.612px;
-						height: 36px;
-						padding: 0;
-						justify-content: center;
+						width: 100%;
+						min-height: 48px;
+						padding: 0 16px;
+						justify-content: flex-start;
 						align-items: center;
-						border-radius: 6px;
-						border: 1px solid #181a20;
-						margin-bottom: 10px;
-						color: #181a20;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
+						border-radius: 12px;
+						margin-bottom: 4px;
+						text-transform: none;
+						font-size: 15px;
 						font-weight: 500;
-						line-height: 150%;
-						letter-spacing: -0.266px;
-					}
-					.tab-button.active {
-						width: 216.612px;
-						height: 36px;
-						padding: 0;
-						justify-content: center;
-						align-items: center;
-						background-color: #000000;
-						color: #ffffff;
-						border-radius: 6px;
-						margin-bottom: 10px;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 500;
-						line-height: 150%;
-						letter-spacing: -0.266px;
+						color: #6B6B6B;
+						transition: all 0.2s ease;
+
+						&:hover {
+							background-color: rgba(225, 6, 0, 0.08);
+						}
+
+						&.active {
+							background-color: rgba(225, 6, 0, 0.08);
+							color: #E10600;
+							font-weight: 600;
+						}
 					}
 				}
+
 				.right-config {
-					width: 100%;
+					flex: 1;
+					min-width: 0;
 					height: auto;
+
 					.panel-config {
 						width: 100%;
 						height: auto;
 
 						// Challenges Section
 						.challenges-section {
-							.section-title {
-								font-family: $font;
-								font-weight: 600;
-								color: #181a20;
-								font-size: 24px;
-							}
-
-							.challenge-card {
-								background: #ffffff;
-								border-radius: 12px;
-								overflow: hidden;
-								box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
-								border: 1px solid rgba(196, 196, 196, 0.79);
-								transition: all 0.3s ease;
-								height: 100%;
-								display: flex;
-								flex-direction: column;
-
-								&:hover {
-									transform: translateY(-4px);
-									box-shadow: 0px 4px 12px 0px rgba(24, 26, 32, 0.15);
-								}
-
-								.challenge-image {
-									position: relative;
-									width: 100%;
-									height: 200px;
-									background: $gray-100;
-
-									.challenge-overlay {
-										position: absolute;
-										bottom: 0;
-										left: 0;
-										right: 0;
-										background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
-										padding: 16px;
-										display: flex;
-										flex-direction: column;
-
-										.difficulty-chip {
-											background: rgba(255, 255, 255, 0.2);
-											color: #ffffff;
-											backdrop-filter: blur(10px);
-											border: 1px solid rgba(255, 255, 255, 0.3);
-											font-weight: 600;
-											font-size: 11px;
-											align-self: flex-start;
-										}
-
-										.participant-chip,
-										.reward-chip {
-											background: rgba(255, 255, 255, 0.95);
-											color: #181a20;
-											font-weight: 600;
-											font-size: 11px;
-											backdrop-filter: blur(10px);
-
-											svg {
-												font-size: 14px;
-											}
-										}
-									}
-								}
-
-								.challenge-title {
-									font-family: $font;
-									font-weight: 600;
-									color: #181a20;
-									font-size: 18px;
-								}
-							}
+							margin-bottom: 32px;
 						}
-						.title-box {
-							width: 100%;
-							height: auto;
-							flex-direction: row;
-							justify-content: space-between;
-							align-items: center;
-							margin-bottom: 45px;
-							.left {
-								width: 60%;
-								height: auto;
-								.title {
-									color: #000;
-									font-family: $font;
-									font-size: 24px;
-									font-style: normal;
-									font-weight: 600;
-									line-height: normal;
-									letter-spacing: 0.24px;
-								}
-								.sub-title {
-									color: #757575;
-									font-family: $font;
-									font-size: 13px;
-									font-style: normal;
-									font-weight: 700;
-									line-height: normal;
-									letter-spacing: 0.325px;
-								}
-							}
-							.right {
-								width: 91px;
-								height: 32px;
-								border-radius: 4px;
-								background: #eb6753;
-								color: #fff;
-								font-family: $font;
-								font-size: 13px;
-								font-style: normal;
-								font-weight: 500;
-								line-height: normal;
-								letter-spacing: 0.39px;
-							}
-						}
+
+						// List box for articles
 						.list-box {
 							width: 100%;
-							height: auto;
-							flex-direction: row;
-							flex-wrap: wrap;
-							gap: 30px;
+							display: flex;
+							flex-direction: column;
+							gap: 16px;
+						}
+
+						// No data state
+						.no-data {
+							width: 100%;
+							padding: 60px 32px;
+							text-align: center;
+							background-color: #FFFFFF;
+							border-radius: 16px;
+							border: 1px solid #E5E5E5;
+
+							p {
+								color: #6B6B6B;
+								font-size: 15px;
+								margin-top: 16px;
+							}
 						}
 					}
 				}
 			}
+
+			// Similar articles (if used elsewhere)
 			.similar-articles-config {
 				width: 100%;
 				height: auto;
-				gap: 75px;
-				padding: 30px 9px 28px 9px;
-				border-radius: 10px;
-				border: 1px solid #c4c4c4;
+				gap: 32px;
+				padding: 32px;
+				border-radius: 16px;
+				border: 1px solid #E5E5E5;
+				background-color: #FFFFFF;
+
 				.similar-articles-title {
-					padding-left: 56px;
-					color: #000;
+					color: #111111;
 					font-family: $font;
-					font-size: 30px;
-					font-style: normal;
-					font-weight: 600;
-					line-height: normal;
+					font-size: 24px;
+					font-weight: 700;
+					line-height: 1.2;
+					margin-bottom: 24px;
 				}
+
 				.articles-box-row {
 					width: 100%;
 					height: auto;
 					flex-direction: row;
-					gap: 5px;
+					gap: 16px;
+					flex-wrap: wrap;
 				}
 			}
-			.pagination-config {
+		}
+	}
+
+	// Community Card Styles (matching design system)
+	.community-general-card-config {
+		width: 100%;
+		background-color: #FFFFFF;
+		border-radius: 16px;
+		border: 1px solid #E5E5E5;
+		overflow: hidden;
+		transition: all 0.3s ease;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+			border-color: #E10600;
+		}
+
+		.image-box {
+			width: 100%;
+			height: 240px;
+			overflow: hidden;
+
+			.card-img {
 				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+		}
+
+		.desc-box {
+			padding: 24px;
+			background-color: #FFFFFF;
+
+			.desc {
+				font-size: 14px;
+				font-weight: 600;
+				color: #111111;
+				margin-bottom: 8px;
+				cursor: pointer;
+
+				&:hover {
+					color: #E10600;
+				}
+			}
+
+			.title {
+				font-size: 20px;
+				font-weight: 700;
+				color: #111111;
+				line-height: 1.4;
+				margin-bottom: 16px;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+			}
+
+			.buttons {
+				flex-direction: row;
 				align-items: center;
-				justify-content: center;
-				margin-bottom: 50px;
-				gap: 20px;
-				padding-left: 270px;
-				.pagination-box {
-					align-items: center;
-					justify-content: center;
+				gap: 8px;
+
+				.view-cnt {
+					font-size: 13px;
+					color: #6B6B6B;
 				}
-				.total-result {
-					p {
-						color: #181a20;
-						text-align: center;
-						font-family: $font;
-						font-size: 14px;
-						font-style: normal;
-						font-weight: 400;
-						line-height: 26px;
-					}
-				}
+			}
+		}
+
+		.date-box {
+			position: absolute;
+			top: 16px;
+			right: 16px;
+			background-color: rgba(255, 255, 255, 0.95);
+			border-radius: 8px;
+			padding: 8px 12px;
+			text-align: center;
+
+			.month {
+				font-size: 12px;
+				font-weight: 600;
+				color: #111111;
+				text-transform: uppercase;
+				display: block;
+			}
+
+			.day {
+				font-size: 20px;
+				font-weight: 700;
+				color: #E10600;
 			}
 		}
 	}

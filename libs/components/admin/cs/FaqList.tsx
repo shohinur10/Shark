@@ -1,6 +1,4 @@
 import React from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
 import {
 	TableCell,
 	TableHead,
@@ -12,35 +10,21 @@ import {
 	Menu,
 	Fade,
 	MenuItem,
+	IconButton,
+	Tooltip,
+	Chip,
 } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/material';
-
-interface Data {
-	category: string;
-	title: string;
-	writer: string;
-	date: string;
-	status: string;
-	id?: string;
-}
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-	if (b[orderBy] < a[orderBy]) {
-		return -1;
-	}
-	if (b[orderBy] > a[orderBy]) {
-		return 1;
-	}
-	return 0;
-}
-
-type Order = 'asc' | 'desc';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Faq } from '../../../types/faq/faq';
+import { FaqCategory, FaqStatus } from '../../../enums/faq.enum';
 
 interface HeadCell {
 	disablePadding: boolean;
-	id: keyof Data;
+	id: string;
 	label: string;
 	numeric: boolean;
 }
@@ -48,28 +32,21 @@ interface HeadCell {
 const headCells: readonly HeadCell[] = [
 	{
 		id: 'category',
-		numeric: true,
+		numeric: false,
 		disablePadding: false,
 		label: 'CATEGORY',
 	},
 	{
-		id: 'title',
-		numeric: true,
+		id: 'question',
+		numeric: false,
 		disablePadding: false,
-		label: 'TITLE',
-	},
-
-	{
-		id: 'writer',
-		numeric: true,
-		disablePadding: false,
-		label: 'WRITER',
+		label: 'QUESTION',
 	},
 	{
-		id: 'date',
-		numeric: true,
+		id: 'answer',
+		numeric: false,
 		disablePadding: false,
-		label: 'DATE',
+		label: 'ANSWER',
 	},
 	{
 		id: 'status',
@@ -77,27 +54,34 @@ const headCells: readonly HeadCell[] = [
 		disablePadding: false,
 		label: 'STATUS',
 	},
+	{
+		id: 'views',
+		numeric: true,
+		disablePadding: false,
+		label: 'VIEWS',
+	},
+	{
+		id: 'date',
+		numeric: false,
+		disablePadding: false,
+		label: 'DATE',
+	},
+	{
+		id: 'action',
+		numeric: false,
+		disablePadding: false,
+		label: 'ACTION',
+	},
 ];
 
-interface EnhancedTableProps {
-	numSelected: number;
-	onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-	onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	order: Order;
-	orderBy: string;
-	rowCount: number;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-	const { onSelectAllClick } = props;
-
+function EnhancedTableHead() {
 	return (
 		<TableHead>
 			<TableRow>
 				{headCells.map((headCell) => (
 					<TableCell
 						key={headCell.id}
-						align={headCell.numeric ? 'left' : 'center'}
+						align={headCell.numeric ? 'right' : 'left'}
 						padding={headCell.disablePadding ? 'none' : 'normal'}
 					>
 						{headCell.label}
@@ -109,91 +93,206 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 interface FaqArticlesPanelListType {
-	dense?: boolean;
-	membersData?: any;
-	searchMembers?: any;
-	anchorEl?: any;
-	handleMenuIconClick?: any;
-	handleMenuIconClose?: any;
-	generateMentorTypeHandle?: any;
+	faqs: Faq[];
+	anchorEl: any;
+	menuIconClickHandler: any;
+	menuIconCloseHandler: any;
+	updateFaqHandler: any;
+	deleteFaqHandler?: any;
 }
 
 export const FaqArticlesPanelList = (props: FaqArticlesPanelListType) => {
-	const {
-		dense,
-		membersData,
-		searchMembers,
-		anchorEl,
-		handleMenuIconClick,
-		handleMenuIconClose,
-		generateMentorTypeHandle,
-	} = props;
-	const router = useRouter();
-
-	/** APOLLO REQUESTS **/
-	/** LIFECYCLES **/
-	/** HANDLERS **/
+	const { faqs, anchorEl, menuIconClickHandler, menuIconCloseHandler, updateFaqHandler, deleteFaqHandler } = props;
 
 	return (
 		<Stack>
 			<TableContainer>
-				<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
-					{/*@ts-ignore*/}
+				<Table 
+					sx={{ 
+						minWidth: 750,
+						'& .MuiTableCell-root': {
+							borderBottom: '1px solid #f0f0f0',
+						}
+					}} 
+					aria-labelledby="tableTitle" 
+					size={'medium'}
+				>
 					<EnhancedTableHead />
 					<TableBody>
-						{[1, 2, 3, 4, 5].map((ele: any, index: number) => {
-							const member_image = '/img/profile/defaultUser.svg';
+						{faqs.length === 0 && (
+							<TableRow>
+								<TableCell align="center" colSpan={7} sx={{ py: 8 }}>
+									<Stack alignItems="center" spacing={2}>
+										<HelpOutlineIcon sx={{ fontSize: 64, color: '#ccc' }} />
+										<Typography variant="h6" color="text.secondary">
+											No FAQs found!
+										</Typography>
+										<Typography variant="body2" color="text.secondary">
+											Create your first FAQ to get started
+										</Typography>
+									</Stack>
+								</TableCell>
+							</TableRow>
+						)}
 
-							let status_class_name = '';
+						{faqs.length !== 0 &&
+							faqs.map((faq: Faq, index: number) => {
+								return (
+									<TableRow 
+										hover 
+										key={faq._id} 
+										sx={{ 
+											'&:last-child td, &:last-child th': { border: 0 },
+											transition: 'all 0.2s ease',
+											'&:hover': {
+												background: 'linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)',
+												transform: 'scale(1.001)',
+												boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+											}
+										}}
+									>
+										<TableCell align="left">
+											<Chip 
+												label={faq.faqCategory}
+												sx={{
+													background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+													color: 'white',
+													fontWeight: 600,
+													fontSize: '11px',
+													height: '24px',
+												}}
+											/>
+										</TableCell>
 
-							return (
-								<TableRow hover key={'member._id'} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-									<TableCell align="left">mb id</TableCell>
-									<TableCell align="left">member.mb_full_name</TableCell>
-									<TableCell align="left" className={'name'}>
-										<Stack direction={'row'}>
-											<Link href={`/_admin/users/detail?mb_id=$'{member._id'}`}>
-												<div>
-													<Avatar alt="Remy Sharp" src={member_image} sx={{ ml: '2px', mr: '10px' }} />
-												</div>
-											</Link>
-											<Link href={`/_admin/users/detail?mb_id=${'member._id'}`}>
-												<div>member.mb_nick</div>
-											</Link>
-										</Stack>
-									</TableCell>
-									<TableCell align="left">member.mb_phone</TableCell>
-									<TableCell align="center">
-										<Button onClick={(e: any) => handleMenuIconClick(e, index)} className={'badge success'}>
-											member.mb_type
-										</Button>
+										<TableCell align="left" sx={{ maxWidth: 300 }}>
+											<Typography 
+												variant="body2" 
+												sx={{ 
+													overflow: 'hidden', 
+													textOverflow: 'ellipsis', 
+													whiteSpace: 'nowrap',
+													fontWeight: 500,
+													color: '#212121'
+												}}
+											>
+												{faq.question}
+											</Typography>
+										</TableCell>
 
-										<Menu
-											className={'menu-modal'}
-											MenuListProps={{
-												'aria-labelledby': 'fade-button',
-											}}
-											anchorEl={anchorEl[index]}
-											open={Boolean(anchorEl[index])}
-											onClose={handleMenuIconClose}
-											TransitionComponent={Fade}
-											sx={{ p: 1 }}
-										>
-											<MenuItem onClick={(e) => generateMentorTypeHandle('member._id', 'mentor', 'originate')}>
-												<Typography variant={'subtitle1'} component={'span'}>
-													MENTOR
+										<TableCell align="left" sx={{ maxWidth: 300 }}>
+											<Typography 
+												variant="body2" 
+												sx={{ 
+													overflow: 'hidden', 
+													textOverflow: 'ellipsis', 
+													whiteSpace: 'nowrap',
+													color: '#616161'
+												}}
+											>
+												{faq.answer}
+											</Typography>
+										</TableCell>
+
+										<TableCell align="center">
+											<Chip
+												onClick={(e: any) => menuIconClickHandler(e, index)}
+												label={faq.faqStatus}
+												sx={{
+													background: faq.faqStatus === FaqStatus.ACTIVE 
+														? 'rgba(34, 154, 22, 0.16)' 
+														: faq.faqStatus === FaqStatus.INACTIVE
+														? 'rgba(245, 124, 0, 0.16)'
+														: 'rgba(183, 33, 54, 0.16)',
+													color: faq.faqStatus === FaqStatus.ACTIVE 
+														? '#229a16' 
+														: faq.faqStatus === FaqStatus.INACTIVE
+														? '#f57c00'
+														: '#B72136',
+													fontWeight: 600,
+													cursor: 'pointer',
+													'&:hover': {
+														opacity: 0.8,
+													}
+												}}
+											/>
+
+											<Menu
+												className={'menu-modal'}
+												MenuListProps={{
+													'aria-labelledby': 'fade-button',
+												}}
+												anchorEl={anchorEl[index]}
+												open={Boolean(anchorEl[index])}
+												onClose={menuIconCloseHandler}
+												TransitionComponent={Fade}
+												sx={{ 
+													p: 1,
+													'& .MuiPaper-root': {
+														borderRadius: '12px',
+														boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+													}
+												}}
+											>
+												{Object.values(FaqStatus)
+													.filter((ele) => ele !== faq?.faqStatus)
+													.map((status: string) => (
+														<MenuItem
+															onClick={() => updateFaqHandler({ _id: faq._id, faqStatus: status as FaqStatus })}
+															key={status}
+															sx={{
+																borderRadius: '8px',
+																m: 0.5,
+																'&:hover': {
+																	background: 'rgba(102, 126, 234, 0.1)',
+																}
+															}}
+														>
+															<Typography variant={'subtitle1'} component={'span'}>
+																{status}
+															</Typography>
+														</MenuItem>
+													))}
+											</Menu>
+										</TableCell>
+
+										<TableCell align="right">
+											<Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={0.5}>
+												<VisibilityIcon sx={{ fontSize: 16, color: '#999' }} />
+												<Typography variant="body2" sx={{ fontWeight: 600, color: '#616161' }}>
+													{faq.viewCount || 0}
 												</Typography>
-											</MenuItem>
-											<MenuItem onClick={(e) => generateMentorTypeHandle('member._id', 'user', 'remove')}>
-												<Typography variant={'subtitle1'} component={'span'}>
-													USER
-												</Typography>
-											</MenuItem>
-										</Menu>
-									</TableCell>
-								</TableRow>
-							);
-						})}
+											</Stack>
+										</TableCell>
+
+										<TableCell align="left">
+											<Typography variant="body2" color="text.secondary">
+												{new Date(faq.createdAt).toLocaleDateString()}
+											</Typography>
+										</TableCell>
+
+										<TableCell align="right">
+											{deleteFaqHandler && (
+												<Tooltip title="Delete FAQ">
+													<IconButton 
+														onClick={() => deleteFaqHandler(faq._id)} 
+														size="small"
+														sx={{
+															color: '#f5576c',
+															'&:hover': {
+																background: 'rgba(245, 87, 108, 0.1)',
+																transform: 'scale(1.1)',
+															},
+															transition: 'all 0.2s ease'
+														}}
+													>
+														<DeleteRoundedIcon fontSize="small" />
+													</IconButton>
+												</Tooltip>
+											)}
+										</TableCell>
+									</TableRow>
+								);
+							})}
 					</TableBody>
 				</Table>
 			</TableContainer>

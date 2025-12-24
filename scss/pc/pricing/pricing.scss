@@ -1,98 +1,24 @@
-/** PRICING PAGE STYLES - SIMPLE & CLEAN **/
+/** PRICING PAGE STYLES - PREMIUM & MOTIVATIONAL **/
 
 .pricing-page {
-	padding: $spacing-3xl 0;
-	min-height: calc(100vh - 200px);
-	background: #ffffff;
-
 	.container {
 		@include container;
 		max-width: $container-lg;
+		padding: 0 $spacing-md;
 	}
 
-	// Page Header
-	.page-header {
-		margin-bottom: $spacing-3xl;
-		text-align: center;
-		padding: $spacing-2xl 0;
-
-		.page-title {
-			font-family: $font;
-			font-size: 42px;
-			font-weight: 700;
-			color: $gray-900;
-			margin-bottom: $spacing-sm;
-			letter-spacing: -0.5px;
-		}
-
-		.page-subtitle {
-			font-family: $font;
-			font-size: 18px;
-			color: $gray-600;
-			font-weight: 400;
-		}
-	}
-
-	// Pricing Card
+	// Pricing Card - Premium styling
 	.pricing-card {
-		background: #ffffff;
-		border-radius: $radius-lg;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-		border: 1px solid $gray-200;
-		transition: all $transition-base;
-		height: 100%;
-
-		&:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-			border-color: $gray-300;
-		}
-
-		.start-now-btn {
-			background: $gray-900;
-			color: #ffffff;
-			font-weight: 600;
-			text-transform: none;
-			padding: $spacing-md $spacing-xl;
-			border-radius: $radius-md;
-			transition: all $transition-base;
-
-			&:hover {
-				background: $gray-800;
-				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-			}
-		}
-	}
-
-	// Comparison Section
-	.comparison-section {
-		margin-top: $spacing-3xl;
-		padding: $spacing-2xl 0;
-
-		.section-title {
-			font-family: $font;
-			font-weight: 700;
-			color: $gray-900;
-			font-size: 32px;
-			margin-bottom: $spacing-md;
-		}
+		// Styles are handled inline via MUI sx prop for better control
+		// This ensures consistency with Community and My Page design language
 	}
 }
 
 // Responsive Design
 @media (max-width: $breakpoint-md) {
 	.pricing-page {
-		padding: $spacing-lg 0;
-
-		.page-header {
-			.page-title {
-				font-size: 32px;
-			}
-
-			.page-subtitle {
-				font-size: 16px;
-			}
-		}
+		padding-top: 80px !important;
+		padding-bottom: 60px !important;
 	}
 }
 

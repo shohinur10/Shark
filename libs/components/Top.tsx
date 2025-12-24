@@ -12,10 +12,13 @@ import { CaretDown } from 'phosphor-react';
 import useDeviceDetect from '../hooks/useDeviceDetect';
 import Link from 'next/link';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import { useReactiveVar } from '@apollo/client';
+import { useReactiveVar, useQuery } from '@apollo/client';
 import { userVar } from '../../apollo/store';
 import { Logout } from '@mui/icons-material';
 import { REACT_APP_API_URL } from '../config';
+import { GET_UNREAD_NOTIFICATION_COUNT } from '../../apollo/user/query';
+import NotificationDropdown from './NotificationDropdown';
+import { Badge } from '@mui/material';
 
 const Top = () => {
 	const device = useDeviceDetect();
@@ -34,6 +37,15 @@ const Top = () => {
 	const [currentPath, setCurrentPath] = useState<string>('');
 	const [nutritionAnchor, setNutritionAnchor] = useState<null | HTMLElement>(null);
 	const nutritionOpen = Boolean(nutritionAnchor);
+	const [notificationAnchor, setNotificationAnchor] = useState<null | HTMLElement>(null);
+	const notificationOpen = Boolean(notificationAnchor);
+
+	// Get unread notification count
+	const { data: unreadCountData } = useQuery(GET_UNREAD_NOTIFICATION_COUNT, {
+		skip: !user?._id,
+		pollInterval: 60000, // Poll every minute
+	});
+	const unreadCount = unreadCountData?.getUnreadNotificationCount || 0;
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -89,10 +101,12 @@ const Top = () => {
 		{ href: '/', key: 'Home', exact: true },
 		{ href: '/workouts', key: 'Workouts' },
 		{ href: '/coaching', key: 'Coaching' },
+		{ href: '/trainer', key: 'Trainer' },
 		{ href: '/nutrition', key: 'Nutrition', hasDropdown: true },
 		{ href: '/progress', key: 'Progress' },
 		{ href: '/community?articleCategory=FREE', key: 'Community' },
 		{ href: '/pricing', key: 'Pricing' },
+		{ href: '/mypage', key: 'My Page', requiresAuth: true },
 		{ href: '/support', key: 'Support' },
 	];
 
@@ -160,6 +174,14 @@ const Top = () => {
 		setNutritionAnchor(null);
 	};
 
+	const handleNotificationClick = (event: React.MouseEvent<HTMLElement>) => {
+		setNotificationAnchor(event.currentTarget);
+	};
+
+	const handleNotificationClose = () => {
+		setNotificationAnchor(null);
+	};
+
 	const StyledMenu = styled((props: MenuProps) => (
 		<Menu
 			elevation={0}
@@ -198,6 +220,7 @@ const Top = () => {
 					<Link href={'/'}><div>{t('Home')}</div></Link>
 					<Link href={'/workouts'}><div>{t('Workouts')}</div></Link>
 					<Link href={'/coaching'}><div>{t('Coaching')}</div></Link>
+					<Link href={'/trainer'}><div>{t('Trainer')}</div></Link>
 					<Box component="div" sx={{ position: 'relative' }}>
 						<Box
 							component="div"
@@ -231,6 +254,7 @@ const Top = () => {
 					<Link href={'/progress'}><div>{t('Progress')}</div></Link>
 					<Link href={'/community?articleCategory=FREE'}><div>{t('Community')}</div></Link>
 					<Link href={'/pricing'}><div>{t('Pricing')}</div></Link>
+					{user?._id && <Link href={'/mypage'}><div>{t('My Page')}</div></Link>}
 					<Link href={'/support'}><div>{t('Support')}</div></Link>
 				</Stack>
 			);
@@ -333,7 +357,41 @@ const Top = () => {
 							)}
 
 							<div className={'lan-box'}>
-								{user?._id && <NotificationsOutlinedIcon className={'notification-icon'} />}
+								{user?._id && (
+									<>
+										<Badge
+											badgeContent={unreadCount}
+											color="error"
+											max={99}
+											sx={{
+												marginRight: '16px',
+												'& .MuiBadge-badge': {
+													fontSize: '10px',
+													height: '18px',
+													minWidth: '18px',
+												},
+											}}
+										>
+											<Box
+												component="div"
+												onClick={handleNotificationClick}
+												sx={{
+													cursor: 'pointer',
+													display: 'flex',
+													alignItems: 'center',
+													justifyContent: 'center',
+												}}
+											>
+												<NotificationsOutlinedIcon className={'notification-icon'} />
+											</Box>
+										</Badge>
+										<NotificationDropdown
+											anchorEl={notificationAnchor}
+											open={notificationOpen}
+											onClose={handleNotificationClose}
+										/>
+									</>
+								)}
 								<Button
 									disableRipple
 									className="btn-lang"

@@ -814,6 +814,42 @@ query GetMealPlan ($input:String!){
             fats
             imageUrl
         }
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
     }
 }
 `;
@@ -840,6 +876,47 @@ query GetMealPlans ($input:MealPlansInquiry!){
             deletedAt
             createdAt
             updatedAt
+            macros {
+                protein
+                carbs
+                fats
+            }
+            memberData {
+                _id
+                memberType
+                memberStatus
+                memberAuthType
+                memberPhone
+                memberNick
+                memberFullName
+                memberImage
+                memberAddress
+                memberDesc
+                memberProperties
+                memberArticles
+                memberFollowers
+                memberFollowings
+                memberPoints
+                memberLikes
+                memberViews
+                memberComments
+                memberRank
+                memberBlocks
+                memberWarnings
+                memberWorkouts
+                memberChallenges
+                memberAchievements
+                trainerRating
+                trainerExperience
+                trainerSpecialties
+                trainerCertifications
+                trainerBio
+                subscriptionId
+                deletedAt
+                createdAt
+                updatedAt
+                accessToken
+            }
         }
         metaCounter {
             total
@@ -1133,6 +1210,42 @@ query GetVisitedWorkouts($input:OrdinaryInquiry!) {
             deletedAt
             createdAt
             updatedAt
+            memberData {
+                _id
+                memberType
+                memberStatus
+                memberAuthType
+                memberPhone
+                memberNick
+                memberFullName
+                memberImage
+                memberAddress
+                memberDesc
+                memberProperties
+                memberArticles
+                memberFollowers
+                memberFollowings
+                memberPoints
+                memberLikes
+                memberViews
+                memberComments
+                memberRank
+                memberBlocks
+                memberWarnings
+                memberWorkouts
+                memberChallenges
+                memberAchievements
+                trainerRating
+                trainerExperience
+                trainerSpecialties
+                trainerCertifications
+                trainerBio
+                subscriptionId
+                deletedAt
+                createdAt
+                updatedAt
+                accessToken
+            }
         }
         metaCounter {
             total
@@ -1266,6 +1379,42 @@ query GetWorkouts($input:WorkoutsInquiry!) {
             deletedAt
             createdAt
             updatedAt
+            memberData {
+                _id
+                memberType
+                memberStatus
+                memberAuthType
+                memberPhone
+                memberNick
+                memberFullName
+                memberImage
+                memberAddress
+                memberDesc
+                memberProperties
+                memberArticles
+                memberFollowers
+                memberFollowings
+                memberPoints
+                memberLikes
+                memberViews
+                memberComments
+                memberRank
+                memberBlocks
+                memberWarnings
+                memberWorkouts
+                memberChallenges
+                memberAchievements
+                trainerRating
+                trainerExperience
+                trainerSpecialties
+                trainerCertifications
+                trainerBio
+                subscriptionId
+                deletedAt
+                createdAt
+                updatedAt
+                accessToken
+            }
         }
         metaCounter {
             total
@@ -1302,6 +1451,42 @@ query GetTrainerWorkouts ($input:TrainerWorkoutsInquiry!){
             deletedAt
             createdAt
             updatedAt
+            memberData {
+                _id
+                memberType
+                memberStatus
+                memberAuthType
+                memberPhone
+                memberNick
+                memberFullName
+                memberImage
+                memberAddress
+                memberDesc
+                memberProperties
+                memberArticles
+                memberFollowers
+                memberFollowings
+                memberPoints
+                memberLikes
+                memberViews
+                memberComments
+                memberRank
+                memberBlocks
+                memberWarnings
+                memberWorkouts
+                memberChallenges
+                memberAchievements
+                trainerRating
+                trainerExperience
+                trainerSpecialties
+                trainerCertifications
+                trainerBio
+                subscriptionId
+                deletedAt
+                createdAt
+                updatedAt
+                accessToken
+            }
         }
         metaCounter {
             total
@@ -1338,6 +1523,42 @@ query GetFavoriteWorkouts($input:OrdinaryInquiry!) {
             deletedAt
             createdAt
             updatedAt
+            memberData {
+                _id
+                memberType
+                memberStatus
+                memberAuthType
+                memberPhone
+                memberNick
+                memberFullName
+                memberImage
+                memberAddress
+                memberDesc
+                memberProperties
+                memberArticles
+                memberFollowers
+                memberFollowings
+                memberPoints
+                memberLikes
+                memberViews
+                memberComments
+                memberRank
+                memberBlocks
+                memberWarnings
+                memberWorkouts
+                memberChallenges
+                memberAchievements
+                trainerRating
+                trainerExperience
+                trainerSpecialties
+                trainerCertifications
+                trainerBio
+                subscriptionId
+                deletedAt
+                createdAt
+                updatedAt
+                accessToken
+            }
         }
         metaCounter {
             total
@@ -1667,3 +1888,127 @@ query GetProgresses ($input:ProgressesInquiry!){
     }
 }
 `;
+
+
+/**************************
+ *      NOTIFICATION       *
+ *************************/
+
+export const GET_NOTIFICATIONS = gql`
+query GetNotifications($input: NotificationsInquiry!) {
+    getMyNotifications(input: $input) {
+        list {
+            _id
+            notificationType
+            notificationStatus
+            notificationGroup
+            notificationTitle
+            notificationDesc
+            notificationRefId
+            notificationMessage
+            notificationUrl
+            authorId
+            receiverId
+            memberId
+            actionMemberId
+            propertyId
+            articleId
+            createdAt
+            updatedAt
+            authorData {
+                _id
+                memberNick
+                memberFullName
+                memberImage
+            }
+            actionMemberData {
+                _id
+                memberNick
+                memberFullName
+                memberImage
+            }
+            memberData {
+                _id
+                memberNick
+                memberFullName
+                memberImage
+            }
+            relatedCommentData {
+                _id
+                commentContent
+                createdAt
+                memberData {
+                    _id
+                    memberNick
+                    memberFullName
+                    memberImage
+                }
+            }
+        }
+        metaCounter {
+            total
+            totalCount
+            unreadCount
+        }
+    }
+}
+`;
+
+export const GET_UNREAD_NOTIFICATION_COUNT = gql`
+query GetUnreadNotificationCount {
+    getUnreadNotificationCount
+}
+`;
+
+export const GET_MY_NOTIFICATIONS = gql`
+query GetMyNotifications ($input:NotificationsInquiry!){
+    getMyNotifications(input: $input) {
+        list {
+            _id
+            notificationType
+            notificationStatus
+            notificationGroup
+            notificationTitle
+            notificationDesc
+            authorId
+            receiverId
+            propertyId
+            articleId
+            createdAt
+            updatedAt
+        }
+        metaCounter {
+            total
+        }
+    }
+}
+`;
+
+/**************************
+ *      SUPPLEMENTS       *
+ *************************/
+
+export const GET_SUPPLEMENTS = gql`
+query GetSupplements ($input:SupplementsInquiry!){
+    getSupplements(input: $input) {
+        list {
+            _id
+            name
+            category
+            description
+            recommendedDosage
+            keyBenefits
+            bestFor
+            rating
+            usageNotes
+            createdAt
+            updatedAt
+        }
+        metaCounter {
+            total
+        }
+    }
+}
+`;
+
+

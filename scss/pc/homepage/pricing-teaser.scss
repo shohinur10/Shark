@@ -6,6 +6,7 @@
 
 	.container {
 		@include container;
+		max-width: 1200px;
 	}
 
 	.section-header {
@@ -13,6 +14,12 @@
 		justify-content: space-between;
 		align-items: flex-end;
 		margin-bottom: $spacing-2xl;
+
+		@media (max-width: $breakpoint-md) {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: $spacing-lg;
+		}
 
 		.section-title {
 			font-family: $font;
@@ -43,115 +50,276 @@
 		}
 	}
 
+	.pricing-grid {
+		max-width: 100%;
+		display: flex;
+		justify-content: center;
+
+		.pricing-grid-item {
+			max-width: 360px;
+			width: 100%;
+		}
+	}
+
 	.pricing-card {
-		border-radius: $radius-lg;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+		border-radius: 14px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 		transition: all $transition-base;
 		height: 100%;
 		position: relative;
 		background: #ffffff;
 		color: $gray-900;
+		max-width: 360px;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		border: 1px solid rgba(0, 0, 0, 0.08);
 
 		&.popular {
-			border: 3px solid $fitness-orange;
-			transform: scale(1.05);
+			border: 1px solid rgba(241, 119, 66, 0.3);
+			transform: scale(1.03);
 
 			&:hover {
-				transform: scale(1.08) translateY(-8px);
+				transform: scale(1.03) translateY(-4px);
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 			}
 		}
 
 		&:hover {
-			transform: translateY(-8px);
-			box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+			transform: translateY(-4px);
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+		}
+
+		.popular-badge-wrapper {
+			position: absolute;
+			top: -10px;
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 1;
 		}
 
 		.popular-badge {
-			position: absolute;
-			top: -12px;
-			left: 50%;
-			transform: translateX(-50%);
-			background: $fitness-orange;
-			color: #ffffff;
-			font-weight: 700;
-			font-size: 12px;
-			padding: $spacing-xs $spacing-md;
-			z-index: 1;
+			background: $fitness-orange !important;
+			color: #ffffff !important;
+			font-weight: 600 !important;
+			font-size: 11px !important;
+			height: 22px !important;
+			padding: 0 10px !important;
+			border-radius: 11px !important;
 
-			svg {
-				color: #ffffff;
+			.MuiChip-label {
+				padding: 0 4px;
+				font-size: 11px;
 			}
+		}
+
+		.card-content {
+			padding: 24px 20px 20px !important;
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			box-sizing: border-box;
 		}
 
 		.plan-name {
 			font-family: $font;
 			font-weight: 700;
+			font-size: 20px;
 			color: $gray-900;
-			margin-bottom: $spacing-xs;
+			margin-bottom: 4px;
+			line-height: 1.2;
 		}
 
 		.plan-description {
 			font-family: $font;
+			font-size: 13px;
 			color: $gray-600;
+			margin-bottom: 16px;
+			line-height: 1.4;
 		}
 
 		.plan-price-container {
 			display: flex;
 			align-items: baseline;
-			justify-content: center;
-			margin: $spacing-xl 0;
+			justify-content: flex-start;
+			margin: 0 0 20px 0;
+			gap: 4px;
 		}
 
 		.plan-price {
 			font-family: $font;
 			font-weight: 800;
+			font-size: 42px;
 			color: $gray-900;
 			line-height: 1;
 		}
 
 		.plan-period {
 			font-family: $font;
+			font-size: 14px;
 			color: $gray-600;
-			margin-left: $spacing-xs;
+			font-weight: 400;
 		}
 
 		.plan-features {
-			margin: $spacing-xl 0;
+			margin: 0 0 24px 0;
+			padding: 0;
 			text-align: left;
+			flex: 1;
+
+			.feature-item {
+				margin-bottom: 8px;
+				min-height: auto;
+				padding: 0;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+
+			.feature-icon-wrapper {
+				min-width: 20px;
+				width: 20px;
+				margin-right: 10px;
+				padding: 0;
+			}
 
 			.feature-check {
 				color: #4caf50;
-				font-size: 20px;
-				min-width: 32px;
+				font-size: 18px;
+				width: 18px;
+				height: 18px;
 			}
 
 			.feature-text {
-				font-family: $font;
-				color: $gray-700;
-				font-size: 14px;
+				margin: 0;
+				padding: 0;
+
+				.feature-text-primary {
+					font-family: $font;
+					color: $gray-700;
+					font-size: 13px;
+					line-height: 1.5;
+					font-weight: 400;
+				}
 			}
 		}
 
 		.plan-button {
-			background: $gray-900;
-			color: #ffffff;
+			height: 44px;
 			font-weight: 600;
 			text-transform: none;
-			padding: $spacing-md $spacing-xl;
 			border-radius: $radius-md;
-			margin-top: $spacing-lg;
+			margin-top: auto;
+			font-size: 14px;
+			padding: 0 $spacing-lg;
+		}
+
+		.button-primary {
+			background: $fitness-orange !important;
+			color: #ffffff !important;
+			border: none !important;
 
 			&:hover {
-				background: $gray-800;
+				background: darken($fitness-orange, 8%) !important;
 			}
 		}
 
-		&.popular .plan-button {
-			background: $fitness-orange;
-			color: #ffffff;
+		.button-outline {
+			background: transparent !important;
+			color: $gray-900 !important;
+			border: 1.5px solid $gray-300 !important;
 
 			&:hover {
-				background: darken($fitness-orange, 10%);
+				background: rgba(0, 0, 0, 0.04) !important;
+				border-color: $gray-400 !important;
+			}
+		}
+
+		.button-dark {
+			background: $gray-900 !important;
+			color: #ffffff !important;
+			border: none !important;
+
+			&:hover {
+				background: $gray-800 !important;
+			}
+		}
+
+		@media (max-width: $breakpoint-md) {
+			max-width: 100%;
+
+			.card-content {
+				padding: 20px 18px 18px !important;
+			}
+
+			.plan-price {
+				font-size: 36px;
+			}
+		}
+
+		@media (max-width: $breakpoint-sm) {
+			.card-content {
+				padding: 18px 16px 16px !important;
+			}
+
+			.plan-price {
+				font-size: 32px;
+			}
+
+			.plan-name {
+				font-size: 18px;
+			}
+
+			.plan-features {
+				margin-bottom: 20px;
+
+				.feature-text-primary {
+					font-size: 12px;
+				}
+
+				.feature-check {
+					font-size: 16px;
+					width: 16px;
+					height: 16px;
+				}
+			}
+		}
+	}
+
+	@media (max-width: $breakpoint-md) {
+		padding: $spacing-2xl 0;
+
+		.section-header {
+			.section-title {
+				font-size: 28px;
+			}
+
+			.section-subtitle {
+				font-size: 16px;
+			}
+		}
+
+		.pricing-grid {
+			.pricing-grid-item {
+				max-width: 100%;
+			}
+		}
+	}
+
+	@media (max-width: $breakpoint-sm) {
+		padding: $spacing-xl 0;
+
+		.section-header {
+			margin-bottom: $spacing-xl;
+
+			.section-title {
+				font-size: 24px;
+				margin-bottom: $spacing-xs;
+			}
+
+			.section-subtitle {
+				font-size: 14px;
 			}
 		}
 	}

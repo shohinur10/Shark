@@ -2502,3 +2502,236 @@ mutation UpdateBooking ($input:BookingUpdate!){
 }
 `;
 
+
+
+/**************************
+ *      NOTIFICATION       *
+ *************************/
+
+export const MARK_NOTIFICATION_AS_READ = gql`
+mutation MarkNotificationAsRead($input: NotificationMarkAsReadInput!) {
+    markNotificationAsRead(input: $input) {
+        _id
+        notificationStatus
+        updatedAt
+    }
+}
+`;
+
+export const MARK_ALL_NOTIFICATIONS_AS_READ = gql`
+mutation MarkAllNotificationsAsRead {
+    markAllNotificationsAsRead {
+        success
+        updatedCount
+    }
+}
+`;
+
+export const DELETE_NOTIFICATION = gql`
+mutation DeleteNotification($input: NotificationDeleteInput!) {
+    deleteNotification(input: $input) {
+        _id
+        success
+    }
+}
+`;
+
+export const CREATE_NOTIFICATION = gql`
+mutation CreateNotification($input:NotificationInput!) {
+    createNotification(input: $input) {
+        _id
+        notificationType
+        notificationStatus
+        notificationGroup
+        notificationTitle
+        notificationDesc
+        authorId
+        receiverId
+        propertyId
+        articleId
+        createdAt
+        updatedAt
+        authorData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+export const READ_NOTIFICATION = gql`
+mutation ReadNotification($notificationId: String!) {
+    readNotification(notificationId: $notificationId) {
+        _id
+        notificationType
+        notificationStatus
+        notificationGroup
+        notificationTitle
+        notificationDesc
+        authorId
+        receiverId
+        propertyId
+        articleId
+        createdAt
+        updatedAt
+        authorData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+        notificationRefId
+        notificationMessage
+        notificationUrl
+        memberId
+        actionMemberId
+        actionMemberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+        relatedCommentData {
+            _id
+            commentStatus
+            commentGroup
+            commentContent
+            commentRefId
+            memberId
+            parentCommentId
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+`;
+

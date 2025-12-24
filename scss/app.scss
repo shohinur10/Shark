@@ -52,10 +52,30 @@ hr {
 	width: 100%;
 	height: 100%;
 
+	/* Container - full width, no max-width or centering */
 	.container {
 		position: relative;
-		width: 1300px;
+		width: 100%;
+		display: flex;
+		box-sizing: border-box;
+	}
+
+	/* Inner container pattern for centered content within full-width sections */
+	.container-inner {
+		position: relative;
+		width: 100%;
+		max-width: 1300px;
 		margin: 0 auto;
 		display: flex;
+		box-sizing: border-box;
+		padding: 0 $spacing-md;
+		
+		@media (max-width: $breakpoint-lg) {
+			padding: 0 $spacing-lg;
+		}
+		
+		@media (max-width: $breakpoint-sm) {
+			padding: 0 $spacing-md;
+		}
 	}
 }

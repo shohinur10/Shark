@@ -5,32 +5,97 @@
 			height: auto;
 			display: flex;
 			flex-direction: column;
-			gap: 20px;
+			gap: 30px;
 			.main-title-box {
 				width: auto;
 				height: auto;
 				flex-direction: row;
 				justify-content: space-between;
+				margin-bottom: 10px;
 				.right-box {
-					width: 315px;
+					width: 100%;
 					.main-title {
 						color: #181a20;
 						font-family: $font;
-						font-size: 30px;
+						font-size: 32px;
 						font-style: normal;
-						font-weight: 600;
-						line-height: normal;
-						letter-spacing: 0.6px;
-						text-transform: capitalize;
+						font-weight: 700;
+						line-height: 1.2;
+						letter-spacing: -0.5px;
+						margin-bottom: 8px;
 					}
 					.sub-title {
-						color: #181a20;
+						color: #717171;
 						font-family: $font;
-						font-size: 14px;
+						font-size: 15px;
 						font-style: normal;
 						font-weight: 400;
-						line-height: 26px;
+						line-height: 1.5;
 					}
+				}
+			}
+			.profile-settings-card,
+			.password-settings-card {
+				border-radius: 16px;
+				border: 1px solid rgba(196, 196, 196, 0.3);
+				background: #fff;
+				box-shadow: 0px 4px 20px 0px rgba(24, 26, 32, 0.08);
+				transition: box-shadow 0.3s ease, transform 0.2s ease;
+				&:hover {
+					box-shadow: 0px 6px 30px 0px rgba(24, 26, 32, 0.12);
+					transform: translateY(-2px);
+				}
+			}
+			.section-title {
+				color: #181a20;
+				font-family: $font;
+				font-size: 20px;
+				font-weight: 700;
+				margin-bottom: 24px;
+				letter-spacing: -0.3px;
+			}
+			.field-label {
+				color: #181a20;
+				font-family: $font;
+				font-size: 14px;
+				font-weight: 600;
+				margin-bottom: 8px;
+			}
+			.photo-section {
+				.image-preview {
+					width: 120px;
+					height: 120px;
+					border-radius: 50%;
+					overflow: hidden;
+					border: 4px solid #fff;
+					box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+					.profile-image {
+						width: 100%;
+						height: 100%;
+						object-fit: cover;
+					}
+				}
+			}
+			.update-button {
+				background: linear-gradient(135deg, #000000 0%, #2a2a2a 100%);
+				color: #fff;
+				padding: 12px 32px;
+				border-radius: 10px;
+				font-weight: 600;
+				font-size: 14px;
+				text-transform: none;
+				box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+				transition: all 0.3s ease;
+				&:hover {
+					background: linear-gradient(135deg, #2a2a2a 0%, #000000 100%);
+					box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.25);
+					transform: translateY(-2px);
+				}
+				&:disabled {
+					background: #e0e0e0;
+					color: #9e9e9e;
+					box-shadow: none;
+					transform: none;
 				}
 			}
 			.top-box {
@@ -38,10 +103,10 @@
 				padding: 30px;
 				margin-top: 35px;
 				gap: 25px;
-				border-radius: 12px;
-				border: 1px solid #c4c4c4;
+				border-radius: 16px;
+				border: 1px solid rgba(196, 196, 196, 0.3);
 				background: #fff;
-				box-shadow: 0px 1px 4px 0px rgba(24, 26, 32, 0.07);
+				box-shadow: 0px 4px 20px 0px rgba(24, 26, 32, 0.08);
 				.photo-box {
 					gap: 23px;
 					.title {
@@ -191,29 +256,6 @@
 						font-style: normal;
 						font-weight: 400;
 						line-height: 26px;
-					}
-					.update-button {
-						display: flex;
-						width: 170px;
-						height: 38px;
-						justify-content: center;
-						align-items: center;
-						gap: 10px;
-						align-self: flex-end;
-						margin-top: 30px;
-						border-radius: 12px;
-						background-color: #000000;
-						p {
-							color: #fff;
-							font-family: $font;
-							font-size: 13px;
-							font-style: normal;
-							font-weight: 600;
-							line-height: normal;
-						}
-					}
-					button:disabled {
-						background: #181a2045;
 					}
 				}
 			}

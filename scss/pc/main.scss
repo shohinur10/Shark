@@ -46,11 +46,13 @@
 @import '/scss/pc/workouts/workouts.scss';
 @import '/scss/pc/exercises/exercises.scss';
 @import '/scss/pc/nutrition/nutrition.scss';
+@import '/scss/pc/nutrition/meal-plans.scss';
 @import '/scss/pc/progress/progress.scss';
 @import '/scss/pc/fitness-journey/fitness-journey.scss';
 @import '/scss/pc/coaching/coaching.scss';
 @import '/scss/pc/pricing/pricing.scss';
 @import '/scss/pc/support/support.scss';
+@import '/scss/pc/trainer/trainer.scss';
 
 body {
 	-ms-overflow-style: none; /* for Internet Explorer, Edge */
@@ -64,12 +66,39 @@ body::-webkit-scrollbar {
 
 #pc-wrap {
 	#top {
+		position: relative !important;
+		width: 100% !important;
+		max-width: 100% !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		left: 0 !important;
+		right: 0 !important;
+		box-sizing: border-box !important;
+		
+		// Ensure MUI Stack components are full width
+		& > * {
+			width: 100% !important;
+			max-width: 100% !important;
+		}
+		
 		.navbar {
+			position: relative;
+			width: 100% !important;
+			max-width: 100% !important;
+			margin: 0 !important;
+			padding: 0 !important;
+			
 			.navbar-main {
-				position: fixed;
-				padding: 22px 0px;
-				width: 100%;
-				height: 87px;
+				position: fixed !important;
+				top: 0 !important;
+				left: 0 !important;
+				right: 0 !important;
+				padding: 10px 0px !important;
+				width: 100% !important;
+				min-width: 100% !important;
+				max-width: 100% !important;
+				height: auto;
+				min-height: 65px;
 				display: flex;
 				flex-direction: row;
 				box-sizing: border-box;
@@ -79,6 +108,7 @@ body::-webkit-scrollbar {
 				backdrop-filter: blur(10px);
 				-webkit-backdrop-filter: blur(10px);
 				transition: all $transition-base;
+				margin: 0 !important;
 				
 				&.transparent {
 					background: linear-gradient(180deg, rgba(24, 26, 32, 0.95) 0%, rgba(24, 26, 32, 0.85) 100%);
@@ -87,7 +117,12 @@ body::-webkit-scrollbar {
 					box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 					border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 				}
+				
 				.container {
+					max-width: $container-lg;
+					width: 100%;
+					margin: 0 auto;
+					padding: 0 $spacing-md;
 					flex-direction: row;
 					align-items: center;
 					justify-content: space-between;
@@ -163,8 +198,8 @@ body::-webkit-scrollbar {
 						flex-direction: row;
 						align-items: center;
 						justify-content: center;
-						gap: 2px;
-						flex-wrap: wrap;
+						gap: 16px !important;
+						flex-wrap: nowrap !important;
 						margin: 0 24px;
 						
 						a {
@@ -173,20 +208,21 @@ body::-webkit-scrollbar {
 							
 							div {
 								position: relative;
-								padding: 12px 18px;
+								padding: 6px 10px !important;
 								color: rgba(255, 255, 255, 0.85);
 								font-family: $font;
-								font-size: 14px;
+								font-size: 14px !important;
 								font-style: normal;
-								font-weight: 500;
+								font-weight: 500 !important;
+								letter-spacing: 0 !important;
 								line-height: 1.4;
 								cursor: pointer;
-								border-radius: 10px;
+								border-radius: 8px !important;
 								transition: all $transition-base;
-								white-space: nowrap;
+								white-space: nowrap !important;
 								overflow: hidden;
 								
-								&::before {
+									&::before {
 									content: '';
 									position: absolute;
 									top: 0;
@@ -196,7 +232,7 @@ body::-webkit-scrollbar {
 									background: linear-gradient(135deg, rgba(241, 119, 66, 0.15) 0%, rgba(236, 107, 87, 0.15) 100%);
 									opacity: 0;
 									transition: opacity $transition-base;
-									border-radius: 10px;
+									border-radius: 8px;
 								}
 								
 								&::after {
@@ -231,6 +267,7 @@ body::-webkit-scrollbar {
 									color: #ffffff;
 									background: linear-gradient(135deg, rgba(241, 119, 66, 0.2) 0%, rgba(236, 107, 87, 0.2) 100%);
 									font-weight: 600;
+									letter-spacing: 0;
 									box-shadow: 0 4px 16px rgba(241, 119, 66, 0.3);
 									
 									&::before {
@@ -348,6 +385,9 @@ body::-webkit-scrollbar {
 		background-position: center;
 		.container {
 			position: relative;
+			max-width: $container-lg;
+			margin: 0 auto;
+			padding: 0 $spacing-md;
 			margin-top: 20px;
 			flex-direction: column;
 			align-items: center;
@@ -592,6 +632,9 @@ body::-webkit-scrollbar {
 			height: 300px;
 		}
 		.container {
+			max-width: $container-lg;
+			margin: 0 auto;
+			padding: 0 $spacing-md;
 			margin-top: 175px;
 			strong {
 				color: #fff;
@@ -824,95 +867,137 @@ body::-webkit-scrollbar {
 	}
 
 	#footer {
-		position: relative;
-		width: 100vw;
-		width: 100%;
-		margin: 0;
-		padding: 0;
-		left: 0;
-		right: 0;
+		position: relative !important;
+		width: 100% !important;
+		min-width: 100% !important;
+		max-width: 100% !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		left: 0 !important;
+		right: 0 !important;
 		background: #181a20;
 		overflow-x: hidden;
+		box-sizing: border-box !important;
+		
+		// Ensure MUI Stack components are full width
+		& > * {
+			width: 100% !important;
+			max-width: 100% !important;
+		}
 		
 		.footer-container {
-			max-width: $container-lg;
+			max-width: 1280px;
 			width: 100%;
 			height: auto;
 			margin: 0 auto;
-			padding: 60px $spacing-lg 18px;
+			padding: 64px $spacing-lg 0;
 			box-sizing: border-box;
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
 			
 			@media (max-width: $breakpoint-lg) {
 				max-width: 100%;
-				padding: 60px $spacing-md 18px;
+				padding: 60px $spacing-md 0;
 			}
 			
 			@media (max-width: $breakpoint-md) {
-				padding: 50px $spacing-md 18px;
+				padding: 56px $spacing-md 0;
 			}
 			
 			.main {
 				display: grid;
-				grid-template-columns: 1fr 1.5fr;
-				gap: 60px;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 40px;
 				width: 100%;
+				margin-bottom: 32px;
 				
-				@media (max-width: $breakpoint-md) {
-					grid-template-columns: 1fr;
-					gap: 40px;
+				@media (max-width: $breakpoint-lg) {
+					gap: 32px;
 				}
 				
-				.left {
+				@media (max-width: $breakpoint-md) {
+					grid-template-columns: repeat(2, 1fr);
+					gap: 32px;
+				}
+				
+				@media (max-width: $breakpoint-sm) {
+					grid-template-columns: 1fr;
+					gap: 32px;
+				}
+				
+				.column {
 					display: flex;
 					flex-direction: column;
-					justify-content: space-between;
-					min-height: 360px;
-					
-					@media (max-width: $breakpoint-md) {
-						min-height: auto;
-						gap: 30px;
-					}
-					
-					.footer-box {
+				}
+				
+				.brand-column {
+					.brand-section {
 						display: flex;
 						flex-direction: column;
+						margin-bottom: 24px;
 						
 						.logo {
-							width: 128px;
-							height: 52px;
+							width: 120px;
+							height: auto;
 							cursor: pointer;
 							object-fit: contain;
+							margin-bottom: 12px;
 						}
 						
-						span {
-							color: #bebdbd;
+						.tagline {
+							color: rgba(255, 255, 255, 0.7);
 							font-family: $font;
 							font-size: 14px;
 							font-style: normal;
 							font-weight: 400;
-							text-transform: capitalize;
+							line-height: 1.5;
+							margin: 0;
 						}
+					}
+					
+					.support-section {
+						display: flex;
+						flex-direction: column;
+						gap: 10px;
+						margin-bottom: 24px;
 						
-						p {
-							color: #fff;
-							font-family: $font;
-							font-size: 15px;
-							font-style: normal;
-							font-weight: 600;
-							line-height: normal;
-							text-transform: capitalize;
+						.support-item {
+							display: flex;
+							flex-direction: column;
+							gap: 4px;
+							
+							.support-label {
+								color: rgba(255, 255, 255, 0.5);
+								font-family: $font;
+								font-size: 12px;
+								font-style: normal;
+								font-weight: 400;
+								line-height: 1.4;
+								text-transform: uppercase;
+								letter-spacing: 0.5px;
+							}
+							
+							.support-value {
+								color: #fff;
+								font-family: $font;
+								font-size: 14px;
+								font-style: normal;
+								font-weight: 500;
+								line-height: 1.4;
+								margin: 0;
+							}
 						}
-						
+					}
+					
+					.social-section {
 						.media-box {
-							margin-top: 12px;
-							color: #929495;
 							display: flex;
 							flex-direction: row;
 							align-items: center;
-							gap: 22px;
+							gap: 16px;
 							
 							svg {
-								font-size: 32px;
+								font-size: 24px;
+								color: rgba(255, 255, 255, 0.6);
 								cursor: pointer;
 								transition: color $transition-base;
 								
@@ -924,153 +1009,158 @@ body::-webkit-scrollbar {
 					}
 				}
 				
-				.right {
-					display: flex;
-					flex-direction: column;
+				.links-column {
+					.column-title {
+						color: #fff;
+						font-family: $font;
+						font-size: 16px;
+						font-style: normal;
+						font-weight: 600;
+						line-height: 1.4;
+						margin-bottom: 16px;
+						display: block;
+					}
 					
-					.top {
+					.links-list {
 						display: flex;
 						flex-direction: column;
+						gap: 10px;
 						
-						strong {
-							color: #fff;
+						.link-item {
+							color: rgba(255, 255, 255, 0.7);
 							font-family: $font;
-							font-size: 15px;
+							font-size: 14px;
 							font-style: normal;
-							font-weight: 600;
-							line-height: normal;
-							text-transform: capitalize;
-						}
-						
-						div {
-							padding: 20px 30px;
-							margin-top: 20px;
-							width: 100%;
-							max-width: 667px;
-							height: 70px;
-							display: flex;
-							flex-direction: row;
-							align-items: center;
-							box-sizing: border-box;
-							border-radius: 12px;
-							background: #212329;
+							font-weight: 400;
+							line-height: 1.4;
+							cursor: pointer;
+							transition: color $transition-base;
 							
-							@media (max-width: $breakpoint-md) {
-								max-width: 100%;
-								height: auto;
-								padding: 15px 20px;
-							}
-							
-							input {
-								margin-right: 10px;
-								flex: 1;
-								border: none;
-								outline: none;
+							&:hover {
 								color: #fff;
-								font-family: $font;
-								font-size: 14px;
-								font-style: normal;
-								font-weight: 400;
-								line-height: 26px;
-								background: none;
-								
-								&::placeholder {
-									color: #bebdbd;
-								}
-							}
-							
-							span {
-								color: #fff;
-								font-family: $font;
-								font-size: 15px;
-								font-style: normal;
-								font-weight: 600;
-								line-height: normal;
-								cursor: pointer;
-								white-space: nowrap;
 							}
 						}
 					}
-					
-					.bottom {
-						margin-top: 60px;
-						display: grid;
-						grid-template-columns: repeat(3, 1fr);
-						gap: 40px;
+				}
+				
+				.newsletter-column {
+					.explore-section {
+						margin-bottom: 24px;
 						
-						@media (max-width: $breakpoint-md) {
-							grid-template-columns: repeat(2, 1fr);
-							gap: 30px;
-							margin-top: 40px;
+						.column-title {
+							color: #fff;
+							font-family: $font;
+							font-size: 16px;
+							font-style: normal;
+							font-weight: 600;
+							line-height: 1.4;
+							margin-bottom: 16px;
+							display: block;
 						}
 						
-						@media (max-width: $breakpoint-sm) {
-							grid-template-columns: 1fr;
-							gap: 30px;
-						}
-						
-						div {
+						.links-list {
 							display: flex;
 							flex-direction: column;
+							gap: 10px;
 							
-							strong {
-								margin-bottom: 3px;
-								color: #fff;
-								font-family: $font;
-								font-size: 15px;
-								font-style: normal;
-								font-weight: 600;
-								line-height: normal;
-								text-transform: capitalize;
-							}
-							
-							span {
-								margin-top: 25px;
-								color: #bebdbd;
+							.link-item {
+								color: rgba(255, 255, 255, 0.7);
 								font-family: $font;
 								font-size: 14px;
 								font-style: normal;
 								font-weight: 400;
+								line-height: 1.4;
 								cursor: pointer;
 								transition: color $transition-base;
 								
 								&:hover {
-									color: #ffffff;
-									text-decoration-line: underline;
+									color: #fff;
 								}
 							}
+						}
+					}
+					
+					.newsletter-card {
+						border-radius: 12px;
+						border: 1px solid rgba(255, 255, 255, 0.08);
+						background: rgba(255, 255, 255, 0.03);
+						padding: 20px;
+						box-sizing: border-box;
+						
+						.newsletter-title {
+							color: #fff;
+							font-family: $font;
+							font-size: 17px;
+							font-style: normal;
+							font-weight: 600;
+							line-height: 1.4;
+							margin: 0 0 8px 0;
+						}
+						
+						.newsletter-subtitle {
+							color: rgba(255, 255, 255, 0.6);
+							font-family: $font;
+							font-size: 13px;
+							font-style: normal;
+							font-weight: 400;
+							line-height: 1.5;
+							margin: 0 0 16px 0;
+						}
+						
+						.newsletter-form {
+							display: flex;
+							flex-direction: column;
+							gap: 0;
+						}
+					}
+					
+					@media (max-width: $breakpoint-md) {
+						grid-column: 1 / -1;
+						
+						.newsletter-card {
+							margin-top: 0;
 						}
 					}
 				}
 			}
 			
-			.second {
-				margin-top: 60px;
-				padding-top: 18px;
-				height: auto;
-				min-height: 45px;
-				border-top: 1px solid #212329;
+			.bottom-bar {
+				border-top: 1px solid rgba(255, 255, 255, 0.1);
+				padding: 20px 0;
 				display: flex;
 				flex-direction: row;
 				justify-content: space-between;
 				align-items: center;
 				flex-wrap: wrap;
-				gap: 20px;
+				gap: 12px;
 				
 				@media (max-width: $breakpoint-md) {
-					margin-top: 40px;
 					flex-direction: column;
 					align-items: flex-start;
-					gap: 15px;
+					padding: 18px 0;
 				}
 				
-				span {
-					color: #bebdbd;
+				.copyright {
+					color: rgba(255, 255, 255, 0.6);
 					font-family: $font;
-					font-size: 14px;
+					font-size: 13px;
 					font-style: normal;
 					font-weight: 400;
-					line-height: normal;
+					line-height: 1.4;
+				}
+				
+				.bottom-links {
+					color: rgba(255, 255, 255, 0.6);
+					font-family: $font;
+					font-size: 13px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: 1.4;
+					cursor: pointer;
+					
+					&:hover {
+						color: rgba(255, 255, 255, 0.8);
+					}
 				}
 			}
 		}

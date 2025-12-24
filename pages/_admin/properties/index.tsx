@@ -18,7 +18,7 @@ import { REMOVE_PROPERTY_BY_ADMIN, UPDATE_PROPERTY_BY_ADMIN } from '../../../apo
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_PROPERTIES_BY_ADMIN } from '../../../apollo/admin/query';
 import { T } from '../../../libs/types/common';
-import { Box, List, ListItem, Stack } from '@mui/material';
+import { Box, List, ListItem, Stack, OutlinedInput, InputAdornment } from '@mui/material';
 
 const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [anchorEl, setAnchorEl] = useState<[] | HTMLElement[]>([]);
@@ -28,6 +28,7 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 	const [value, setValue] = useState(
 		propertiesInquiry?.search?.propertyStatus ? propertiesInquiry?.search?.propertyStatus : 'ALL',
 	);
+	const [searchText, setSearchText] = useState('');
 	const [searchType, setSearchType] = useState('ALL');
 
 	/** APOLLO REQUESTS **/
@@ -81,11 +82,11 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 		setPropertiesInquiry({ ...propertiesInquiry, page: 1, sort: 'createdAt' });
 
 		switch (newValue) {
-			case 'ACTIVE':
-				setPropertiesInquiry({ ...propertiesInquiry, search: { propertyStatus: PropertyStatus.ACTIVE } });
+			case 'AVAILABLE':
+				setPropertiesInquiry({ ...propertiesInquiry, search: { propertyStatus: PropertyStatus.AVAILABLE } });
 				break;
-			case 'SOLD':
-				setPropertiesInquiry({ ...propertiesInquiry, search: { propertyStatus: PropertyStatus.SOLD } });
+			case 'CLOSE':
+				setPropertiesInquiry({ ...propertiesInquiry, search: { propertyStatus: PropertyStatus.CLOSE } });
 				break;
 			case 'DELETE':
 				setPropertiesInquiry({ ...propertiesInquiry, search: { propertyStatus: PropertyStatus.DELETE } });
@@ -155,7 +156,7 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 	return (
 		<Box component={'div'} className={'content'}>
 			<Typography variant={'h2'} className={'tit'} sx={{ mb: '24px' }}>
-				Property List
+				Gym & Facility List
 			</Typography>
 			<Box component={'div'} className={'table-wrap'}>
 				<Box component={'div'} sx={{ width: '100%', typography: 'body1' }}>
@@ -170,32 +171,32 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 									All
 								</ListItem>
 								<ListItem
-									onClick={(e: any) => tabChangeHandler(e, 'ACTIVE')}
-									value="ACTIVE"
-									className={value === 'ACTIVE' ? 'li on' : 'li'}
+									onClick={(e: any) => tabChangeHandler(e, 'AVAILABLE')}
+									value="AVAILABLE"
+									className={value === 'AVAILABLE' ? 'li on' : 'li'}
 								>
-									Active
+									Available
 								</ListItem>
 								<ListItem
-									onClick={(e: any) => tabChangeHandler(e, 'SOLD')}
-									value="SOLD"
-									className={value === 'SOLD' ? 'li on' : 'li'}
+									onClick={(e: any) => tabChangeHandler(e, 'CLOSE')}
+									value="CLOSE"
+									className={value === 'CLOSE' ? 'li on' : 'li'}
 								>
-									Sold
+									Closed
 								</ListItem>
 								<ListItem
 									onClick={(e: any) => tabChangeHandler(e, 'DELETE')}
 									value="DELETE"
 									className={value === 'DELETE' ? 'li on' : 'li'}
 								>
-									Delete
+									Deleted
 								</ListItem>
 							</List>
 							<Divider />
-							<Stack className={'search-area'} sx={{ m: '24px' }}>
-								<Select sx={{ width: '160px', mr: '20px' }} value={searchType}>
+							<Stack className={'search-area'} sx={{ m: '24px' }} direction="row" spacing={2}>
+								<Select sx={{ width: '160px' }} value={searchType}>
 									<MenuItem value={'ALL'} onClick={() => searchTypeHandler('ALL')}>
-										ALL
+										All Locations
 									</MenuItem>
 									{Object.values(PropertyLocation).map((location: string) => (
 										<MenuItem value={location} onClick={() => searchTypeHandler(location)} key={location}>
@@ -203,6 +204,37 @@ const AdminProperties: NextPage = ({ initialInquiry, ...props }: any) => {
 										</MenuItem>
 									))}
 								</Select>
+								<OutlinedInput
+									value={searchText}
+									onChange={(e: any) => setSearchText(e.target.value)}
+									sx={{ flex: 1 }}
+									className={'search'}
+									placeholder="Search gym name or facility type"
+									onKeyDown={(event) => {
+										if (event.key == 'Enter') {
+											setPropertiesInquiry({
+												...propertiesInquiry,
+												search: {
+													...propertiesInquiry.search,
+													text: searchText,
+												},
+											});
+										}
+									}}
+									endAdornment={
+										<InputAdornment position="end" onClick={() => {
+											setPropertiesInquiry({
+												...propertiesInquiry,
+												search: {
+													...propertiesInquiry.search,
+													text: searchText,
+												},
+											});
+										}}>
+											<img src="/img/icons/search_icon.png" alt={'searchIcon'} style={{ cursor: 'pointer' }} />
+										</InputAdornment>
+									}
+								/>
 							</Stack>
 							<Divider />
 						</Box>

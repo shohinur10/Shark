@@ -1,9 +1,10 @@
+import React from 'react';
 import { NextPage } from 'next';
-import { Stack, Box, Typography, Tabs, Tab, Button, Grid, Card, CardContent, CardMedia, Chip, LinearProgress, IconButton, TextField, Select, MenuItem, FormControl, InputLabel, RadioGroup, FormControlLabel, Radio, FormLabel, Divider } from '@mui/material';
+import { Stack, Box, Typography, Tabs, Tab, Button, Grid, Card, CardContent, CardMedia, Chip, LinearProgress, IconButton, TextField, Select, MenuItem, FormControl, InputLabel, RadioGroup, FormControlLabel, Radio, FormLabel, Divider, CircularProgress, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
@@ -18,10 +19,26 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import CalculateIcon from '@mui/icons-material/Calculate';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import InsightsIcon from '@mui/icons-material/Insights';
+import LocalFireDepartmentOutlinedIcon from '@mui/icons-material/LocalFireDepartmentOutlined';
+import { useQuery } from '@apollo/client';
+import { GET_MEAL_PLANS, GET_SUPPLEMENTS } from '../../apollo/user/query';
 import { NutritionGoal, DietaryPreference } from '../../libs/enums/nutrition.enum';
 import { MealPlan } from '../../libs/types/mealplan/mealplan';
+import { MealPlansInquiry } from '../../libs/types/mealplan/mealplan.input';
 import { Recipe, RecipeTag } from '../../libs/types/recipe/recipe';
+import { Direction } from '../../libs/enums/common.enum';
+import { T } from '../../libs/types/common';
+import { getJwtToken } from '../../libs/auth';
+import { useReactiveVar } from '@apollo/client';
+import { userVar } from '../../apollo/store';
+import { SupplementsInquiry } from '../../libs/types/supplement/supplement.input';
+import { Supplement } from '../../libs/types/supplement/supplement';
+import { mockSupplements } from '../../libs/data/mockSupplements';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -82,113 +99,215 @@ const nutritionContent = [
 	},
 ];
 
-// Sample vitamins data - in production, this would come from API
-const vitaminsData = [
-	{
-		id: '1',
-		name: 'Vitamin D3',
-		benefits: ['Bone Health', 'Immune Support', 'Mood Enhancement'],
-		dosage: '1000 IU',
-		image: '/img/vitamins/vitamin-d3.jpg',
-		category: 'Essential Vitamins',
-		rating: 4.8,
-	},
-	{
-		id: '2',
-		name: 'Omega-3 Fish Oil',
-		benefits: ['Heart Health', 'Brain Function', 'Anti-Inflammatory'],
-		dosage: '1000mg',
-		image: '/img/vitamins/omega-3.jpg',
-		category: 'Fatty Acids',
-		rating: 4.9,
-	},
-	{
-		id: '3',
-		name: 'Multivitamin Complex',
-		benefits: ['Daily Nutrition', 'Energy Support', 'Overall Wellness'],
-		dosage: '1 Tablet',
-		image: '/img/vitamins/multivitamin.jpg',
-		category: 'Multivitamins',
-		rating: 4.7,
-	},
-	{
-		id: '4',
-		name: 'Vitamin B12',
-		benefits: ['Energy Production', 'Nerve Health', 'Red Blood Cells'],
-		dosage: '500mcg',
-		image: '/img/vitamins/vitamin-b12.jpg',
-		category: 'B Vitamins',
-		rating: 4.6,
-	},
-	{
-		id: '5',
-		name: 'Magnesium',
-		benefits: ['Muscle Function', 'Sleep Quality', 'Stress Relief'],
-		dosage: '400mg',
-		image: '/img/vitamins/magnesium.jpg',
-		category: 'Minerals',
-		rating: 4.8,
-	},
-	{
-		id: '6',
-		name: 'Probiotics',
-		benefits: ['Digestive Health', 'Gut Flora', 'Immune System'],
-		dosage: '10 Billion CFU',
-		image: '/img/vitamins/probiotics.jpg',
-		category: 'Supplements',
-		rating: 4.7,
-	},
-];
+// Supplement categories will be dynamically generated from data
 
-// Sample meal plans data
-const sampleMealPlans: Partial<MealPlan>[] = [
-	{
-		_id: '1',
-		mealPlanTitle: 'Muscle Gain Meal Plan',
-		nutritionGoal: NutritionGoal.MUSCLE_GAIN,
-		dietaryPreference: [DietaryPreference.HIGH_PROTEIN],
-		duration: 30,
-		calorieTarget: 2800,
-		macros: { protein: 200, carbs: 300, fats: 100 },
-		mealPlanViews: 1250,
-		mealPlanLikes: 89,
-		mealPlanRating: 4.8,
-		isPremium: false,
-		price: 0,
-	},
-	{
-		_id: '2',
-		mealPlanTitle: 'Weight Loss Program',
-		nutritionGoal: NutritionGoal.WEIGHT_LOSS,
-		dietaryPreference: [DietaryPreference.LOW_CARB],
-		duration: 21,
-		calorieTarget: 1500,
-		macros: { protein: 120, carbs: 100, fats: 60 },
-		mealPlanViews: 2100,
-		mealPlanLikes: 156,
-		mealPlanRating: 4.9,
-		isPremium: true,
-		price: 29.99,
-	},
-	{
-		_id: '3',
-		mealPlanTitle: 'Keto Diet Plan',
-		nutritionGoal: NutritionGoal.WEIGHT_LOSS,
-		dietaryPreference: [DietaryPreference.KETO],
-		duration: 14,
-		calorieTarget: 1800,
-		macros: { protein: 140, carbs: 30, fats: 140 },
-		mealPlanViews: 980,
-		mealPlanLikes: 72,
-		mealPlanRating: 4.6,
-		isPremium: false,
-		price: 0,
-	},
-];
+// Helper function to extract recommended timing from supplement data
+const extractRecommendedTiming = (supplement: Supplement): string[] => {
+	const dosage = supplement.recommendedDosage?.toLowerCase() || '';
+	const notes = supplement.usageNotes?.toLowerCase() || '';
+	const combined = `${dosage} ${notes}`;
+	
+	const timings: string[] = [];
+	
+	// Check for timing indicators
+	if (combined.includes('morning') || combined.includes('breakfast') || combined.includes('am')) {
+		timings.push('Morning');
+	}
+	if (combined.includes('pre-workout') || combined.includes('pre workout') || combined.includes('before workout')) {
+		timings.push('Pre-workout');
+	}
+	if (combined.includes('post-workout') || combined.includes('post workout') || combined.includes('after workout') || combined.includes('after exercise')) {
+		timings.push('Post-workout');
+	}
+	if (combined.includes('evening') || combined.includes('night') || combined.includes('bedtime') || combined.includes('before bed') || combined.includes('pm')) {
+		timings.push('Evening');
+	}
+	
+	// Default to Morning if no timing found
+	return timings.length > 0 ? timings : ['Morning'];
+};
+
+// Helper function to convert Supplement to display format
+const supplementToDisplayFormat = (supplement: Supplement) => ({
+	id: supplement._id,
+	name: supplement.name,
+	category: supplement.category,
+	summary: supplement.description,
+	rating: supplement.rating,
+	evidence: 'Well-Researched', // Default evidence level
+	what: supplement.description,
+	recommendedDosage: supplement.recommendedDosage,
+	bestFor: supplement.bestFor,
+	keyBenefits: supplement.keyBenefits,
+	safetyNotes: supplement.usageNotes,
+	recommendedTiming: extractRecommendedTiming(supplement),
+});
+
+// Helper function to format nutrition goal
+const formatNutritionGoal = (goal: NutritionGoal): string => {
+	return goal.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
+};
+
+// Helper function to format dietary preference
+const formatDietaryPreference = (pref: DietaryPreference): string => {
+	return pref.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
+};
 
 const NutritionPage: NextPage = () => {
 	const device = useDeviceDetect();
+	const router = useRouter();
 	const [tabValue, setTabValue] = useState(0);
+	const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
+	const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+	const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+	const [favoriteSupplements, setFavoriteSupplements] = useState<Set<string>>(new Set());
+	const [supplements, setSupplements] = useState<Supplement[]>([]);
+	const user = useReactiveVar(userVar);
+	const isLoggedIn = !!getJwtToken() && !!user._id;
+	const [activeSection, setActiveSection] = useState<string>('meal-plans');
+
+	// Prepare supplements query input
+	const supplementsQueryInput: SupplementsInquiry = {
+		page: 1,
+		limit: 100,
+		sort: 'rating',
+		direction: Direction.DESC,
+	};
+
+	// Fetch supplements from API with fallback to mock data
+	const {
+		loading: supplementsLoading,
+		data: supplementsData,
+		error: supplementsError,
+	} = useQuery(GET_SUPPLEMENTS, {
+		fetchPolicy: 'network-only',
+		variables: { input: supplementsQueryInput },
+		onCompleted: (data: T) => {
+			if (data?.getSupplements?.list) {
+				setSupplements(data.getSupplements.list);
+			}
+		},
+		onError: () => {
+			// Fallback to mock data if API fails
+			setSupplements(mockSupplements);
+		},
+	});
+
+	// Initialize with mock data if API hasn't loaded yet or failed
+	useEffect(() => {
+		if (!supplementsLoading && !supplementsData?.getSupplements?.list && supplements.length === 0) {
+			setSupplements(mockSupplements);
+		}
+	}, [supplementsLoading, supplementsData, supplements.length]);
+
+	// Convert supplements to display format
+	const vitaminsData = supplements.map(supplementToDisplayFormat);
+
+	// Get unique categories from supplements data
+	const supplementCategories = useMemo(() => {
+		const categories = new Set(supplements.map((s) => s.category));
+		return Array.from(categories).sort();
+	}, [supplements]);
+
+	// Get top 3 most researched supplements (by rating) for empty state
+	const mostResearchedSupplements = useMemo(() => {
+		return supplements
+			.sort((a, b) => b.rating - a.rating)
+			.slice(0, 3)
+			.map(supplementToDisplayFormat);
+	}, [supplements]);
+
+	// Toggle favorite supplement
+	const toggleFavorite = (supplementId: string) => {
+		setFavoriteSupplements((prev) => {
+			const newSet = new Set(prev);
+			if (newSet.has(supplementId)) {
+				newSet.delete(supplementId);
+			} else {
+				newSet.add(supplementId);
+			}
+			return newSet;
+		});
+	};
+
+	// Share supplement
+	const handleShare = (supplement: any) => {
+		if (navigator.share) {
+			navigator.share({
+				title: supplement.name,
+				text: supplement.summary || supplement.description,
+			}).catch(() => {});
+		} else {
+			// Fallback: copy to clipboard
+			navigator.clipboard.writeText(`${supplement.name} - ${supplement.summary || supplement.description}`);
+		}
+	};
+
+	// Prepare meal plans query input
+	const mealPlansQueryInput: MealPlansInquiry = {
+		page: 1,
+		limit: 50, // Increased limit to show more meal plans
+		sort: 'mealPlanViews',
+		direction: Direction.DESC,
+	};
+
+	// Fetch meal plans
+	const {
+		loading: mealPlansLoading,
+		data: mealPlansData,
+		error: mealPlansError,
+	} = useQuery(GET_MEAL_PLANS, {
+		fetchPolicy: 'cache-and-network',
+		variables: { input: mealPlansQueryInput },
+		skip: false, // Always fetch, even if not logged in
+	});
+
+	// Update meal plans when data changes
+	useEffect(() => {
+		if (mealPlansData?.getMealPlans?.list) {
+			console.log('Meal plans loaded:', mealPlansData.getMealPlans.list.length);
+			setMealPlans(mealPlansData.getMealPlans.list);
+		} else if (mealPlansData) {
+			console.log('Meal plans data structure:', mealPlansData);
+		}
+	}, [mealPlansData]);
+
+	// Log errors for debugging
+	useEffect(() => {
+		if (mealPlansError) {
+			console.error('Meal plans query error:', mealPlansError);
+		}
+	}, [mealPlansError]);
+
+	// Log loading state
+	useEffect(() => {
+		console.log('Meal plans loading:', mealPlansLoading);
+	}, [mealPlansLoading]);
+
+	// Detect current route and set active section
+	useEffect(() => {
+		const path = router.pathname;
+		if (path.includes('/nutrition/meal-plans')) {
+			setActiveSection('meal-plans');
+		} else if (path.includes('/nutrition/supplements')) {
+			setActiveSection('supplements');
+		} else if (path.includes('/nutrition/calorie-calculator')) {
+			setActiveSection('calorie-calculator');
+		} else if (path === '/nutrition' || path === '/nutrition/') {
+			// Check if we're on the main nutrition page
+			const hash = window.location.hash;
+			if (hash === '#daily-nutrition-section') {
+				setActiveSection('daily-nutrition');
+			} else if (hash === '#insights-section') {
+				setActiveSection('insights');
+			} else {
+				// Default to meal-plans on main page
+				setActiveSection('meal-plans');
+			}
+		}
+	}, [router.pathname, router.asPath]);
+
+	// Today's nutrition - in production, this would come from user's daily nutrition tracking
 	const [todayNutrition] = useState({
 		calories: 1450,
 		targetCalories: 2000,
@@ -297,6 +416,9 @@ const NutritionPage: NextPage = () => {
 		return goal.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
 	};
 
+	// Use API meal plans if available, otherwise show empty state
+	const displayMealPlans = mealPlans.length > 0 ? mealPlans : [];
+
 	if (device === 'mobile') {
 		return (
 			<Stack className={'nutrition-page'}>
@@ -319,6 +441,98 @@ const NutritionPage: NextPage = () => {
 							Fuel your body with personalized meal plans and recipes
 						</Typography>
 					</Stack>
+
+					{/* Section Navigation Bar */}
+					<Box className={'nutrition-section-navbar'}>
+						<Box className={'section-navbar-container'}>
+							<Box
+								className={`section-nav-item ${activeSection === 'meal-plans' ? 'active' : ''}`}
+								onClick={() => {
+									setActiveSection('meal-plans');
+									router.push('/nutrition/meal-plans');
+								}}
+							>
+								<MenuBookIcon className={'nav-icon'} />
+								<Typography variant="body2" className={'nav-label'}>
+									Meal Plans
+								</Typography>
+							</Box>
+							<Box
+								className={`section-nav-item ${activeSection === 'supplements' ? 'active' : ''}`}
+								onClick={() => {
+									setActiveSection('supplements');
+									router.push('/nutrition/supplements');
+								}}
+							>
+								<StarIcon className={'nav-icon'} />
+								<Typography variant="body2" className={'nav-label'}>
+									Vitamins & Supplements
+								</Typography>
+							</Box>
+							<Box
+								className={`section-nav-item ${activeSection === 'calorie-calculator' ? 'active' : ''}`}
+								onClick={() => {
+									setActiveSection('calorie-calculator');
+									router.push('/nutrition/calorie-calculator');
+								}}
+							>
+								<CalculateIcon className={'nav-icon'} />
+								<Typography variant="body2" className={'nav-label'}>
+									Calorie Calculator
+								</Typography>
+							</Box>
+							<Box
+								className={`section-nav-item ${activeSection === 'daily-nutrition' ? 'active' : ''}`}
+								onClick={() => {
+									setActiveSection('daily-nutrition');
+									// Scroll to daily nutrition section
+									const element = document.getElementById('daily-nutrition-section');
+									if (element) {
+										const offset = 120; // Account for sticky navbar
+										const elementPosition = element.getBoundingClientRect().top;
+										const offsetPosition = elementPosition + window.pageYOffset - offset;
+										window.scrollTo({
+											top: offsetPosition,
+											behavior: 'smooth'
+										});
+									} else {
+										// If on a different page, navigate to main nutrition page
+										router.push('/nutrition#daily-nutrition-section');
+									}
+								}}
+							>
+								<LocalFireDepartmentOutlinedIcon className={'nav-icon'} />
+								<Typography variant="body2" className={'nav-label'}>
+									Daily Nutrition
+								</Typography>
+							</Box>
+							<Box
+								className={`section-nav-item ${activeSection === 'insights' ? 'active' : ''}`}
+								onClick={() => {
+									setActiveSection('insights');
+									// Scroll to insights section
+									const element = document.getElementById('insights-section');
+									if (element) {
+										const offset = 120; // Account for sticky navbar
+										const elementPosition = element.getBoundingClientRect().top;
+										const offsetPosition = elementPosition + window.pageYOffset - offset;
+										window.scrollTo({
+											top: offsetPosition,
+											behavior: 'smooth'
+										});
+									} else {
+										// If on a different page, navigate to main nutrition page
+										router.push('/nutrition#insights-section');
+									}
+								}}
+							>
+								<InsightsIcon className={'nav-icon'} />
+								<Typography variant="body2" className={'nav-label'}>
+									Insights
+								</Typography>
+							</Box>
+						</Box>
+					</Box>
 
 					{/* Nutrition Hero Section */}
 					<Box className={'nutrition-hero'}>
@@ -420,13 +634,14 @@ const NutritionPage: NextPage = () => {
 
 					{/* Tab Content */}
 					{tabValue === 0 && (
-						<Grid container spacing={3}>
-							<Grid item xs={12} md={8}>
-								<Card className={'nutrition-card'}>
-									<CardContent>
-										<Typography variant="h5" className={'section-title'} gutterBottom>
-											Today's Nutrition
-										</Typography>
+						<Box id="daily-nutrition-section">
+							<Grid container spacing={3}>
+								<Grid item xs={12} md={8}>
+									<Card className={'nutrition-card'}>
+										<CardContent>
+											<Typography variant="h5" className={'section-title'} gutterBottom>
+												Today's Nutrition
+											</Typography>
 										
 										{/* Calories Progress */}
 										<Box className={'nutrition-progress-section'}>
@@ -529,6 +744,7 @@ const NutritionPage: NextPage = () => {
 								</Card>
 							</Grid>
 						</Grid>
+						</Box>
 					)}
 
 					{/* Calorie Calculator Tab */}
@@ -870,70 +1086,240 @@ const NutritionPage: NextPage = () => {
 					{/* Vitamins & Supplements Tab */}
 					{tabValue === 3 && (
 						<Box className={'vitamins-section'}>
-							<Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
-								<Box>
-									<Typography variant="h5" className={'section-title'} gutterBottom>
-										Vitamins & Supplements
-									</Typography>
-									<Typography variant="body1" className={'section-description'}>
-										Essential nutrients for optimal health, performance, and recovery
-									</Typography>
-								</Box>
-							</Stack>
-							<Grid container spacing={3}>
-								{vitaminsData.map((vitamin) => (
-									<Grid item xs={12} sm={6} md={4} key={vitamin.id}>
-										<Card className={'vitamin-card'}>
-											<CardMedia
-												component="div"
-												className={'vitamin-image'}
-												style={{
-													backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url(${vitamin.image || '/img/bodybuilders/pexels-gabflicks-13122470.jpg'})`,
-													backgroundSize: 'cover',
-													backgroundPosition: 'center',
-													height: 250,
-												}}
-											>
-												<Box className={'vitamin-overlay'}>
-													<Chip label={vitamin.category} size="small" className={'category-chip'} />
-													<Box className={'rating-badge'}>
-														<StarIcon className={'star-icon'} />
-														<Typography variant="body2" className={'rating-text'}>
-															{vitamin.rating}
-														</Typography>
-													</Box>
-												</Box>
-											</CardMedia>
-											<CardContent>
-												<Typography variant="h6" className={'vitamin-name'} gutterBottom>
-													{vitamin.name}
-												</Typography>
-												<Typography variant="body2" className={'vitamin-dosage'} color="text.secondary" mb={2}>
-													<strong>Recommended:</strong> {vitamin.dosage} daily
-												</Typography>
-												<Box className={'benefits-section'}>
-													<Typography variant="caption" className={'benefits-label'} gutterBottom>
-														Key Benefits:
-													</Typography>
-													<Stack direction="row" spacing={1} flexWrap="wrap" mt={1}>
-														{vitamin.benefits.map((benefit, idx) => (
-															<Chip key={idx} label={benefit} size="small" className={'benefit-chip'} />
-														))}
-													</Stack>
-												</Box>
-												<Stack direction="row" spacing={1} mt={3}>
-													<Button variant="outlined" size="small" startIcon={<FavoriteBorderIcon />} fullWidth>
-														Save
-													</Button>
-													<Button variant="outlined" size="small" startIcon={<ShareIcon />} fullWidth>
-														Share
-													</Button>
-												</Stack>
-											</CardContent>
-										</Card>
+							{/* Section Header */}
+							<Box className={'vitamins-header'} mb={4}>
+								<Typography variant="h4" className={'vitamins-title'} gutterBottom>
+									Vitamins & Supplements
+								</Typography>
+								<Typography variant="body1" className={'vitamins-subtitle'}>
+									Evidence-based nutrients for health, performance, and recovery.
+								</Typography>
+							</Box>
+
+							{/* Category Filter */}
+							<Box className={'category-filter'} mb={3}>
+								<Stack direction="row" spacing={1} flexWrap="wrap">
+									<Button
+										className={`category-filter-button ${selectedCategory === 'ALL' ? 'active' : ''}`}
+										onClick={() => setSelectedCategory('ALL')}
+										size="small"
+									>
+										All
+									</Button>
+									{supplementCategories.map((category) => (
+										<Button
+											key={category}
+											className={`category-filter-button ${selectedCategory === category ? 'active' : ''}`}
+											onClick={() => setSelectedCategory(category)}
+											size="small"
+										>
+											{category}
+										</Button>
+									))}
+								</Stack>
+							</Box>
+
+							{/* Compact Grid Layout */}
+							<Box className={'supplements-grid'}>
+								{(selectedCategory === 'ALL' 
+									? vitaminsData 
+									: vitaminsData.filter((vitamin) => vitamin.category === selectedCategory)
+								).length > 0 ? (
+									<Grid container spacing={2}>
+										{(selectedCategory === 'ALL' 
+											? vitaminsData 
+											: vitaminsData.filter((vitamin) => vitamin.category === selectedCategory)
+										).map((vitamin) => {
+											const isExpanded = expandedCards.has(vitamin.id);
+											const toggleExpand = () => {
+												setExpandedCards(prev => {
+													const newSet = new Set(prev);
+													if (newSet.has(vitamin.id)) {
+														newSet.delete(vitamin.id);
+													} else {
+														newSet.add(vitamin.id);
+													}
+													return newSet;
+												});
+											};
+
+											return (
+												<Grid item xs={12} sm={6} md={4} lg={3} key={vitamin.id}>
+													<Card className={'supplement-compact-card'}>
+														<CardContent className={'supplement-card-content'}>
+															{/* Compact Header */}
+															<Box className={'supplement-compact-header'}>
+																<Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={1}>
+																	<Box flex={1}>
+																		{/* Category Badge */}
+																		<Chip 
+																			label={vitamin.category} 
+																			size="small" 
+																			className={'supplement-category-badge-compact'} 
+																		/>
+																		
+																		{/* Supplement Name */}
+																		<Typography variant="h6" className={'supplement-name-compact'} sx={{ mt: 0.5, mb: 0.5 }}>
+																			{vitamin.name}
+																		</Typography>
+
+																		{/* Rating */}
+																		<Stack direction="row" spacing={0.5} alignItems="center" mb={1}>
+																			<StarIcon className={'rating-star-compact'} />
+																			<Typography variant="body2" className={'rating-value-compact'}>
+																				{vitamin.rating}
+																			</Typography>
+																		</Stack>
+																	</Box>
+
+																	{/* Action Buttons - Compact */}
+																	<Stack direction="row" spacing={0.5}>
+																		<IconButton 
+																			className={`favorite-button-compact ${favoriteSupplements.has(vitamin.id) ? 'active' : ''}`}
+																			onClick={(e: React.MouseEvent) => {
+																				e.stopPropagation();
+																				toggleFavorite(vitamin.id);
+																			}}
+																			size="small"
+																		>
+																			{favoriteSupplements.has(vitamin.id) ? (
+																				<FavoriteIcon fontSize="small" />
+																			) : (
+																				<FavoriteBorderIcon fontSize="small" />
+																			)}
+																		</IconButton>
+																		<IconButton 
+																			className={'share-button-compact'}
+																			onClick={(e: React.MouseEvent) => {
+																				e.stopPropagation();
+																				handleShare(vitamin);
+																			}}
+																			size="small"
+																		>
+																			<ShareIcon fontSize="small" />
+																		</IconButton>
+																	</Stack>
+																</Stack>
+
+																{/* One-line Description */}
+																<Typography variant="body2" className={'supplement-description-compact'} sx={{ mb: 1.5 }}>
+																	{vitamin.summary?.substring(0, 100)}{vitamin.summary && vitamin.summary.length > 100 ? '...' : ''}
+																</Typography>
+
+																{/* Key Benefits - Max 2-3 chips */}
+																<Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ mb: 1.5 }}>
+																	{vitamin.keyBenefits?.slice(0, 3).map((benefit, idx) => (
+																		<Chip 
+																			key={idx} 
+																			label={benefit} 
+																			size="small" 
+																			className={'benefit-chip-compact'} 
+																		/>
+																	))}
+																</Stack>
+															</Box>
+
+															{/* Expandable Details */}
+															{isExpanded && (
+																<Box className={'supplement-expanded-details'} sx={{ mt: 1.5, pt: 1.5, borderTop: '1px solid #F0F0F0' }}>
+																	{/* Recommended Dosage */}
+																	{vitamin.recommendedDosage && (
+																		<Box sx={{ mb: 1.5 }}>
+																			<Typography variant="caption" className={'detail-label'} sx={{ display: 'block', mb: 0.5 }}>
+																				Recommended Dosage:
+																			</Typography>
+																			<Typography variant="body2" className={'detail-value'}>
+																				{vitamin.recommendedDosage}
+																			</Typography>
+																		</Box>
+																	)}
+
+																	{/* Best For */}
+																	{vitamin.bestFor && vitamin.bestFor.length > 0 && (
+																		<Box sx={{ mb: 1.5 }}>
+																			<Typography variant="caption" className={'detail-label'} sx={{ display: 'block', mb: 0.5 }}>
+																				Best For:
+																			</Typography>
+																			<Stack direction="row" spacing={0.5} flexWrap="wrap">
+																				{vitamin.bestFor.map((item, idx) => (
+																					<Chip 
+																						key={idx} 
+																						label={item} 
+																						size="small" 
+																						className={'best-for-chip-compact'} 
+																					/>
+																				))}
+																			</Stack>
+																		</Box>
+																	)}
+
+																	{/* When to Take */}
+																	{vitamin.recommendedTiming && vitamin.recommendedTiming.length > 0 && (
+																		<Box sx={{ mb: 1.5 }}>
+																			<Typography variant="caption" className={'detail-label'} sx={{ display: 'block', mb: 0.5 }}>
+																				When to Take:
+																			</Typography>
+																			<Stack direction="row" spacing={0.5} flexWrap="wrap">
+																				{vitamin.recommendedTiming.map((timing, idx) => (
+																					<Chip 
+																						key={idx} 
+																						label={timing} 
+																						size="small" 
+																						className={'timing-chip-compact'} 
+																					/>
+																				))}
+																			</Stack>
+																		</Box>
+																	)}
+
+																	{/* Additional Benefits */}
+																	{vitamin.keyBenefits && vitamin.keyBenefits.length > 3 && (
+																		<Box>
+																			<Typography variant="caption" className={'detail-label'} sx={{ display: 'block', mb: 0.5 }}>
+																				Additional Benefits:
+																			</Typography>
+																			<Stack direction="row" spacing={0.5} flexWrap="wrap">
+																				{vitamin.keyBenefits.slice(3).map((benefit, idx) => (
+																					<Chip 
+																						key={idx} 
+																						label={benefit} 
+																						size="small" 
+																						className={'benefit-chip-compact'} 
+																					/>
+																				))}
+																			</Stack>
+																		</Box>
+																	)}
+																</Box>
+															)}
+
+															{/* View Details Toggle */}
+															<Button
+																className={'view-details-button'}
+																onClick={toggleExpand}
+																size="small"
+																fullWidth
+																endIcon={isExpanded ? <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} /> : <ExpandMoreIcon />}
+															>
+																{isExpanded ? 'Show Less' : 'View Details'}
+															</Button>
+														</CardContent>
+													</Card>
+												</Grid>
+											);
+										})}
 									</Grid>
-								))}
-							</Grid>
+								) : (
+									<Box className={'empty-category-state'}>
+										<Typography variant="h6" gutterBottom>
+											No supplements found
+										</Typography>
+										<Typography variant="body2" color="text.secondary">
+											Try selecting a different category
+										</Typography>
+									</Box>
+								)}
+							</Box>
 						</Box>
 					)}
 
@@ -953,8 +1339,27 @@ const NutritionPage: NextPage = () => {
 									Browse All Meal Plans
 								</Button>
 							</Stack>
-							<Grid container spacing={3}>
-								{sampleMealPlans.map((plan, index) => (
+							{mealPlansLoading ? (
+								<Box display="flex" justifyContent="center" p={4}>
+									<CircularProgress />
+								</Box>
+							) : mealPlansError ? (
+								<Box className={'empty-state'} p={4}>
+									<Typography variant="h6" color="error">Error loading meal plans</Typography>
+									<Typography variant="body2" color="text.secondary">
+										{mealPlansError.message || 'Please try again later'}
+									</Typography>
+								</Box>
+							) : displayMealPlans.length === 0 ? (
+								<Box className={'empty-state'} p={4}>
+									<Typography variant="h6">No meal plans found</Typography>
+									<Typography variant="body2" color="text.secondary">
+										Check back soon for new meal plans!
+									</Typography>
+								</Box>
+							) : (
+								<Grid container spacing={3}>
+									{displayMealPlans.map((plan, index) => (
 									<Grid item xs={12} md={6} lg={4} key={plan._id}>
 										<Link href={`/nutrition/meal-plans/${plan._id}`}>
 											<Card className={'meal-plan-card'}>
@@ -962,20 +1367,20 @@ const NutritionPage: NextPage = () => {
 													component="div"
 													className={'meal-plan-image'}
 													style={{
-														backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url(${index === 0 ? '/img/bodybuilders/pexels-gabflicks-13122470.jpg' : index === 1 ? '/img/bodybuilders/pexels-kuiyibo-13958866.jpg' : '/img/bodybuilders/pexels-leonmart-1552108.jpg'})`,
+														backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url(${index % 3 === 0 ? '/img/bodybuilders/pexels-gabflicks-13122470.jpg' : index % 3 === 1 ? '/img/bodybuilders/pexels-kuiyibo-13958866.jpg' : '/img/bodybuilders/pexels-leonmart-1552108.jpg'})`,
 														backgroundSize: 'cover',
 														backgroundPosition: 'center',
 														height: 250,
 													}}
 												>
 													{plan.isPremium && (
-														<Chip label="Premium" className={'premium-badge'} size="small" />
+														<Chip label="Premium" color="warning" className={'premium-badge'} size="small" />
 													)}
 													<Box className={'meal-plan-overlay'}>
 														<Stack direction="row" spacing={1} alignItems="center">
 															<StarIcon className={'star-icon-white'} />
 															<Typography variant="body2" className={'rating-text-white'}>
-																{plan.mealPlanRating?.toFixed(1)}
+																{plan.mealPlanRating?.toFixed(1) || '0.0'}
 															</Typography>
 														</Stack>
 													</Box>
@@ -984,16 +1389,52 @@ const NutritionPage: NextPage = () => {
 													<Typography variant="h6" className={'meal-plan-title'} gutterBottom>
 														{plan.mealPlanTitle}
 													</Typography>
+													{plan.memberData && (
+														<Typography variant="caption" color="text.secondary" mb={1}>
+															By {plan.memberData.memberFullName || plan.memberData.memberNick}
+														</Typography>
+													)}
+													{plan.mealPlanDesc && (
+														<Typography variant="body2" color="text.secondary" mb={2}>
+															{plan.mealPlanDesc}
+														</Typography>
+													)}
 													<Stack direction="row" spacing={1} mb={2} flexWrap="wrap">
-														<Chip label={formatGoal(plan.nutritionGoal || '')} size="small" className={'goal-chip'} />
+														<Chip 
+															label={formatNutritionGoal(plan.nutritionGoal)} 
+															size="small" 
+															className={'goal-chip'} 
+														/>
 														{plan.dietaryPreference && plan.dietaryPreference.length > 0 && (
-															<Chip
-																label={formatGoal(plan.dietaryPreference[0])}
-																size="small"
-																className={'diet-chip'}
-															/>
+															plan.dietaryPreference.map((pref, idx) => (
+																<Chip
+																	key={idx}
+																	label={formatDietaryPreference(pref)}
+																	size="small"
+																	className={'diet-chip'}
+																/>
+															))
 														)}
 													</Stack>
+													{plan.macros && (
+														<Stack direction="row" spacing={1} mb={2} flexWrap="wrap">
+															<Chip 
+																label={`P: ${plan.macros.protein}g`} 
+																size="small" 
+																className={'macro-chip protein'} 
+															/>
+															<Chip 
+																label={`C: ${plan.macros.carbs}g`} 
+																size="small" 
+																className={'macro-chip carbs'} 
+															/>
+															<Chip 
+																label={`F: ${plan.macros.fats}g`} 
+																size="small" 
+																className={'macro-chip fats'} 
+															/>
+														</Stack>
+													)}
 													<Grid container spacing={2} mb={2}>
 														<Grid item xs={4}>
 															<Box className={'meal-plan-stat'}>
@@ -1021,27 +1462,44 @@ const NutritionPage: NextPage = () => {
 																	Views
 																</Typography>
 																<Typography variant="body2" fontWeight={600}>
-																	{plan.mealPlanViews}
+																	{plan.mealPlanViews || 0}
 																</Typography>
 															</Box>
 														</Grid>
 													</Grid>
-													{plan.isPremium && (
-														<Stack direction="row" justifyContent="space-between" alignItems="center" mt={2}>
-															<Typography variant="h6" className={'price'}>
-																${plan.price}
-															</Typography>
+													<Stack direction="row" justifyContent="space-between" alignItems="center" mt={2}>
+														<Box>
+															{plan.mealPlanRating > 0 && (
+																<Stack direction="row" alignItems="center" spacing={0.5}>
+																	<StarIcon fontSize="small" />
+																	<Typography variant="body2">
+																		{plan.mealPlanRating.toFixed(1)}
+																	</Typography>
+																</Stack>
+															)}
+														</Box>
+														{plan.isPremium ? (
+															<>
+																<Typography variant="h6" className={'price'}>
+																	${plan.price}
+																</Typography>
+																<Button variant="contained" size="small" className={'start-plan-btn'}>
+																	Start Plan
+																</Button>
+															</>
+														) : (
 															<Button variant="contained" size="small" className={'start-plan-btn'}>
-																Start Plan
+																View Plan
 															</Button>
-														</Stack>
-													)}
+														)}
+													</Stack>
 												</CardContent>
 											</Card>
 										</Link>
 									</Grid>
 								))}
 							</Grid>
+							)}
 						</Box>
 					)}
 
@@ -1202,6 +1660,27 @@ const NutritionPage: NextPage = () => {
 							</Grid>
 						</Box>
 					)}
+
+					{/* Insights Section */}
+					<Box id="insights-section" className={'insights-section'} sx={{ mt: 6, mb: 4 }}>
+						<Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
+							<Box>
+								<Typography variant="h5" className={'section-title'} gutterBottom>
+									Nutrition Insights
+								</Typography>
+								<Typography variant="body1" className={'section-description'}>
+									Data-driven insights to optimize your nutrition journey
+								</Typography>
+							</Box>
+						</Stack>
+						<Card className={'nutrition-card'}>
+							<CardContent>
+								<Typography variant="body1" color="text.secondary" align="center" py={4}>
+									Insights section coming soon
+								</Typography>
+							</CardContent>
+						</Card>
+					</Box>
 				</Stack>
 			</Stack>
 		);

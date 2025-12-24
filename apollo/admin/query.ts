@@ -163,3 +163,105 @@ export const GET_SUBSCRIPTIONS_BY_ADMIN = gql`
 }
 
 `;
+
+/**************************
+ *          FAQ           *
+ *************************/
+
+export const GET_ALL_FAQS_BY_ADMIN = gql`
+	query GetAllFaqsByAdmin($input:FaqsInquiry!) {
+    getAllFaqsByAdmin(input: $input) {
+        list {
+            _id
+            faqCategory
+            faqStatus
+            question
+            answer
+            keywords
+            relatedWorkouts
+            relatedMealPlans
+            viewCount
+            helpfulCount
+            notHelpfulCount
+            createdBy
+            displayOrder
+            createdAt
+            updatedAt
+        }
+        metaCounter {
+            total
+        }
+    }
+}
+
+`;
+
+/**************************
+ *        INQUIRY         *
+ *************************/
+
+// NOTE: Backend currently doesn't support InquiriesInquiry type and getAllInquiriesByAdmin query
+// GraphQL Error: Unknown type "InquiriesInquiry" and Cannot query field "getAllInquiriesByAdmin"
+// This query will fail until backend implements support. Pages using this should handle errors gracefully.
+export const GET_ALL_INQUIRIES_BY_ADMIN = gql`
+	query GetAllInquiriesByAdmin($input:InquiriesInquiry!) {
+    getAllInquiriesByAdmin(input: $input) {
+        list {
+            _id
+            userId
+            inquiryCategory
+            inquiryStatus
+            inquiryPriority
+            subject
+            question
+            aiResponse
+            aiConfidence
+            wasAiHelpful
+            suggestedFaqs
+            humanResponse
+            respondedBy
+            respondedAt
+            resolvedAt
+            closedAt
+            createdAt
+            updatedAt
+        }
+        metaCounter {
+            total
+        }
+    }
+}
+`;
+
+/**************************
+ *        NOTICE          *
+ *************************/
+
+// NOTE: Backend currently doesn't support NoticesInquiry type and getAllNoticesByAdmin query
+// GraphQL Error: Unknown type "NoticesInquiry" and Cannot query field "getAllNoticesByAdmin"
+// This query will fail until backend implements support. Pages using this should handle errors gracefully.
+export const GET_ALL_NOTICES_BY_ADMIN = gql`
+	query GetAllNoticesByAdmin($input:NoticesInquiry!) {
+    getAllNoticesByAdmin(input: $input) {
+        list {
+            _id
+            noticeCategory
+            noticeStatus
+            noticeTitle
+            noticeContent
+            noticeImage
+            noticeUrl
+            viewCount
+            displayOrder
+            startDate
+            endDate
+            createdBy
+            createdAt
+            updatedAt
+        }
+        metaCounter {
+            total
+        }
+    }
+}
+`;

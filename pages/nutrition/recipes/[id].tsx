@@ -1,6 +1,7 @@
+import React from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Stack, Box, Typography, Button, Grid, Card, CardContent, Chip, List, ListItem, ListItemText, LinearProgress, IconButton, Divider } from '@mui/material';
+import { Stack, Box, Typography, Button, Grid, Card, CardContent, Chip, List, ListItem, ListItemText, LinearProgress, IconButton, Divider, CircularProgress } from '@mui/material';
 import useDeviceDetect from '../../../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -81,10 +82,47 @@ const RecipeDetailPage: NextPage = () => {
 	}, [id]);
 
 	if (device === 'mobile') {
-		return <div>MOBILE RECIPE DETAIL</div>;
+		if (!recipe) {
+			return (
+				<Stack className={'recipe-detail-page'}>
+					<Stack className={'container'}>
+						<Box display="flex" justifyContent="center" p={4}>
+							<CircularProgress />
+						</Box>
+					</Stack>
+				</Stack>
+			);
+		}
+
+		return (
+			<Stack className={'recipe-detail-page'}>
+				<Stack className={'container'}>
+					<Typography variant="h4">{recipe.name}</Typography>
+					<Typography variant="body1" color="text.secondary">
+						{recipe.description || 'No description available.'}
+					</Typography>
+					<Stack direction="row" spacing={1} mt={2} flexWrap="wrap">
+						<Chip icon={<AccessTimeIcon />} label={`${recipe.totalTime} min`} size="small" />
+						<Chip icon={<LocalFireDepartmentIcon />} label={`${recipe.calories} cal`} size="small" />
+						<Chip icon={<RestaurantIcon />} label={`${recipe.servings} servings`} size="small" />
+					</Stack>
+					<Button variant="contained" fullWidth startIcon={<PlayArrowIcon />} sx={{ mt: 2 }}>
+						Start Cooking
+					</Button>
+				</Stack>
+			</Stack>
+		);
 	} else {
 		if (!recipe) {
-			return <div>Loading...</div>;
+			return (
+				<Stack className={'recipe-detail-page'}>
+					<Stack className={'container'}>
+						<Box display="flex" justifyContent="center" p={4}>
+							<CircularProgress />
+						</Box>
+					</Stack>
+				</Stack>
+			);
 		}
 
 		return (
