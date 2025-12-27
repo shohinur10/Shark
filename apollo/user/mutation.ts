@@ -2502,6 +2502,70 @@ mutation UpdateBooking ($input:BookingUpdate!){
 }
 `;
 
+mutation DeleteBooking($input:String!) {
+    deleteBooking(bookingId: $input) {
+        _id
+        bookingType
+        bookingStatus
+        clientId
+        providerId
+        propertyId
+        bookingDate
+        bookingTime
+        sessionDuration
+        bookingPrice
+        paymentId
+        bookingNotes
+        providerNotes
+        meetingLink
+        cancellationReason
+        cancelledBy
+        cancelledAt
+        completedAt
+        reviewId
+        deletedAt
+        createdAt
+        updatedAt
+        memberData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
+
 
 
 /**************************
@@ -2770,4 +2834,144 @@ mutation UpdateService($input:ServiceUpdate!) {
     }
 }
     `;
+
+export const CREATE_SERVICE = gql`
+mutation CreateService ($input:ServiceInput!){ 
+        createService(input: $input) {
+            _id
+            title
+            description
+            bookingType
+            pricePerHour
+            fixedPrice
+            durationOptions
+            status
+            createdAt
+            updatedAt
+        }
+    }
+    
+ `;
+
+
+export const DELETE_SERVICE = gql`
+mutation DeleteService($input:String!) {
+    deleteService(serviceId: $input) {
+        _id
+        title
+        description
+        bookingType
+        pricePerHour
+        fixedPrice
+        durationOptions
+        status
+        createdAt
+        updatedAt
+    }
+}
+
+
+ `;
+
+
+
+
+
+ export const ADD_SUPPLEMENT_TO_BOOKING = gql`
+ mutation AddSupplementToBooking ($input:BookingSupplementInput!){
+    addSupplementToBooking(input: $input) {
+        _id
+        bookingId
+        supplementId
+        quantity
+        unitPrice
+        totalPrice
+        notes
+        recommendedBy
+        createdAt
+        updatedAt
+        bookingData {
+            _id
+            bookingType
+            bookingStatus
+            clientId
+            providerId
+            propertyId
+            bookingDate
+            bookingTime
+            sessionDuration
+            bookingPrice
+            paymentId
+            bookingNotes
+            providerNotes
+            meetingLink
+            cancellationReason
+            cancelledBy
+            cancelledAt
+            completedAt
+            reviewId
+            deletedAt
+            createdAt
+            updatedAt
+        }
+        supplementData {
+            _id
+            name
+            category
+            description
+            recommendedDosage
+            keyBenefits
+            bestFor
+            rating
+            usageNotes
+            createdAt
+            updatedAt
+        }
+        recommenderData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
+`;
+
+
+mutation RemoveSupplementFromBooking ($input:String!){    
+    removeSupplementFromBooking(bookingId: $input, supplementId: $input)
+}
+
+`;
 

@@ -2004,6 +2004,23 @@ query GetSupplements($input: SupplementsInquiry!) {
  *         SERVICE        *
  *************************/
 
+export const GET_SERVICE = gql`
+query GetService ($input:String!){ 
+    getService(serviceId: $input) {
+        _id
+        title
+        description
+        bookingType
+        pricePerHour
+        fixedPrice
+        durationOptions
+        status
+        createdAt
+        updatedAt
+    }
+}
+`;
+
 export const GET_ALL_SERVICES = gql`
 query GetAllServices ($input:ServicesInquiry!){
     getAllServices(input:$input) {
@@ -2033,4 +2050,85 @@ query GetTrainerAvailability($trainerId: String!, $date: String!) {
     }
 }
 `;
+export const GET_BOOKING_STATS = gql`
+query GetBookingStats($input:BookingStatsInput!) { 
+    getBookingStats(input: $input) {
+        totalBookings
+        totalRevenue
+        confirmedBookings
+        cancelledBookings
+        completedBookings
+        cancellationRate
+        averageBookingValue
+        popularTimeSlots
+        noShowCount
+        noShowRate
+    }
+}
 
+`;
+
+
+
+query GetServiceStats($input:String!) {
+    getServiceStats(serviceId: $input) {
+        serviceId
+        serviceTitle
+        bookingCount
+        totalRevenue
+        averageBookingValue
+    }
+}
+
+
+query GetTrainerStats ($input:String!){
+    getTrainerStats(trainerId: $input) {
+        trainerId
+        totalBookings
+        totalRevenue
+        averageRating
+        completedBookings
+        cancelledBookings
+        clientRetentionRate
+    }
+}
+
+
+`;
+
+
+query GetBookingSupplements($input:String!) {
+    getBookingSupplements(bookingId: $input) {
+        list {
+            _id
+            bookingId
+            supplementId
+            quantity
+            unitPrice
+            totalPrice
+            notes
+            recommendedBy
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+
+`;
+query GetRecommendedSupplements($input:RecommendedSupplementsInput!) {
+    getRecommendedSupplements(input: $input) {
+        _id
+        name
+        category
+        description
+        recommendedDosage
+        keyBenefits
+        bestFor
+        rating
+        usageNotes
+        createdAt
+        updatedAt
+    }
+}
+`;
