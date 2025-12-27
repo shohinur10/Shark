@@ -10,10 +10,12 @@ import { CREATE_MEAL_PLAN } from '../../apollo/user/mutation';
 import { MealPlanInput, MealInput, MacrosInput } from '../../libs/types/mealplan/mealplan.input';
 import { NutritionGoal, MealPlanStatus, DietaryPreference, MealType } from '../../libs/enums/nutrition.enum';
 import { userVar } from '../../apollo/store';
-import { sweetErrorHandling, sweetMixinSuccessAlert } from '../../libs/sweetAlert';
+import { sweetErrorHandling, sweetMixinSuccessAlert } from '../../libs/sweetAlert';     
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; 
+
+
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {

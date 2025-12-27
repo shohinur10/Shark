@@ -1933,17 +1933,6 @@ query GetNotifications($input: NotificationsInquiry!) {
                 memberFullName
                 memberImage
             }
-            relatedCommentData {
-                _id
-                commentContent
-                createdAt
-                memberData {
-                    _id
-                    memberNick
-                    memberFullName
-                    memberImage
-                }
-            }
         }
         metaCounter {
             total
@@ -1989,7 +1978,7 @@ query GetMyNotifications ($input:NotificationsInquiry!){
  *************************/
 
 export const GET_SUPPLEMENTS = gql`
-query GetSupplements ($input:SupplementsInquiry!){
+query GetSupplements($input: SupplementsInquiry!) {
     getSupplements(input: $input) {
         list {
             _id
@@ -2011,4 +2000,37 @@ query GetSupplements ($input:SupplementsInquiry!){
 }
 `;
 
+/**************************
+ *         SERVICE        *
+ *************************/
+
+export const GET_ALL_SERVICES = gql`
+query GetAllServices ($input:ServicesInquiry!){
+    getAllServices(input:$input) {
+        list {
+            _id
+            title
+            description
+            bookingType
+            pricePerHour
+            fixedPrice
+            durationOptions
+            status
+            createdAt
+            updatedAt
+        }
+        metaCounter {
+            total
+        }
+    }
+}
+`;
+
+export const GET_TRAINER_AVAILABILITY = gql`
+query GetTrainerAvailability($trainerId: String!, $date: String!) {
+    getTrainerAvailability(trainerId: $trainerId, date: $date) {
+        availableSlots
+    }
+}
+`;
 

@@ -2531,7 +2531,6 @@ export const DELETE_NOTIFICATION = gql`
 mutation DeleteNotification($input: NotificationDeleteInput!) {
     deleteNotification(input: $input) {
         _id
-        success
     }
 }
 `;
@@ -2734,4 +2733,41 @@ mutation ReadNotification($notificationId: String!) {
 }
 
 `;
+
+export const UPDATE_SUPPLEMENT = gql`
+mutation UpdateSupplement($input:SupplementUpdate!) {
+    updateSupplement(input: $input) {
+        _id
+        name
+        category
+        description
+        recommendedDosage
+        keyBenefits
+        bestFor
+        rating
+        usageNotes
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+
+
+export const UPDATE_SERVICE = gql`
+mutation UpdateService($input:ServiceUpdate!) {
+    updateService(input: $input) {
+        _id
+        title
+        description
+        bookingType
+        pricePerHour
+        fixedPrice
+        durationOptions
+        status
+        createdAt
+        updatedAt
+    }
+}
+    `;
 

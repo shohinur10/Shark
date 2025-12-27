@@ -1,23 +1,21 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Stack, Box, Typography, Button, TextField, Select, MenuItem, FormControl, InputLabel, Card, CardContent, Grid, Divider, InputAdornment, Alert, CircularProgress } from '@mui/material';
-import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_TRAINERS } from '../../apollo/user/query';
+import { GET_TRAINERS, GET_ALL_SERVICES, GET_TRAINER_AVAILABILITY, GET_BOOKINGS } from '../../apollo/user/query';
 import { CREATE_BOOKING } from '../../apollo/user/mutation';
 import { BookingInput } from '../../libs/types/booking/booking.input';
-import { BookingType, SessionDuration } from '../../libs/enums/booking.enum';
-import { REACT_APP_API_URL } from '../../libs/config';
+import { BookingType, ServiceStatus } from '../../libs/enums/booking.enum';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { sweetErrorAlert } from '../../libs/sweetAlert';
+import { Direction } from '../../libs/enums/common.enum';
+import { sweetErrorAlert, sweetMixinSuccessAlert } from '../../libs/sweetAlert';
 import moment from 'moment';
+import BookingPage from '../../libs/components/booking/BookingPage';
+import { Service } from '../../libs/types/service/service';
+import { ServicesInquiry } from '../../libs/types/service/service.input';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -27,20 +25,26 @@ export const getStaticProps = async ({ locale }: any) => ({
 
 const NewBookingPage: NextPage = () => {
 	const router = useRouter();
-	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const { trainerId: trainerIdParam } = router.query;
 	
-	const [bookingData, setBookingData] = useState({
-		trainerId: '',
-		serviceType: '',
-		date: '',
-		time: '',
-		duration: '60',
-		location: 'in-person',
-		notes: '',
-		price: 50,
-	});
+	const [selectedTrainerId, setSelectedTrainerId] = useState<string | null>(null);
+	const [selectedTrainer, setSelectedTrainer] = useState<any | null>(null);
+	const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+	const [selectedService, setSelectedService] = useState<Service | null>(null);
+	const [bookingDate, setBookingDate] = useState<Date | null>(null);
+	const [bookingTime, setBookingTime] = useState<string | null>(null);
+	const [durationMinutes, setDurationMinutes] = useState<number>(0);
+	const [locationType, setLocationType] = useState<string>('');
+	const [notes, setNotes] = useState<string>('');
+	const [validationErrors, setValidationErrors] = useState<{
+		trainerId?: string;
+		serviceId?: string;
+		date?: string;
+		time?: string;
+		duration?: string;
+	}>({});
+	const [showValidation, setShowValidation] = useState(false);
 
 	// Get minimum date (today)
 	const minDate = useMemo(() => {
@@ -48,20 +52,72 @@ const NewBookingPage: NextPage = () => {
 	}, []);
 
 	// Fetch trainers
-	const { data: trainersData, loading: trainersLoading } = useQuery(GET_TRAINERS, {
+	const { data: trainersData, loading: trainersLoading, error: trainersError } = useQuery(GET_TRAINERS, {
 		variables: {
 			input: {
 				page: 1,
-				limit: 100,
+				limit: 50,
+				sort: 'trainerRating',
+				direction: Direction.DESC,
+				search: {},
 			},
 		},
 		skip: false,
 	});
 
+	// Fetch services - only ACTIVE services
+	const servicesQuery: ServicesInquiry = useMemo(() => ({
+		page: 1,
+		limit: 100,
+		sort: 'createdAt',
+		direction: Direction.DESC,
+		status: ServiceStatus.ACTIVE,
+	}), []);
+
+	const { data: servicesData, loading: servicesLoading, error: servicesError } = useQuery(GET_ALL_SERVICES, {
+		variables: {
+			input: servicesQuery,
+		},
+		fetchPolicy: 'cache-and-network',
+	});
+
+	// Format date for availability query (YYYY-MM-DD)
+	const availabilityDate = useMemo(() => {
+		if (!bookingDate) return null;
+		return moment(bookingDate).format('YYYY-MM-DD');
+	}, [bookingDate]);
+
+	// Fetch trainer availability when trainerId and date are selected
+	const { data: availabilityData, loading: availabilityLoading, error: availabilityError } = useQuery(
+		GET_TRAINER_AVAILABILITY,
+		{
+			variables: {
+				trainerId: selectedTrainerId || '',
+				date: availabilityDate || '',
+			},
+			skip: !selectedTrainerId || !availabilityDate,
+		}
+	);
+
 	// Create booking mutation
 	const [createBooking, { loading: creatingBooking }] = useMutation(CREATE_BOOKING, {
-		onCompleted: (data) => {
+		refetchQueries: user?._id
+			? [
+					{
+						query: GET_BOOKINGS,
+						variables: {
+							input: {
+								page: 1,
+								limit: 50,
+								clientId: user._id,
+							},
+						},
+					},
+			  ]
+			: [],
+		onCompleted: async (data) => {
 			if (data?.createBooking) {
+				await sweetMixinSuccessAlert('Booking created');
 				router.push('/bookings');
 			}
 		},
@@ -74,71 +130,135 @@ const NewBookingPage: NextPage = () => {
 	// Set trainer ID from URL param if available
 	useEffect(() => {
 		if (trainerIdParam && typeof trainerIdParam === 'string') {
-			setBookingData(prev => ({ ...prev, trainerId: trainerIdParam }));
+			setSelectedTrainerId(trainerIdParam);
 		}
 	}, [trainerIdParam]);
 
-	// Get selected trainer data
-	const selectedTrainer = useMemo(() => {
-		if (!trainersData?.getTrainers?.list || !bookingData.trainerId) return null;
-		return trainersData.getTrainers.list.find((t: any) => t._id === bookingData.trainerId);
-	}, [trainersData, bookingData.trainerId]);
+	// Update selectedTrainer when selectedTrainerId or trainersData changes
+	useEffect(() => {
+		if (trainersData?.getTrainers?.list && selectedTrainerId) {
+			const trainer = trainersData.getTrainers.list.find((t: any) => t._id === selectedTrainerId);
+			setSelectedTrainer(trainer || null);
+		} else {
+			setSelectedTrainer(null);
+		}
+	}, [trainersData, selectedTrainerId]);
+
+	// Get active services list
+	const activeServices = useMemo(() => {
+		if (!servicesData?.getAllServices?.list) return [];
+		// Filter for active services (client-side filter as backup)
+		return servicesData.getAllServices.list.filter(
+			(service: Service) => service.status === ServiceStatus.ACTIVE
+		);
+	}, [servicesData]);
+
+	// Update selectedService when selectedServiceId or servicesData changes
+	useEffect(() => {
+		if (activeServices && selectedServiceId) {
+			const service = activeServices.find((s: Service) => s._id === selectedServiceId);
+			setSelectedService(service || null);
+			// Reset duration when service changes if current duration is not in new service's options
+			if (service && service.durationOptions && !service.durationOptions.includes(durationMinutes)) {
+				setDurationMinutes(0);
+			}
+		} else {
+			setSelectedService(null);
+		}
+	}, [activeServices, selectedServiceId, durationMinutes]);
+
+	// Reset time when trainer or date changes
+	useEffect(() => {
+		setBookingTime(null);
+	}, [selectedTrainerId, bookingDate]);
+
+	// Handle trainer selection
+	const handleTrainerChange = (trainerId: string) => {
+		setSelectedTrainerId(trainerId || null);
+		if (trainerId && trainersData?.getTrainers?.list) {
+			const trainer = trainersData.getTrainers.list.find((t: any) => t._id === trainerId);
+			setSelectedTrainer(trainer || null);
+		} else {
+			setSelectedTrainer(null);
+		}
+		// Clear validation error when field is updated
+		if (validationErrors.trainerId) {
+			setValidationErrors({ ...validationErrors, trainerId: undefined });
+		}
+	};
+
+	// Validate required fields
+	const isFormValid = useMemo(() => {
+		return !!(
+			user?._id &&
+			selectedTrainerId &&
+			selectedServiceId &&
+			bookingDate &&
+			bookingTime &&
+			durationMinutes > 0
+		);
+	}, [user?._id, selectedTrainerId, selectedServiceId, bookingDate, bookingTime, durationMinutes]);
+
+	// Validate form and return errors
+	const validateForm = () => {
+		const errors: typeof validationErrors = {};
+		
+		if (!selectedTrainerId) {
+			errors.trainerId = 'Please select a trainer';
+		}
+		if (!selectedServiceId) {
+			errors.serviceId = 'Please select a service';
+		}
+		if (!bookingDate) {
+			errors.date = 'Please select a date';
+		}
+		if (!bookingTime) {
+			errors.time = 'Please select a time';
+		}
+		if (!durationMinutes || durationMinutes === 0) {
+			errors.duration = 'Please select a duration';
+		}
+		
+		return errors;
+	};
 
 	const handleSubmit = async () => {
-		// Validation
+		// Check if user is logged in
 		if (!user?._id) {
 			sweetErrorAlert('Please login to book a session');
 			router.push('/account/login');
 			return;
 		}
 
-		if (!bookingData.trainerId) {
-			sweetErrorAlert('Please select a trainer');
+		// Validate form
+		const errors = validateForm();
+		setValidationErrors(errors);
+		setShowValidation(true);
+
+		// If there are errors, don't submit
+		if (Object.keys(errors).length > 0) {
 			return;
 		}
 
-		if (!bookingData.serviceType) {
-			sweetErrorAlert('Please select a service type');
-			return;
-		}
-
-		if (!bookingData.date) {
-			sweetErrorAlert('Please select a date');
-			return;
-		}
-
-		if (!bookingData.time) {
-			sweetErrorAlert('Please select a time');
-			return;
-		}
-
-		// Map service type to BookingType enum
-		const bookingTypeMap: Record<string, BookingType> = {
-			'personal': BookingType.PERSONAL_TRAINING,
-			'group': BookingType.GROUP_CLASS,
-			'consultation': BookingType.CONSULTATION,
-			'online': BookingType.ONLINE_SESSION,
-		};
-
-		// Map duration to SessionDuration enum (in minutes)
-		const durationMap: Record<string, number> = {
-			'30': 30,
-			'60': 60,
-			'90': 90,
-			'120': 120,
-		};
+		// Format bookingDate as YYYY-MM-DD string for GraphQL
+		// GraphQL Date scalar will serialize this properly
+		const formattedDate = moment(bookingDate).format('YYYY-MM-DD');
+		
+		// bookingTime is already in HH:mm format from the time input
 
 		// Prepare booking input
+		// Note: GraphQL Date scalar accepts ISO strings, but we format as YYYY-MM-DD as requested
+		// Use bookingType directly from service (already enum type)
 		const bookingInput: BookingInput = {
-			bookingType: bookingTypeMap[bookingData.serviceType] || BookingType.PERSONAL_TRAINING,
-			providerId: bookingData.trainerId,
-			bookingDate: new Date(`${bookingData.date}T${bookingData.time}`),
-			bookingTime: bookingData.time,
-			sessionDuration: durationMap[bookingData.duration] || 60,
-			bookingPrice: bookingData.price,
-			bookingNotes: bookingData.notes || undefined,
-			meetingLink: bookingData.location === 'online' ? '' : undefined,
-			clientId: user._id,
+			bookingType: selectedService?.bookingType || BookingType.PERSONAL_TRAINING,
+			providerId: selectedTrainerId!, // trainerId
+			bookingDate: formattedDate as any, // Format as YYYY-MM-DD string for backend
+			bookingTime: bookingTime!, // Already in HH:mm format
+			sessionDuration: durationMinutes, // durationMinutes
+			bookingPrice: totalPrice,
+			bookingNotes: notes || undefined, // notes (optional)
+			meetingLink: locationType === 'online' ? '' : undefined,
+			clientId: user._id, // memberId from authenticated user context
 		};
 
 		try {
@@ -146,248 +266,111 @@ const NewBookingPage: NextPage = () => {
 				variables: { input: bookingInput },
 			});
 		} catch (error) {
+			// Error is already handled in onError callback
 			console.error('Booking error:', error);
 		}
 	};
 
-	// Format date for display
-	const formatDate = (dateStr: string) => {
-		if (!dateStr) return 'Not selected';
-		return moment(dateStr).format('MMMM DD, YYYY');
+	// Calculate total price based on service and duration
+	// Formula: total = service.pricePerHour * (durationMinutes / 60)
+	// If service has fixedPrice, use fixedPrice instead
+	const calculateTotalPrice = (service: Service | null, durationMinutes: number): number => {
+		if (!service || durationMinutes === 0) return 0;
+		
+		// If service has a fixed price, use it
+		if (service.fixedPrice !== undefined && service.fixedPrice !== null) {
+			return service.fixedPrice;
+		}
+		
+		// Otherwise, calculate: pricePerHour * (durationMinutes / 60)
+		if (service.pricePerHour) {
+			const total = service.pricePerHour * (durationMinutes / 60);
+			return Math.round(total * 100) / 100; // Round to 2 decimal places
+		}
+		
+		return 0;
 	};
 
-	// Format time for display
-	const formatTime = (timeStr: string) => {
-		if (!timeStr) return '';
-		return moment(timeStr, 'HH:mm').format('h:mm A');
+	// Get total price for current booking
+	const totalPrice = useMemo(() => {
+		return calculateTotalPrice(selectedService, durationMinutes);
+	}, [selectedService, durationMinutes]);
+
+	// Handle service selection
+	const handleServiceChange = (serviceId: string) => {
+		setSelectedServiceId(serviceId || null);
+		setDurationMinutes(0); // Reset duration when service changes
+		// Clear validation error when field is updated
+		if (validationErrors.serviceId) {
+			setValidationErrors({ ...validationErrors, serviceId: undefined });
+		}
 	};
 
-	if (device === 'mobile') {
-		return <div>MOBILE NEW BOOKING</div>;
-	} else {
-		return (
-			<Stack className={'new-booking-page'}>
-				<Stack className={'container'}>
-					<Button startIcon={<ArrowBackIcon />} onClick={() => router.back()} sx={{ mb: 3 }}>
-						Back
-					</Button>
+	// Clear validation errors when fields change
+	useEffect(() => {
+		if (showValidation) {
+			const errors: typeof validationErrors = {};
+			if (!selectedTrainerId) errors.trainerId = 'Please select a trainer';
+			if (!selectedServiceId) errors.serviceId = 'Please select a service';
+			if (!bookingDate) errors.date = 'Please select a date';
+			if (!bookingTime) errors.time = 'Please select a time';
+			if (!durationMinutes || durationMinutes === 0) errors.duration = 'Please select a duration';
+			setValidationErrors(errors);
+		}
+	}, [selectedTrainerId, selectedServiceId, bookingDate, bookingTime, durationMinutes, showValidation]);
 
-					<Typography variant="h3" className={'page-title'} sx={{ mb: 4 }}>
-						Book a Session
-					</Typography>
-
-					<Grid container spacing={4}>
-						<Grid item xs={12} md={8}>
-							<Card>
-								<CardContent>
-									<Stack spacing={3}>
-										<FormControl fullWidth>
-											<InputLabel>Select Trainer</InputLabel>
-											<Select
-												value={bookingData.trainerId}
-												onChange={(e) => setBookingData({ ...bookingData, trainerId: e.target.value })}
-												label="Select Trainer"
-												disabled={!!trainerIdParam}
-											>
-												{trainersLoading ? (
-													<MenuItem disabled>Loading trainers...</MenuItem>
-												) : trainersData?.getTrainers?.list?.length > 0 ? (
-													trainersData.getTrainers.list.map((trainer: any) => (
-														<MenuItem key={trainer._id} value={trainer._id}>
-															{trainer.memberFullName || trainer.memberNick} {trainer.trainerRating ? `⭐ ${trainer.trainerRating.toFixed(1)}` : ''}
-														</MenuItem>
-													))
-												) : (
-													<MenuItem disabled>No trainers available</MenuItem>
-												)}
-											</Select>
-										</FormControl>
-
-										<FormControl fullWidth>
-											<InputLabel>Service Type</InputLabel>
-											<Select
-												value={bookingData.serviceType}
-												onChange={(e) => setBookingData({ ...bookingData, serviceType: e.target.value })}
-												label="Service Type"
-											>
-												<MenuItem value="personal">Personal Training</MenuItem>
-												<MenuItem value="group">Group Class</MenuItem>
-												<MenuItem value="consultation">Consultation</MenuItem>
-												<MenuItem value="online">Online Session</MenuItem>
-											</Select>
-										</FormControl>
-
-										<Grid container spacing={2}>
-											<Grid item xs={12} sm={6}>
-												<TextField
-													fullWidth
-													label="Date"
-													type="date"
-													value={bookingData.date}
-													onChange={(e) => setBookingData({ ...bookingData, date: e.target.value })}
-													InputLabelProps={{ shrink: true }}
-													inputProps={{
-														min: minDate,
-													}}
-													InputProps={{
-														startAdornment: (
-															<InputAdornment position="start">
-																<CalendarTodayIcon sx={{ color: 'text.secondary' }} />
-															</InputAdornment>
-														),
-													}}
-													required
-												/>
-											</Grid>
-											<Grid item xs={12} sm={6}>
-												<TextField
-													fullWidth
-													label="Time"
-													type="time"
-													value={bookingData.time}
-													onChange={(e) => setBookingData({ ...bookingData, time: e.target.value })}
-													InputLabelProps={{ shrink: true }}
-													inputProps={{
-														step: 300, // 5 minute intervals
-													}}
-													InputProps={{
-														startAdornment: (
-															<InputAdornment position="start">
-																<AccessTimeIcon sx={{ color: 'text.secondary' }} />
-															</InputAdornment>
-														),
-													}}
-													required
-												/>
-											</Grid>
-										</Grid>
-
-										<FormControl fullWidth>
-											<InputLabel>Duration</InputLabel>
-											<Select
-												value={bookingData.duration}
-												onChange={(e) => setBookingData({ ...bookingData, duration: e.target.value })}
-												label="Duration"
-											>
-												<MenuItem value="30">30 minutes</MenuItem>
-												<MenuItem value="60">1 hour</MenuItem>
-												<MenuItem value="90">1.5 hours</MenuItem>
-												<MenuItem value="120">2 hours</MenuItem>
-											</Select>
-										</FormControl>
-
-										<FormControl fullWidth>
-											<InputLabel>Location</InputLabel>
-											<Select
-												value={bookingData.location}
-												onChange={(e) => setBookingData({ ...bookingData, location: e.target.value })}
-												label="Location"
-											>
-												<MenuItem value="in-person">In-Person</MenuItem>
-												<MenuItem value="online">Online</MenuItem>
-											</Select>
-										</FormControl>
-
-										<TextField
-											fullWidth
-											label="Additional Notes (Optional)"
-											multiline
-											rows={4}
-											value={bookingData.notes}
-											onChange={(e) => setBookingData({ ...bookingData, notes: e.target.value })}
-										/>
-									</Stack>
-								</CardContent>
-							</Card>
-						</Grid>
-
-						<Grid item xs={12} md={4}>
-							<Card>
-								<CardContent>
-									<Typography variant="h6" gutterBottom>
-										Booking Summary
-									</Typography>
-									<Stack spacing={2} sx={{ mt: 2 }}>
-										<Box>
-											<Typography variant="body2" color="text.secondary">
-												Trainer
-											</Typography>
-											<Typography variant="body1">
-												{selectedTrainer ? (selectedTrainer.memberFullName || selectedTrainer.memberNick) : 'Not selected'}
-											</Typography>
-										</Box>
-										<Box>
-											<Typography variant="body2" color="text.secondary">
-												Service
-											</Typography>
-											<Typography variant="body1">
-												{bookingData.serviceType === 'personal' ? 'Personal Training' :
-												 bookingData.serviceType === 'group' ? 'Group Class' :
-												 bookingData.serviceType === 'consultation' ? 'Consultation' :
-												 bookingData.serviceType === 'online' ? 'Online Session' :
-												 'Not selected'}
-											</Typography>
-										</Box>
-										<Box>
-											<Typography variant="body2" color="text.secondary">
-												Date & Time
-											</Typography>
-											<Typography variant="body1">
-												{formatDate(bookingData.date)} {formatTime(bookingData.time)}
-											</Typography>
-										</Box>
-										<Box>
-											<Typography variant="body2" color="text.secondary">
-												Location
-											</Typography>
-											<Typography variant="body1">
-												{bookingData.location === 'in-person' ? 'In-Person' : 'Online'}
-											</Typography>
-										</Box>
-										<Box>
-											<Typography variant="body2" color="text.secondary">
-												Duration
-											</Typography>
-											<Typography variant="body1">{bookingData.duration} minutes</Typography>
-										</Box>
-										<Divider />
-										<Box>
-											<Typography variant="h6">Total</Typography>
-											<Typography variant="h5" color="primary">
-												${bookingData.price.toFixed(2)}
-											</Typography>
-										</Box>
-									</Stack>
-									{!user?._id && (
-										<Alert severity="warning" sx={{ mt: 2 }}>
-											Please login to confirm your booking
-										</Alert>
-									)}
-									<Button 
-										variant="contained" 
-										fullWidth 
-										size="large" 
-										sx={{ mt: 3 }} 
-										onClick={handleSubmit}
-										disabled={creatingBooking || !user?._id || !bookingData.trainerId || !bookingData.serviceType || !bookingData.date || !bookingData.time}
-									>
-										{creatingBooking ? (
-											<>
-												<CircularProgress size={20} sx={{ mr: 1 }} />
-												Creating Booking...
-											</>
-										) : (
-											'Confirm Booking'
-										)}
-									</Button>
-								</CardContent>
-							</Card>
-						</Grid>
-					</Grid>
-				</Stack>
-			</Stack>
-		);
-	}
+	return (
+		<BookingPage
+			selectedTrainerId={selectedTrainerId}
+			selectedTrainer={selectedTrainer}
+			selectedServiceId={selectedServiceId}
+			selectedService={selectedService}
+			bookingDate={bookingDate}
+			bookingTime={bookingTime}
+			durationMinutes={durationMinutes}
+			locationType={locationType}
+			notes={notes}
+			trainerIdParam={trainerIdParam}
+			trainersLoading={trainersLoading}
+			trainersError={trainersError}
+			trainersData={trainersData}
+			servicesData={activeServices}
+			servicesLoading={servicesLoading}
+			servicesError={servicesError}
+			availableSlots={availabilityData?.getTrainerAvailability?.availableSlots || []}
+			availabilityLoading={availabilityLoading}
+			availabilityError={availabilityError}
+			validationErrors={validationErrors}
+			minDate={minDate}
+			totalPrice={totalPrice}
+			user={user}
+			creatingBooking={creatingBooking}
+			isFormValid={isFormValid}
+			onTrainerChange={handleTrainerChange}
+			onServiceChange={handleServiceChange}
+			onBookingDateChange={(date) => {
+				setBookingDate(date);
+				if (validationErrors.date) {
+					setValidationErrors({ ...validationErrors, date: undefined });
+				}
+			}}
+			onBookingTimeChange={(time) => {
+				setBookingTime(time);
+				if (validationErrors.time) {
+					setValidationErrors({ ...validationErrors, time: undefined });
+				}
+			}}
+			onDurationChange={(duration) => {
+				setDurationMinutes(duration);
+				if (validationErrors.duration) {
+					setValidationErrors({ ...validationErrors, duration: undefined });
+				}
+			}}
+			onLocationChange={setLocationType}
+			onNotesChange={setNotes}
+			onSubmit={handleSubmit}
+		/>
+	);
 };
 
 export default withLayoutBasic(NewBookingPage);

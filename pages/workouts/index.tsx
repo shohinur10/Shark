@@ -32,11 +32,13 @@ import { useQuery, useMutation } from '@apollo/client';
 import { GET_WORKOUTS } from '../../apollo/user/query';
 import { LIKE_TARGET_WORKOUT } from '../../apollo/user/mutation';
 import { Workout } from '../../libs/types/workout/workout';
-import { WorkoutsInquiry } from '../../libs/types/workout/workout.input';
+import { WorkoutsInquiry, WISearch } from '../../libs/types/workout/workout.input';
 import { T } from '../../libs/types/common';
 import { REACT_APP_API_URL } from '../../libs/config';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../apollo/store';
+import { MemberType } from '../../libs/enums/member.enum';
+import { formatEnumLabel } from '../../libs/utils/format.utils';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -159,19 +161,19 @@ const WorkoutsPage: NextPage = () => {
 	const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 	const limit = 12;
 
-	// Debounce search input (300ms)
+	// Debounce search input (500ms)
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setDebouncedSearchQuery(searchQuery);
 			setPage(1); // Reset to first page when search changes
-		}, 300);
+		}, 500);
 
 		return () => clearTimeout(timer);
 	}, [searchQuery]);
 
 	// Prepare query input with proper filtering (using debounced search)
 	const queryInput: WorkoutsInquiry = useMemo(() => {
-		const search: any = {
+		const search: WISearch = {
 			...(debouncedSearchQuery.trim() && { text: debouncedSearchQuery.trim() }),
 			...(appliedFilters.goals.length > 0 && { categoryList: appliedFilters.goals }),
 			...(appliedFilters.levels.length > 0 && { difficultyList: appliedFilters.levels }),
@@ -188,7 +190,7 @@ const WorkoutsPage: NextPage = () => {
 			workoutStatus: 'PUBLISHED',
 			search: Object.keys(search).length > 0 ? search : undefined,
 		};
-	}, [page, appliedFilters, debouncedSearchQuery]);
+	}, [page, appliedFilters, debouncedSearchQuery, limit]);
 
 	// Fetch workouts
 	const {
@@ -230,7 +232,9 @@ const WorkoutsPage: NextPage = () => {
 
 	// Extract workouts from data
 	const workouts = useMemo(() => {
-		return getWorkoutsData?.getWorkouts?.list || [];
+		const workoutList = getWorkoutsData?.getWorkouts?.list ?? [];
+		console.log('Workouts fetched:', workoutList?.length);
+		return workoutList;
 	}, [getWorkoutsData]);
 
 	// Get total count for pagination
@@ -317,22 +321,7 @@ const WorkoutsPage: NextPage = () => {
 		const chips: Array<{ label: string; type: keyof FilterState; value: any }> = [];
 		
 		appliedFilters.goals.forEach(goal => {
-			const goalLabels: Record<WorkoutCategory, string> = {
-				[WorkoutCategory.STRENGTH]: 'Strength',
-				[WorkoutCategory.CARDIO]: 'Cardio',
-				[WorkoutCategory.FLEXIBILITY]: 'Flexibility',
-				[WorkoutCategory.HIIT]: 'HIIT',
-				[WorkoutCategory.CROSSFIT]: 'CrossFit',
-				[WorkoutCategory.PILATES]: 'Pilates',
-				[WorkoutCategory.YOGA]: 'Yoga',
-				[WorkoutCategory.CALISTHENICS]: 'Calisthenics',
-				[WorkoutCategory.SPORTS]: 'Sports',
-				[WorkoutCategory.MARTIAL_ARTS]: 'Martial Arts',
-				[WorkoutCategory.DANCE]: 'Dance',
-				[WorkoutCategory.SWIMMING]: 'Swimming',
-				[WorkoutCategory.REHABILITATION]: 'Rehabilitation',
-			};
-			chips.push({ label: goalLabels[goal] || goal, type: 'goals', value: goal });
+			chips.push({ label: formatEnumLabel(goal), type: 'goals', value: goal });
 		});
 		
 		appliedFilters.location.forEach(loc => {
@@ -352,27 +341,7 @@ const WorkoutsPage: NextPage = () => {
 		});
 		
 		appliedFilters.bodyFocus.forEach(focus => {
-			const focusLabels: Record<MuscleGroup, string> = {
-				[MuscleGroup.FULL_BODY]: 'Full Body',
-				[MuscleGroup.CHEST]: 'Chest',
-				[MuscleGroup.BACK]: 'Back',
-				[MuscleGroup.SHOULDERS]: 'Shoulders',
-				[MuscleGroup.BICEPS]: 'Biceps',
-				[MuscleGroup.TRICEPS]: 'Triceps',
-				[MuscleGroup.ABS]: 'Abs',
-				[MuscleGroup.OBLIQUES]: 'Core',
-				[MuscleGroup.QUADRICEPS]: 'Quads',
-				[MuscleGroup.HAMSTRINGS]: 'Hamstrings',
-				[MuscleGroup.GLUTES]: 'Glutes',
-				[MuscleGroup.CALVES]: 'Calves',
-				[MuscleGroup.LATS]: 'Lats',
-				[MuscleGroup.FRONT_DELTS]: 'Front Delts',
-				[MuscleGroup.SIDE_DELTS]: 'Side Delts',
-				[MuscleGroup.REAR_DELTS]: 'Rear Delts',
-				[MuscleGroup.FOREARMS]: 'Forearms',
-				[MuscleGroup.CARDIO]: 'Cardio',
-			};
-			chips.push({ label: focusLabels[focus] || focus, type: 'bodyFocus', value: focus });
+			chips.push({ label: formatEnumLabel(focus), type: 'bodyFocus', value: focus });
 		});
 		
 		if (appliedFilters.trainer) {
@@ -422,16 +391,16 @@ const WorkoutsPage: NextPage = () => {
 	// Note: Apollo automatically refetches when queryInput changes, so no manual refetch needed
 
 	const formatCategory = (category: WorkoutCategory) => {
-		return category.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
+		return formatEnumLabel(category);
 	};
 
 	const formatDifficulty = (difficulty: WorkoutDifficulty) => {
-		return difficulty.charAt(0) + difficulty.slice(1).toLowerCase();
+		return formatEnumLabel(difficulty);
 	};
 
 	const formatEquipment = (equipment: WorkoutEquipment[]) => {
 		if (!equipment || equipment.length === 0) return 'No Equipment';
-		if (equipment.length === 1) return equipment[0].replace(/_/g, ' ');
+		if (equipment.length === 1) return formatEnumLabel(equipment[0]);
 		return `${equipment.length} types`;
 	};
 
@@ -449,7 +418,7 @@ const WorkoutsPage: NextPage = () => {
 	};
 
 	const formatDuration = (duration: WorkoutDuration) => {
-		return duration.charAt(0) + duration.slice(1).toLowerCase();
+		return formatEnumLabel(duration);
 	};
 
 	const formatDurationMinutes = (duration: WorkoutDuration) => {
@@ -471,318 +440,181 @@ const WorkoutsPage: NextPage = () => {
 	const formatEquipmentCompact = (equipment: WorkoutEquipment[]) => {
 		if (!equipment || equipment.length === 0) return 'None';
 		if (equipment.length === 1) {
-			return equipment[0].replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+			return formatEnumLabel(equipment[0]);
 		}
 		return `${equipment.length} items`;
 	};
 
-	// Generate default/mock workouts for display when backend is not connected
-	// Matches exact GraphQL schema from GET_WORKOUTS query
-	const defaultWorkouts: Workout[] = useMemo(() => [
-		{
-			_id: 'default-1',
-			workoutTitle: 'Full Body Strength Training',
-			workoutCategory: WorkoutCategory.STRENGTH,
-			workoutDifficulty: WorkoutDifficulty.INTERMEDIATE,
-			workoutDuration: WorkoutDuration.MEDIUM,
-			workoutEquipment: [WorkoutEquipment.DUMBBELLS, WorkoutEquipment.BARBELL],
-			workoutStatus: 'PUBLISHED' as any,
-			workoutDesc: 'A comprehensive full body workout designed to build muscle and strength.',
-			workoutImage: undefined,
-			workoutVideo: undefined,
-			workoutExercises: [],
-			workoutCaloriesBurn: 350,
-			workoutViews: 1250,
-			workoutLikes: 89,
-			workoutComments: 15,
-			workoutRating: 4.5,
-			workoutCompletions: 234,
-			workoutRank: 1,
-			createdBy: 'trainer-1',
-			workoutTags: ['strength', 'full body', 'intermediate'],
-			isPremium: false,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			memberData: {
-				_id: 'trainer-1',
-				memberNick: 'CoachMike',
-				memberFullName: 'Mike Johnson',
-				memberImage: undefined,
-				memberType: 'TRAINER' as any,
-				memberStatus: 'ACTIVE' as any,
-				memberAuthType: 'PHONE' as any,
-				memberPhone: '+1234567890',
-				memberAddress: '',
-				memberDesc: 'Certified personal trainer',
-				memberProperties: 0,
-				memberArticles: 0,
-				memberFollowers: 0,
-				memberFollowings: 0,
-				memberPoints: 0,
-				memberLikes: 0,
-				memberViews: 0,
-				memberComments: 0,
-				memberRank: 0,
-				memberBlocks: 0,
-				memberWarnings: 0,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			} as any,
-		},
-		{
-			_id: 'default-2',
-			workoutTitle: 'HIIT Fat Burner',
-			workoutCategory: WorkoutCategory.HIIT,
-			workoutDifficulty: WorkoutDifficulty.BEGINNER,
-			workoutDuration: WorkoutDuration.SHORT,
-			workoutEquipment: [WorkoutEquipment.BODYWEIGHT],
-			workoutStatus: 'PUBLISHED' as any,
-			workoutDesc: 'High-intensity interval training to maximize fat burning in minimal time.',
-			workoutImage: undefined,
-			workoutVideo: undefined,
-			workoutExercises: [],
-			workoutCaloriesBurn: 280,
-			workoutViews: 2100,
-			workoutLikes: 156,
-			workoutComments: 28,
-			workoutRating: 4.8,
-			workoutCompletions: 456,
-			workoutRank: 2,
-			createdBy: 'trainer-2',
-			workoutTags: ['hiit', 'fat loss', 'beginner'],
-			isPremium: false,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			memberData: {
-				_id: 'trainer-2',
-				memberNick: 'FitSarah',
-				memberFullName: 'Sarah Williams',
-				memberImage: undefined,
-				memberType: 'TRAINER' as any,
-				memberStatus: 'ACTIVE' as any,
-				memberAuthType: 'PHONE' as any,
-				memberPhone: '+1234567891',
-				memberAddress: '',
-				memberDesc: 'HIIT specialist',
-				memberProperties: 0,
-				memberArticles: 0,
-				memberFollowers: 0,
-				memberFollowings: 0,
-				memberPoints: 0,
-				memberLikes: 0,
-				memberViews: 0,
-				memberComments: 0,
-				memberRank: 0,
-				memberBlocks: 0,
-				memberWarnings: 0,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			} as any,
-		},
-		{
-			_id: 'default-3',
-			workoutTitle: 'Yoga Flow for Flexibility',
-			workoutCategory: WorkoutCategory.YOGA,
-			workoutDifficulty: WorkoutDifficulty.BEGINNER,
-			workoutDuration: WorkoutDuration.MEDIUM,
-			workoutEquipment: [WorkoutEquipment.YOGA_MAT],
-			workoutStatus: 'PUBLISHED' as any,
-			workoutDesc: 'Relaxing yoga flow to improve flexibility and reduce stress.',
-			workoutImage: undefined,
-			workoutVideo: undefined,
-			workoutExercises: [],
-			workoutCaloriesBurn: 150,
-			workoutViews: 890,
-			workoutLikes: 67,
-			workoutComments: 12,
-			workoutRating: 4.6,
-			workoutCompletions: 189,
-			workoutRank: 3,
-			createdBy: 'trainer-3',
-			workoutTags: ['yoga', 'flexibility', 'relaxation'],
-			isPremium: true,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			memberData: {
-				_id: 'trainer-3',
-				memberNick: 'YogaMaster',
-				memberFullName: 'Emma Chen',
-				memberImage: undefined,
-				memberType: 'TRAINER' as any,
-				memberStatus: 'ACTIVE' as any,
-				memberAuthType: 'PHONE' as any,
-				memberPhone: '+1234567892',
-				memberAddress: '',
-				memberDesc: 'Certified yoga instructor',
-				memberProperties: 0,
-				memberArticles: 0,
-				memberFollowers: 0,
-				memberFollowings: 0,
-				memberPoints: 0,
-				memberLikes: 0,
-				memberViews: 0,
-				memberComments: 0,
-				memberRank: 0,
-				memberBlocks: 0,
-				memberWarnings: 0,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			} as any,
-		},
-		{
-			_id: 'default-4',
-			workoutTitle: 'Advanced CrossFit WOD',
-			workoutCategory: WorkoutCategory.CROSSFIT,
-			workoutDifficulty: WorkoutDifficulty.ADVANCED,
-			workoutDuration: WorkoutDuration.LONG,
-			workoutEquipment: [WorkoutEquipment.FULL_GYM],
-			workoutStatus: 'PUBLISHED' as any,
-			workoutDesc: 'Intense CrossFit workout of the day for experienced athletes.',
-			workoutImage: undefined,
-			workoutVideo: undefined,
-			workoutExercises: [],
-			workoutCaloriesBurn: 450,
-			workoutViews: 567,
-			workoutLikes: 45,
-			workoutComments: 8,
-			workoutRating: 4.7,
-			workoutCompletions: 78,
-			workoutRank: 4,
-			createdBy: 'trainer-4',
-			workoutTags: ['crossfit', 'advanced', 'wod'],
-			isPremium: false,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			memberData: {
-				_id: 'trainer-4',
-				memberNick: 'CrossFitPro',
-				memberFullName: 'David Martinez',
-				memberImage: undefined,
-				memberType: 'TRAINER' as any,
-				memberStatus: 'ACTIVE' as any,
-				memberAuthType: 'PHONE' as any,
-				memberPhone: '+1234567893',
-				memberAddress: '',
-				memberDesc: 'CrossFit Level 2 trainer',
-				memberProperties: 0,
-				memberArticles: 0,
-				memberFollowers: 0,
-				memberFollowings: 0,
-				memberPoints: 0,
-				memberLikes: 0,
-				memberViews: 0,
-				memberComments: 0,
-				memberRank: 0,
-				memberBlocks: 0,
-				memberWarnings: 0,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			} as any,
-		},
-		{
-			_id: 'default-5',
-			workoutTitle: 'Cardio Blast',
-			workoutCategory: WorkoutCategory.CARDIO,
-			workoutDifficulty: WorkoutDifficulty.INTERMEDIATE,
-			workoutDuration: WorkoutDuration.MEDIUM,
-			workoutEquipment: [WorkoutEquipment.CARDIO_MACHINE],
-			workoutStatus: 'PUBLISHED' as any,
-			workoutDesc: 'Heart-pumping cardio session to improve cardiovascular health.',
-			workoutImage: undefined,
-			workoutVideo: undefined,
-			workoutExercises: [],
-			workoutCaloriesBurn: 320,
-			workoutViews: 1450,
-			workoutLikes: 112,
-			workoutComments: 19,
-			workoutRating: 4.4,
-			workoutCompletions: 298,
-			workoutRank: 5,
-			createdBy: 'trainer-5',
-			workoutTags: ['cardio', 'heart health', 'fitness'],
-			isPremium: false,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			memberData: {
-				_id: 'trainer-5',
-				memberNick: 'CardioQueen',
-				memberFullName: 'Lisa Anderson',
-				memberImage: undefined,
-				memberType: 'TRAINER' as any,
-				memberStatus: 'ACTIVE' as any,
-				memberAuthType: 'PHONE' as any,
-				memberPhone: '+1234567894',
-				memberAddress: '',
-				memberDesc: 'Cardio fitness expert',
-				memberProperties: 0,
-				memberArticles: 0,
-				memberFollowers: 0,
-				memberFollowings: 0,
-				memberPoints: 0,
-				memberLikes: 0,
-				memberViews: 0,
-				memberComments: 0,
-				memberRank: 0,
-				memberBlocks: 0,
-				memberWarnings: 0,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			} as any,
-		},
-		{
-			_id: 'default-6',
-			workoutTitle: 'Bodyweight Calisthenics',
-			workoutCategory: WorkoutCategory.CALISTHENICS,
-			workoutDifficulty: WorkoutDifficulty.BEGINNER,
-			workoutDuration: WorkoutDuration.SHORT,
-			workoutEquipment: [WorkoutEquipment.BODYWEIGHT],
-			workoutStatus: 'PUBLISHED' as any,
-			workoutDesc: 'No equipment needed! Build strength using your body weight.',
-			workoutImage: undefined,
-			workoutVideo: undefined,
-			workoutExercises: [],
-			workoutCaloriesBurn: 200,
-			workoutViews: 980,
-			workoutLikes: 74,
-			workoutComments: 14,
-			workoutRating: 4.5,
-			workoutCompletions: 201,
-			workoutRank: 6,
-			createdBy: 'trainer-6',
-			workoutTags: ['calisthenics', 'bodyweight', 'home workout'],
-			isPremium: false,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			memberData: {
-				_id: 'trainer-6',
-				memberNick: 'BodyweightBoss',
-				memberFullName: 'Alex Thompson',
-				memberImage: undefined,
-				memberType: 'TRAINER' as any,
-				memberStatus: 'ACTIVE' as any,
-				memberAuthType: 'PHONE' as any,
-				memberPhone: '+1234567895',
-				memberAddress: '',
-				memberDesc: 'Calisthenics coach',
-				memberProperties: 0,
-				memberArticles: 0,
-				memberFollowers: 0,
-				memberFollowings: 0,
-				memberPoints: 0,
-				memberLikes: 0,
-				memberViews: 0,
-				memberComments: 0,
-				memberRank: 0,
-				memberBlocks: 0,
-				memberWarnings: 0,
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			} as any,
-		},
-	], []);
+	// Trainer Programs Section Component
+	const TrainerProgramsSection = () => {
+		const trainerWorkoutsQuery: WorkoutsInquiry = useMemo(
+			() => ({
+				page: 1,
+				limit: 8,
+				sort: 'workoutViews',
+				direction: Direction.DESC,
+				workoutStatus: 'PUBLISHED',
+				search: undefined, // We'll filter client-side for trainer workouts
+			}),
+			[],
+		);
 
-	// Use default workouts if backend is not connected or no data
-	const displayWorkouts = workouts.length > 0 ? workouts : (getWorkoutsError ? defaultWorkouts : []);
+		const {
+			data: trainerWorkoutsData,
+			loading: trainerWorkoutsLoading,
+		} = useQuery(GET_WORKOUTS, {
+			variables: { input: trainerWorkoutsQuery },
+			fetchPolicy: 'cache-and-network',
+		});
+
+		const allWorkouts = (trainerWorkoutsData?.getWorkouts?.list || []) as Workout[];
+		
+		// Filter workouts created by trainers
+		const trainerWorkouts = useMemo(() => {
+			return allWorkouts.filter((workout) => {
+				// Check if createdBy matches a trainer or memberData.memberType is TRAINER
+				return workout.memberData?.memberType === MemberType.TRAINER || 
+				       (workout.createdBy && workout.memberData?.memberType === 'TRAINER');
+			}).slice(0, 8);
+		}, [allWorkouts]);
+
+		if (trainerWorkoutsLoading || trainerWorkouts.length === 0) {
+			return null; // Don't show section if loading or no trainer workouts
+		}
+
+		return (
+			<Box sx={{ mb: 4 }}>
+				<Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#212121' }}>
+					Trainer Programs
+				</Typography>
+				<Box
+					sx={{
+						display: 'flex',
+						gap: 2,
+						overflowX: 'auto',
+						pb: 2,
+						'&::-webkit-scrollbar': {
+							height: 8,
+						},
+						'&::-webkit-scrollbar-thumb': {
+							backgroundColor: '#E5E5E5',
+							borderRadius: 4,
+						},
+					}}
+				>
+					{trainerWorkouts.map((workout: Workout) => {
+						const workoutImageUrl = getWorkoutImageUrl(workout.workoutImage);
+						return (
+							<Card
+								key={workout._id}
+								sx={{
+									minWidth: 280,
+									maxWidth: 320,
+									height: 320,
+									borderRadius: 2,
+									border: '1px solid #E5E5E5',
+									overflow: 'hidden',
+									transition: 'all 0.3s ease',
+									cursor: 'pointer',
+									'&:hover': {
+										borderColor: '#E10600',
+										boxShadow: '0 8px 24px rgba(225, 6, 0, 0.12)',
+										transform: 'translateY(-4px)',
+									},
+								}}
+							>
+								<Link href={`/workouts/${workout._id}`} style={{ textDecoration: 'none' }}>
+									<CardMedia
+										component="div"
+										sx={{
+											height: 150,
+											backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2)), url(${workoutImageUrl})`,
+											backgroundSize: 'cover',
+											backgroundPosition: 'center',
+											position: 'relative',
+										}}
+									>
+										<Box sx={{ position: 'absolute', top: 12, left: 12, display: 'flex', flexDirection: 'column', gap: 1 }}>
+											<Chip
+												label={formatCategory(workout.workoutCategory)}
+												size="small"
+												sx={{
+													backgroundColor: '#E10600',
+													color: '#FFFFFF',
+													fontWeight: 600,
+													fontSize: '11px',
+													height: 24,
+												}}
+											/>
+										</Box>
+									</CardMedia>
+								</Link>
+								<CardContent sx={{ p: 2, height: 170, display: 'flex', flexDirection: 'column' }}>
+									<Typography
+										variant="h6"
+										sx={{
+											fontWeight: 700,
+											color: '#212121',
+											fontSize: '16px',
+											lineHeight: 1.3,
+											mb: 1,
+											display: '-webkit-box',
+											WebkitLineClamp: 2,
+											WebkitBoxOrient: 'vertical',
+											overflow: 'hidden',
+										}}
+									>
+										{workout.workoutTitle}
+									</Typography>
+									{workout.memberData && (
+										<Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+											<Avatar
+												src={getTrainerAvatarUrl(workout.memberData)}
+												alt={workout.memberData.memberFullName || workout.memberData.memberNick}
+												sx={{ width: 24, height: 24 }}
+											/>
+											<Typography variant="caption" sx={{ color: '#757575', fontSize: '12px' }}>
+												{workout.memberData.memberFullName || workout.memberData.memberNick}
+											</Typography>
+										</Stack>
+									)}
+									<Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+										<StarIcon sx={{ fontSize: 16, color: '#E10600' }} />
+										<Typography variant="body2" sx={{ fontWeight: 600, color: '#212121', fontSize: '13px' }}>
+											{workout.workoutRating?.toFixed(1) || '0.0'}
+										</Typography>
+									</Stack>
+									<Box sx={{ mt: 'auto' }}>
+										<Button
+											variant="contained"
+											fullWidth
+											size="small"
+											onClick={(e: React.MouseEvent) => {
+												e.preventDefault();
+												router.push(`/workouts/${workout._id}`);
+											}}
+											sx={{
+												backgroundColor: '#E10600',
+												'&:hover': { backgroundColor: '#C10500' },
+												textTransform: 'none',
+												fontWeight: 600,
+												fontSize: '13px',
+											}}
+										>
+											View Program
+										</Button>
+									</Box>
+								</CardContent>
+							</Card>
+						);
+					})}
+				</Box>
+			</Box>
+		);
+	};
+
+	// Use workouts directly from GraphQL query
+	const displayWorkouts = getWorkoutsData?.getWorkouts?.list ?? [];
 
 	// Get suggested workouts (top rated / most joined) for empty state
 	const suggestedWorkouts = useMemo(() => {
@@ -796,8 +628,8 @@ const WorkoutsPage: NextPage = () => {
 				})
 				.slice(0, 4);
 		}
-		// Fallback to mock data
-		return defaultWorkouts.slice(0, 4);
+		// Return empty array if no workouts available
+		return [];
 	}, [workouts]);
 
 	// Calculate workout match score based on applied filters
@@ -931,7 +763,7 @@ const WorkoutsPage: NextPage = () => {
 		return filtered;
 	}, [displayWorkouts, appliedFilters]);
 
-	// Show error banner but still display filters and cards
+	// Show error banner if there's an error and no workouts
 	const showErrorBanner = getWorkoutsError && workouts.length === 0;
 
 	if (device === 'mobile') {
@@ -1034,6 +866,9 @@ const WorkoutsPage: NextPage = () => {
 						</Box>
 					)}
 
+					{/* Trainer Programs Section */}
+					<TrainerProgramsSection />
+
 					{/* Category Tabs */}
 					<Box className={'category-tabs-section'}>
 						<Tabs 
@@ -1052,8 +887,8 @@ const WorkoutsPage: NextPage = () => {
 					</Box>
 
 					{showErrorBanner && (
-						<Alert severity="warning" sx={{ mt: 2, mb: 2, borderRadius: '16px' }}>
-							Unable to connect to server. Showing sample workouts.
+						<Alert severity="error" sx={{ mt: 2, mb: 2, borderRadius: '16px' }}>
+							Unable to load workouts. Please try again later.
 						</Alert>
 					)}
 
@@ -1171,7 +1006,7 @@ const WorkoutsPage: NextPage = () => {
 										fontSize: '20px',
 									}}
 								>
-									No workouts match your filters
+									No workouts found
 								</Typography>
 								<Typography 
 									variant="body2" 
@@ -1181,7 +1016,9 @@ const WorkoutsPage: NextPage = () => {
 										fontSize: '14px',
 									}}
 								>
-									Try clearing filters or switching goals.
+									{getWorkoutsError 
+										? 'Unable to load workouts. Please try again later.' 
+										: 'Try clearing filters or adjusting your search criteria.'}
 								</Typography>
 								<Stack 
 									direction="column" 
@@ -1246,26 +1083,25 @@ const WorkoutsPage: NextPage = () => {
 										Suggested Workouts
 									</Typography>
 									<Stack spacing={2}>
-										{suggestedWorkouts.map((workout: Workout) => {
-											const workoutImageUrl = getWorkoutImageUrl(workout.workoutImage);
-											const isDefaultWorkout = workout._id.startsWith('default-');
-											
-											return (
-												<Card 
-													key={workout._id}
-													sx={{ 
-														borderRadius: '16px',
-														boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-														border: '1px solid #E5E5E5',
-														overflow: 'hidden',
-														transition: 'all 0.3s ease',
-														'&:hover': {
-															boxShadow: '0 8px 24px rgba(225, 6, 0, 0.12)',
-															borderColor: '#E10600',
-														},
-													}}
-												>
-													<Link href={isDefaultWorkout ? '#' : `/workouts/${workout._id}`} style={{ textDecoration: 'none' }}>
+									{suggestedWorkouts.map((workout: Workout) => {
+										const workoutImageUrl = getWorkoutImageUrl(workout.workoutImage);
+										
+										return (
+											<Card 
+												key={workout._id}
+												sx={{ 
+													borderRadius: '16px',
+													boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+													border: '1px solid #E5E5E5',
+													overflow: 'hidden',
+													transition: 'all 0.3s ease',
+													'&:hover': {
+														boxShadow: '0 8px 24px rgba(225, 6, 0, 0.12)',
+														borderColor: '#E10600',
+													},
+												}}
+											>
+												<Link href={`/workouts/${workout._id}`} style={{ textDecoration: 'none' }}>
 														<CardMedia
 															component="div"
 															sx={{
@@ -1394,13 +1230,10 @@ const WorkoutsPage: NextPage = () => {
 														<Button
 															variant="contained"
 															fullWidth
-															disabled={isDefaultWorkout}
-															onClick={(e: React.MouseEvent) => {
-																if (!isDefaultWorkout) {
-																	e.preventDefault();
-																	router.push(`/workouts/${workout._id}`);
-																}
-															}}
+													onClick={(e: React.MouseEvent) => {
+														e.preventDefault();
+														router.push(`/workouts/${workout._id}`);
+													}}
 															sx={{
 																borderRadius: '12px',
 																textTransform: 'none',
@@ -1432,8 +1265,6 @@ const WorkoutsPage: NextPage = () => {
 							<Stack spacing={2} sx={{ mt: 2 }}>
 								{filteredWorkouts.map((workout: Workout) => {
 									const workoutImageUrl = getWorkoutImageUrl(workout.workoutImage);
-									const isDefaultWorkout = workout._id.startsWith('default-');
-									
 									return (
 										<Card 
 											key={workout._id} 
@@ -1450,7 +1281,7 @@ const WorkoutsPage: NextPage = () => {
 											}}
 										>
 											{/* Thumbnail Image */}
-											<Link href={isDefaultWorkout ? '#' : `/workouts/${workout._id}`} style={{ textDecoration: 'none' }}>
+											<Link href={`/workouts/${workout._id}`} style={{ textDecoration: 'none' }}>
 												<CardMedia
 													component="div"
 													sx={{
@@ -1591,12 +1422,9 @@ const WorkoutsPage: NextPage = () => {
 												<Button
 													variant="contained"
 													fullWidth
-													disabled={isDefaultWorkout}
 													onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-														if (!isDefaultWorkout) {
-															e.preventDefault();
-															router.push(`/workouts/${workout._id}`);
-														}
+														e.preventDefault();
+														router.push(`/workouts/${workout._id}`);
 													}}
 													sx={{
 														borderRadius: '12px',
@@ -1878,7 +1706,7 @@ const WorkoutsPage: NextPage = () => {
 								</Button>
 								<Collapse in={expandedSections.equipment}>
 									<Stack spacing={1}>
-										{[WorkoutEquipment.NONE, WorkoutEquipment.DUMBBELLS, WorkoutEquipment.BARBELL, WorkoutEquipment.RESISTANCE_BAND, WorkoutEquipment.FULL_GYM].map((eq) => (
+										{Object.values(WorkoutEquipment).map((eq) => (
 											<FormControlLabel
 												key={eq}
 												control={
@@ -1894,7 +1722,7 @@ const WorkoutsPage: NextPage = () => {
 														sx={{ color: '#E10600', '&.Mui-checked': { color: '#E10600' } }}
 													/>
 												}
-												label={formatEquipment([eq])}
+												label={formatEnumLabel(eq)}
 											/>
 										))}
 									</Stack>
@@ -2161,10 +1989,10 @@ const WorkoutsPage: NextPage = () => {
 						)}
 					</Box>
 
-					{/* Error Banner - shown only when backend is not connected */}
+					{/* Error Banner - shown only when there's an error */}
 					{showErrorBanner && (
-						<Alert severity="warning" sx={{ mb: 3, borderRadius: '16px' }}>
-							Unable to connect to server. Showing sample workout designs for demonstration.
+						<Alert severity="error" sx={{ mb: 3, borderRadius: '16px' }}>
+							Unable to load workouts. Please try again later.
 						</Alert>
 					)}
 
@@ -2328,7 +2156,7 @@ const WorkoutsPage: NextPage = () => {
 											fontSize: { xs: '24px', md: '32px' },
 										}}
 									>
-										No workouts match your filters
+										No workouts found
 									</Typography>
 									<Typography 
 										variant="body1" 
@@ -2338,7 +2166,9 @@ const WorkoutsPage: NextPage = () => {
 											fontSize: { xs: '14px', md: '16px' },
 										}}
 									>
-										Try clearing filters or switching goals.
+										{getWorkoutsError 
+											? 'Unable to load workouts. Please try again later.' 
+											: 'Try clearing filters or adjusting your search criteria.'}
 									</Typography>
 									<Stack 
 										direction={{ xs: 'column', sm: 'row' }} 
@@ -2404,7 +2234,6 @@ const WorkoutsPage: NextPage = () => {
 										<Grid container spacing={3}>
 											{suggestedWorkouts.map((workout: Workout) => {
 												const workoutImageUrl = getWorkoutImageUrl(workout.workoutImage);
-												const isDefaultWorkout = workout._id.startsWith('default-');
 												
 												return (
 													<Grid item xs={12} sm={6} md={4} lg={3} key={workout._id}>
@@ -2425,7 +2254,7 @@ const WorkoutsPage: NextPage = () => {
 																},
 															}}
 														>
-															<Link href={isDefaultWorkout ? '#' : `/workouts/${workout._id}`} style={{ textDecoration: 'none' }}>
+															<Link href={`/workouts/${workout._id}`} style={{ textDecoration: 'none' }}>
 																<CardMedia
 																	component="div"
 																	sx={{
@@ -2555,12 +2384,9 @@ const WorkoutsPage: NextPage = () => {
 																<Button
 																	variant="contained"
 																	fullWidth
-																	disabled={isDefaultWorkout}
 																	onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-																		if (!isDefaultWorkout) {
-																			e.preventDefault();
-																			router.push(`/workouts/${workout._id}`);
-																		}
+																		e.preventDefault();
+																		router.push(`/workouts/${workout._id}`);
 																	}}
 																	sx={{
 																		borderRadius: '12px',
@@ -2594,7 +2420,6 @@ const WorkoutsPage: NextPage = () => {
 								<Grid container spacing={3}>
 									{filteredWorkouts.map((workout: Workout) => {
 										const workoutImageUrl = getWorkoutImageUrl(workout.workoutImage);
-										const isDefaultWorkout = workout._id.startsWith('default-');
 										
 										return (
 											<Grid item xs={12} sm={6} md={4} lg={3} key={workout._id}>
@@ -2617,7 +2442,7 @@ const WorkoutsPage: NextPage = () => {
 													}}
 												>
 													{/* Thumbnail Image */}
-													<Link href={isDefaultWorkout ? '#' : `/workouts/${workout._id}`} style={{ textDecoration: 'none' }}>
+													<Link href={`/workouts/${workout._id}`} style={{ textDecoration: 'none' }}>
 														<CardMedia
 															component="div"
 															sx={{
@@ -2759,13 +2584,10 @@ const WorkoutsPage: NextPage = () => {
 														<Button
 															variant="contained"
 															fullWidth
-															disabled={isDefaultWorkout}
-															onClick={(e: React.MouseEvent) => {
-																if (!isDefaultWorkout) {
-																	e.preventDefault();
-																	router.push(`/workouts/${workout._id}`);
-																}
-															}}
+													onClick={(e: React.MouseEvent) => {
+														e.preventDefault();
+														router.push(`/workouts/${workout._id}`);
+													}}
 															sx={{
 																borderRadius: '12px',
 																textTransform: 'none',
@@ -2782,7 +2604,7 @@ const WorkoutsPage: NextPage = () => {
 																},
 															}}
 														>
-															{isDefaultWorkout ? 'View Workout' : 'View Workout'}
+															View Workout
 														</Button>
 													</CardContent>
 												</Card>
@@ -3050,7 +2872,7 @@ const WorkoutsPage: NextPage = () => {
 								</Button>
 								<Collapse in={expandedSections.equipment}>
 									<Stack spacing={1}>
-										{[WorkoutEquipment.NONE, WorkoutEquipment.DUMBBELLS, WorkoutEquipment.BARBELL, WorkoutEquipment.RESISTANCE_BAND, WorkoutEquipment.FULL_GYM].map((eq) => (
+										{Object.values(WorkoutEquipment).map((eq) => (
 											<FormControlLabel
 												key={eq}
 												control={
@@ -3066,7 +2888,7 @@ const WorkoutsPage: NextPage = () => {
 														sx={{ color: '#E10600', '&.Mui-checked': { color: '#E10600' } }}
 													/>
 												}
-												label={formatEquipment([eq])}
+												label={formatEnumLabel(eq)}
 											/>
 										))}
 									</Stack>
