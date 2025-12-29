@@ -25,3 +25,5 @@ const GoalsChallengesRedirect: React.FC = () => {
 export default GoalsChallengesRedirect;
 
 
+
+

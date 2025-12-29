@@ -34,6 +34,7 @@ export interface ExercisesInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
+	exerciseStatus?: string;
 	targetMuscles?: MuscleGroup[];
 	exerciseType?: string[];
 	equipmentList?: WorkoutEquipment[];
