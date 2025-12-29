@@ -22,8 +22,8 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 const MyMenu = () => {
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const pathname = router.query.category ?? 'myProfile';
-	const category: any = router.query?.category ?? 'myProfile';
+	const pathname = router.query.category ?? 'dashboard';
+	const category: any = router.query?.category ?? 'dashboard';
 	const user = useReactiveVar(userVar);
 
 	/** HANDLERS **/
@@ -38,7 +38,7 @@ const MyMenu = () => {
 	if (device === 'mobile') {
 		return <div>MY MENU</div>;
 	} else {
-		const isMyPage = category === 'myProfile' || !category || category === '';
+		const isMyPage = category === 'dashboard' || !category || category === '';
 		
 		return (
 			<Stack width={'100%'} padding={'24px'} className={'my-menu-container'}>
@@ -132,50 +132,8 @@ const MyMenu = () => {
 							MANAGE LISTINGS
 						</Typography>
 						<List className={'sub-section'}>
-							{user.memberType === 'AGENT' && (
+							{user.memberType === 'TRAINER' && (
 								<>
-									<ListItem className={pathname === 'addProperty' ? 'focus' : ''}>
-										<Link
-											href={{
-												pathname: '/mypage',
-												query: { category: 'addProperty' },
-											}}
-											scroll={false}
-										>
-											<div className={'flex-box'}>
-												<EditNoteIcon
-													sx={{
-														fontSize: '20px',
-														color: category === 'addProperty' ? '#E10600' : '#6B6B6B',
-													}}
-												/>
-												<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
-													Add Property
-												</Typography>
-											</div>
-										</Link>
-									</ListItem>
-									<ListItem className={pathname === 'myProperties' ? 'focus' : ''}>
-										<Link
-											href={{
-												pathname: '/mypage',
-												query: { category: 'myProperties' },
-											}}
-											scroll={false}
-										>
-											<div className={'flex-box'}>
-												<HomeIcon
-													sx={{
-														fontSize: '20px',
-														color: category === 'myProperties' ? '#E10600' : '#6B6B6B',
-													}}
-												/>
-												<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
-													My Properties
-												</Typography>
-											</div>
-										</Link>
-									</ListItem>
 								</>
 							)}
 							<ListItem className={pathname === 'myFavorites' ? 'focus' : ''}>

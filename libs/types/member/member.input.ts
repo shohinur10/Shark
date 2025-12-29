@@ -15,15 +15,15 @@ export interface LoginInput {
 }
 
 interface AISearch {
-	text?: string;
+	text?: string; // Optional - search by memberNick
 }
 
 export interface TrainersInquiry {
-	page: number;
-	limit: number;
-	sort?: string;
-	direction?: Direction;
-	search: AISearch;
+	page: number; // Required, minimum 1
+	limit: number; // Required, minimum 1
+	sort?: string; // Optional, e.g., "trainerRating", "createdAt"
+	direction?: Direction; // Optional, "ASC" | "DESC", defaults to DESC
+	search?: AISearch; // Optional search object
 }
 
 interface MISearch {

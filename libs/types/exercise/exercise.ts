@@ -1,7 +1,7 @@
 import { ExerciseStatus, ExerciseType, MuscleGroup } from '../../enums/exercise.enum';
 import { WorkoutEquipment } from '../../enums/workout.enum';
 import { Member } from '../member/member';
-import { TotalCounter } from '../property/property';
+import { TotalCounter } from "../common"';
 
 export interface Exercise {
 	_id: string;

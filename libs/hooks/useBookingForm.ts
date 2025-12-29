@@ -2,24 +2,25 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation } from '@apollo/client';
 import { useReactiveVar } from '@apollo/client';
+import moment from 'moment';
 import { GET_TRAINERS, GET_ALL_SERVICES, GET_BOOKINGS } from '../../apollo/user/query';
 import { CREATE_BOOKING } from '../../apollo/user/mutation';
 import { userVar } from '../../apollo/store';
 import { Direction } from '../enums/common.enum';
-import { ServiceStatus } from '../enums/booking.enum';
+import { ServiceStatus, BookingType } from '../enums/booking.enum';
 import { Service } from '../types/service/service';
 import { BookingInput } from '../types/booking/booking.input';
 import { ServicesInquiry } from '../types/service/service.input';
 import { sweetErrorAlert, sweetMixinSuccessAlert } from '../sweetAlert';
 import { useServicePricing } from './useServicePricing';
 import { useTrainerAvailability } from './useTrainerAvailability';
-import { validateBookingForm, isBookingFormValid, ValidationErrors } from '../utils/validation.utils';
+import { validateBookingForm, isBookingFormValid, ValidationErrors, isValidObjectId } from '../utils/validation.utils';
 import { prepareBookingInput } from '../utils/booking.utils';
 
 export interface BookingFormState {
 	trainerId: string | null;
 	serviceId: string | null;
-	bookingDate: Date | null;
+	bookingDate: string | null; // ISO string format: YYYY-MM-DD
 	bookingTime: string | null;
 	durationMinutes: number;
 	locationType: string;
@@ -72,40 +73,60 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	
-	// Form state
+	// Form state - all values start as null/empty, will be set from real backend data
 	const [state, setState] = useState<BookingFormState>({
 		trainerId: null,
 		serviceId: null,
-		bookingDate: null,
+		bookingDate: null, // ISO string format: YYYY-MM-DD
 		bookingTime: null,
 		durationMinutes: 0,
-		locationType: 'in-person',
+		locationType: '', // Will be set from selectedService.bookingType (real backend data)
 		notes: '',
 	});
 
 	const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 	const [showValidation, setShowValidation] = useState(false);
 
-	// Set initial trainer ID from URL param
+	// Set initial trainer ID from URL param (only if it's a valid ObjectId)
 	useEffect(() => {
 		if (initialTrainerId) {
 			const trainerId = typeof initialTrainerId === 'string' ? initialTrainerId : initialTrainerId[0];
-			setState(prev => ({ ...prev, trainerId }));
+			// Only set trainerId if it's a valid MongoDB ObjectId format
+			if (isValidObjectId(trainerId)) {
+				setState(prev => ({ ...prev, trainerId }));
+			}
+			// If invalid, just ignore it (don't set it) to avoid errors
 		}
 	}, [initialTrainerId]);
 
-	// Fetch trainers
+	// Fetch trainers - requires authentication (backend uses @AuthMember)
 	const { data: trainersData, loading: trainersLoading, error: trainersError } = useQuery(GET_TRAINERS, {
 		variables: {
 			input: {
-				page: 1,
-				limit: 50,
-				sort: 'trainerRating',
-				direction: Direction.DESC,
-				search: {},
+				page: 1, // Required, minimum 1
+				limit: 50, // Required, minimum 1
+				sort: 'trainerRating', // Optional, e.g., "trainerRating", "createdAt"
+				direction: Direction.DESC, // Optional, "ASC" | "DESC", defaults to DESC
+				// search is optional - can include { text?: string } for searching memberNick
 			},
 		},
 		skip: false,
+		fetchPolicy: 'cache-and-network', // Always fetch fresh data
+		// Authentication is handled by Apollo client (authLink in apollo/client.ts)
+		onCompleted: (data) => {
+			console.log('✅ GET_TRAINERS query completed:', {
+				trainersCount: data?.getTrainers?.list?.length || 0,
+				total: data?.getTrainers?.metaCounter?.total || 0,
+				trainers: data?.getTrainers?.list || [],
+			});
+		},
+		onError: (error) => {
+			console.error('❌ GET_TRAINERS query error:', {
+				message: error.message,
+				graphQLErrors: error.graphQLErrors,
+				networkError: error.networkError,
+			});
+		},
 	});
 
 	// Fetch services - only ACTIVE services
@@ -114,7 +135,9 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		limit: 100,
 		sort: 'createdAt',
 		direction: Direction.DESC,
-		status: ServiceStatus.ACTIVE,
+		search: {
+			status: ServiceStatus.ACTIVE,
+		},
 	}), []);
 
 	const { data: servicesData, loading: servicesLoading, error: servicesError } = useQuery(GET_ALL_SERVICES, {
@@ -122,6 +145,34 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 			input: servicesQuery,
 		},
 		fetchPolicy: 'cache-and-network',
+		skip: typeof window === 'undefined', // Skip during SSR to avoid hydration errors
+		onCompleted: (data) => {
+			console.log('✅ GET_ALL_SERVICES query completed:', {
+				servicesCount: data?.getAllServices?.list?.length || 0,
+				total: data?.getAllServices?.metaCounter?.total || 0,
+				services: data?.getAllServices?.list || [],
+			});
+		},
+		onError: (error) => {
+			// Improved error logging with proper serialization
+			const errorDetails = {
+				message: error.message,
+				graphQLErrors: error.graphQLErrors?.map((err: any) => ({
+					message: err.message,
+					locations: err.locations,
+					path: err.path,
+					extensions: err.extensions,
+				})),
+				networkError: error.networkError ? {
+					name: error.networkError.name,
+					message: error.networkError.message,
+					statusCode: (error.networkError as any)?.statusCode,
+					result: (error.networkError as any)?.result,
+				} : null,
+			};
+			console.error('❌ GET_ALL_SERVICES query error:', JSON.stringify(errorDetails, null, 2));
+			console.error('Full error object:', error);
+		},
 	});
 
 	// Get trainer availability
@@ -149,26 +200,53 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		onCompleted: async (data) => {
 			if (data?.createBooking) {
 				await sweetMixinSuccessAlert('Booking created successfully!');
+				// Store booking ID for reference
+				const bookingId = data.createBooking._id;
+				console.log('Booking created with ID:', bookingId);
 				router.push('/bookings');
 			}
 		},
 		onError: (error) => {
 			console.error('Error creating booking:', error);
-			sweetErrorAlert(error.message || 'Failed to create booking. Please try again.');
+			// Error handling is done in try-catch block in submit function
+			// This is a fallback for errors not caught in try-catch
+			if (!error.graphQLErrors || error.graphQLErrors.length === 0) {
+				sweetErrorAlert(error.message || 'Failed to create booking. Please try again.');
+			}
 		},
 	});
 
 	// Get trainers list
 	const trainers = useMemo(() => {
-		return trainersData?.getTrainers?.list || [];
+		const trainersList = trainersData?.getTrainers?.list || [];
+		console.log('📋 Trainers list from useMemo:', {
+			count: trainersList.length,
+			trainers: trainersList.map((t: any) => ({
+				id: t._id,
+				name: t.memberFullName || t.memberNick,
+				rating: t.trainerRating,
+			})),
+		});
+		return trainersList;
 	}, [trainersData]);
 
 	// Get active services list
 	const services = useMemo(() => {
-		if (!servicesData?.getAllServices?.list) return [];
-		return servicesData.getAllServices.list.filter(
+		const servicesList = servicesData?.getAllServices?.list || [];
+		const activeServices = servicesList.filter(
 			(service: Service) => service.status === ServiceStatus.ACTIVE
 		);
+		console.log('📋 Services list from useMemo:', {
+			total: servicesList.length,
+			active: activeServices.length,
+			services: activeServices.map((s: Service) => ({
+				id: s._id,
+				title: s.title,
+				status: s.status,
+				bookingType: s.bookingType,
+			})),
+		});
+		return activeServices;
 	}, [servicesData]);
 
 	// Get selected trainer
@@ -177,18 +255,38 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		return trainers.find((t: any) => t._id === state.trainerId) || null;
 	}, [state.trainerId, trainers]);
 
+	// Validate trainerId exists in trainers list after trainers are loaded
+	useEffect(() => {
+		if (state.trainerId && trainers.length > 0) {
+			const trainerExists = trainers.some((t: any) => t._id === state.trainerId);
+			if (!trainerExists) {
+				// Trainer ID doesn't exist in the list, clear it
+				setState(prev => ({ ...prev, trainerId: null }));
+			}
+		}
+	}, [state.trainerId, trainers]);
+
 	// Get selected service
 	const selectedService = useMemo(() => {
 		if (!state.serviceId || !services.length) return null;
-		const service = services.find((s: Service) => s._id === state.serviceId);
-		
-		// Reset duration if current duration is not in service's options
-		if (service && service.durationOptions && !service.durationOptions.includes(state.durationMinutes)) {
-			setState(prev => ({ ...prev, durationMinutes: 0 }));
+		return services.find((s: Service) => s._id === state.serviceId) || null;
+	}, [state.serviceId, services]);
+
+	// Set booking type from service when service is selected (real backend data)
+	useEffect(() => {
+		if (selectedService && selectedService.bookingType) {
+			setState(prev => ({ ...prev, locationType: selectedService.bookingType }));
 		}
-		
-		return service || null;
-	}, [state.serviceId, state.durationMinutes, services]);
+	}, [selectedService]);
+
+	// Reset duration if current duration is not in service's options
+	useEffect(() => {
+		if (selectedService && selectedService.durationOptions && state.durationMinutes > 0) {
+			if (!selectedService.durationOptions.includes(state.durationMinutes)) {
+				setState(prev => ({ ...prev, durationMinutes: 0 }));
+			}
+		}
+	}, [selectedService, state.durationMinutes]);
 
 	// Calculate total price
 	const totalPrice = useServicePricing(selectedService, state.durationMinutes);
@@ -230,7 +328,10 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 
 	// Handlers
 	const setTrainerId = useCallback((trainerId: string | null) => {
-		setState(prev => ({ ...prev, trainerId }));
+		setState(prev => {
+			// Reset time when trainer changes
+			return { ...prev, trainerId, bookingTime: null };
+		});
 		if (validationErrors.trainerId) {
 			setValidationErrors(prev => {
 				const newErrors = { ...prev };
@@ -241,7 +342,11 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 	}, [validationErrors.trainerId]);
 
 	const setServiceId = useCallback((serviceId: string | null) => {
-		setState(prev => ({ ...prev, serviceId, durationMinutes: 0 }));
+		setState(prev => {
+			// Reset duration when service changes
+			// If new service has duration options, don't reset to 0, let user choose
+			return { ...prev, serviceId, durationMinutes: 0 };
+		});
 		if (validationErrors.serviceId) {
 			setValidationErrors(prev => {
 				const newErrors = { ...prev };
@@ -252,7 +357,9 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 	}, [validationErrors.serviceId]);
 
 	const setBookingDate = useCallback((date: Date | null) => {
-		setState(prev => ({ ...prev, bookingDate: date, bookingTime: null }));
+		// Convert Date to ISO string (YYYY-MM-DD) for storage
+		const dateString = date ? moment(date).format('YYYY-MM-DD') : null;
+		setState(prev => ({ ...prev, bookingDate: dateString, bookingTime: null }));
 		if (validationErrors.date) {
 			setValidationErrors(prev => {
 				const newErrors = { ...prev };
@@ -284,8 +391,8 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		}
 	}, [validationErrors.duration]);
 
-	const setLocationType = useCallback((location: string) => {
-		setState(prev => ({ ...prev, locationType: location }));
+	const setLocationType = useCallback((location: string | null) => {
+		setState(prev => ({ ...prev, locationType: location || '' }));
 	}, []);
 
 	const setNotes = useCallback((notes: string) => {
@@ -349,9 +456,41 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 			await createBooking({
 				variables: { input: bookingInput },
 			});
-		} catch (error) {
-			// Error is already handled in onError callback
+		} catch (error: any) {
+			// Error is already handled in onError callback, but log for debugging
 			console.error('Booking submission error:', error);
+			
+			// Extract specific error messages from GraphQL errors
+			if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+				const graphQLError = error.graphQLErrors[0];
+				const errorMessage = graphQLError.message;
+				
+				// Map backend error messages to user-friendly messages
+				if (errorMessage.includes('Trainer not found')) {
+					sweetErrorAlert('Trainer not found or not available');
+				} else if (errorMessage.includes('Service not found')) {
+					sweetErrorAlert('Service not found or inactive');
+				} else if (errorMessage.includes('duration') || errorMessage.includes('Duration')) {
+					sweetErrorAlert(`Session duration ${state.durationMinutes} minutes is not available for this service`);
+				} else if (errorMessage.includes('time format') || errorMessage.includes('HH:mm')) {
+					sweetErrorAlert('Invalid booking time format. Expected HH:mm (24-hour format)');
+				} else if (errorMessage.includes('2 hours') || errorMessage.includes('advance')) {
+					sweetErrorAlert('Booking must be at least 2 hours in advance');
+				} else if (errorMessage.includes('past')) {
+					sweetErrorAlert('Booking date cannot be in the past');
+				} else if (errorMessage.includes('already booked') || errorMessage.includes('conflict')) {
+					sweetErrorAlert('Time slot already booked. Please select another time.');
+				} else if (errorMessage.includes('bookingType')) {
+					sweetErrorAlert('Service bookingType does not match selected booking type');
+				} else {
+					// Use the error message from backend
+					sweetErrorAlert(errorMessage || 'Failed to create booking. Please try again.');
+				}
+			} else if (error.networkError) {
+				sweetErrorAlert('Network error. Please check your connection and try again.');
+			} else {
+				sweetErrorAlert(error.message || 'Failed to create booking. Please try again.');
+			}
 		}
 	}, [state, selectedService, totalPrice, user, createBooking, router]);
 
@@ -394,4 +533,5 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		clearValidationError,
 	};
 };
+
 

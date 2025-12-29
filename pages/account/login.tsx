@@ -25,6 +25,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -233,11 +234,22 @@ const LoginPage: NextPage = () => {
 				<Box className={'login-container'}>
 					<Box className={'login-card'}>
 						<Box className={'login-header'}>
+							<Box className={'logo-section'}>
+								<img 
+									src="/img/logo/ChatGPT Image Nov 25, 2025, 11_45_12 PM.png" 
+									alt="Shark Logo" 
+									className={'logo-img'}
+								/>
+								<Typography variant="h5" className={'logo-text'}>
+									Shark Fitness
+								</Typography>
+							</Box>
+							<FitnessCenterIcon className={'fitness-icon'} />
 							<Typography variant="h3" className={'login-title'}>
-								Welcome back
+								Welcome Back!
 							</Typography>
 							<Typography variant="body1" className={'login-subtitle'}>
-								Let's continue your training.
+								Continue your fitness transformation and track your progress
 							</Typography>
 						</Box>
 

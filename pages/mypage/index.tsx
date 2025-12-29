@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import {
@@ -14,10 +14,6 @@ import {
 } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import MyProperties from '../../libs/components/mypage/MyProperties';
-import MyFavorites from '../../libs/components/mypage/MyFavorites';
-import RecentlyVisited from '../../libs/components/mypage/RecentlyVisited';
-import AddProperty from '../../libs/components/mypage/AddNewProperty';
 import MyProfile from '../../libs/components/mypage/MyProfile';
 import MyArticles from '../../libs/components/mypage/MyArticles';
 import { useMutation, useReactiveVar } from '@apollo/client';
@@ -28,7 +24,7 @@ import MemberFollowers from '../../libs/components/member/MemberFollowers';
 import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { LIKE_TARGET_MEMBER, LIKE_TARGET_PROPERTY, SUBSCRIBE, UNSUBSCRIBE } from '../../apollo/user/mutation';
+import { LIKE_TARGET_MEMBER, SUBSCRIBE, UNSUBSCRIBE } from '../../apollo/user/mutation';
 import { Messages, REACT_APP_API_URL } from '../../libs/config';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -65,13 +61,26 @@ const MyPage: NextPage = () => {
 	const device = useDeviceDetect();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
-	const category: any = router.query?.category ?? 'myProfile';
+	const [category, setCategory] = useState<string>('dashboard');
+	const [mounted, setMounted] = useState(false);
+
+	// Handle category from query params (client-side only to avoid hydration mismatch)
+	useEffect(() => {
+		setMounted(true);
+		if (router.query?.category) {
+			setCategory(router.query.category as string);
+		} else {
+			// Default to dashboard if no category specified
+			setCategory('dashboard');
+		}
+	}, [router.query?.category]);
 
 	/** APOLLO REQUESTS **/
 
 	const [subscribe] = useMutation(SUBSCRIBE);
 	const [unsubscribe] = useMutation(UNSUBSCRIBE);
 	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
+	
 	/** LIFECYCLES **/
 	useEffect(() => {
 		if (!user._id) router.push('/').then();
@@ -136,11 +145,37 @@ const MyPage: NextPage = () => {
 		}
 	};
 
-	if (device === 'mobile') {
-		return <div>MY PAGE</div>;
-	} else {
-		// Activity Timeline data
-		const activityTimeline = [
+	// Activity Timeline data - use useMemo to ensure consistent dates between server and client
+	const activityTimeline = useMemo(() => {
+		if (!mounted) {
+			// Return static dates during SSR to avoid hydration mismatch
+			const baseTime = new Date('2024-01-01T00:00:00Z').getTime();
+			return [
+				{
+					type: 'challenge',
+					title: 'Completed Day 7 of 30-Day Fitness Challenge',
+					time: new Date(baseTime - 2 * 60 * 60 * 1000),
+					icon: CheckCircleIcon,
+					color: '#4CAF50',
+				},
+				{
+					type: 'post',
+					title: 'Posted in Community Feed',
+					time: new Date(baseTime - 5 * 60 * 60 * 1000),
+					icon: ArticleIcon,
+					color: '#2196F3',
+				},
+				{
+					type: 'like',
+					title: 'Liked 5 posts',
+					time: new Date(baseTime - 24 * 60 * 60 * 1000),
+					icon: ThumbUpIcon,
+					color: '#E10600',
+				},
+			];
+		}
+		// Use real dates on client-side
+		return [
 			{
 				type: 'challenge',
 				title: 'Completed Day 7 of 30-Day Fitness Challenge',
@@ -163,6 +198,11 @@ const MyPage: NextPage = () => {
 				color: '#E10600',
 			},
 		];
+	}, [mounted]);
+
+	if (device === 'mobile') {
+		return <div>MY PAGE</div>;
+	} else {
 
 		// Consistency Mirror insights
 		const consistencyInsights = [
@@ -805,17 +845,13 @@ const MyPage: NextPage = () => {
 
 						{/* Main Content */}
 						<Stack className="main-config" sx={{ flex: 1, minWidth: 0 }} spacing={3}>
-							{category === 'myProfile' ? (
+							{category === 'dashboard' ? (
 								renderPersonalFitnessHub()
 							) : (
 								<Stack className={'list-config'}>
-									{category === 'addProperty' && <AddProperty />}
-									{category === 'myProperties' && <MyProperties />}
-									{category === 'myFavorites' && <MyFavorites />}
-									{category === 'recentlyVisited' && <RecentlyVisited />}
+									{category === 'myProfile' && <MyProfile />}
 									{category === 'myArticles' && <MyArticles />}
 									{category === 'writeArticle' && <WriteArticle />}
-									{category === 'myProfile' && <MyProfile />}
 									{category === 'followers' && (
 										<MemberFollowers
 											subscribeHandler={subscribeHandler}

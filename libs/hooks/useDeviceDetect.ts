@@ -1,15 +1,24 @@
 import { useEffect, useState } from 'react';
 
 const useDeviceDetect = (): string => {
-	const [device, setDevice] = useState('desktop');
+	// Initialize with 'desktop' to match server-side rendering
+	const [device, setDevice] = useState<'mobile' | 'desktop'>('desktop');
+	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
-		const userAgent = navigator.userAgent;
-		const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-		setDevice(isMobile ? 'mobile' : 'desktop');
-	}, [device]);
+		// Mark as mounted (client-side only)
+		setMounted(true);
+		
+		// Only check device on client-side
+		if (typeof window !== 'undefined') {
+			const userAgent = navigator.userAgent;
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+			setDevice(isMobile ? 'mobile' : 'desktop');
+		}
+	}, []);
 
-	return device;
+	// Return 'desktop' during SSR to match initial render
+	return mounted ? device : 'desktop';
 };
 
 export default useDeviceDetect;

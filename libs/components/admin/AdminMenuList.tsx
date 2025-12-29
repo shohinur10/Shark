@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter, withRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
@@ -10,7 +10,7 @@ import { ChatsCircle, Headset, User, UserCircleGear } from 'phosphor-react';
 import cookies from 'js-cookie';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 
-const AdminMenuList = (props: any) => {
+const AdminMenuList = () => {
 	const router = useRouter();
 	const device = useDeviceDetect();
 	const [mobileLayout, setMobileLayout] = useState(false);
@@ -19,11 +19,7 @@ const AdminMenuList = (props: any) => {
 	const [clickMenu, setClickMenu] = useState<any>([]);
 	const [clickSubMenu, setClickSubMenu] = useState('');
 
-	const {
-		router: { pathname },
-	} = props;
-
-	const pathnames = pathname.split('/').filter((x: any) => x);
+	const pathnames = router.pathname.split('/').filter((x: any) => x);
 
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -166,4 +162,4 @@ const AdminMenuList = (props: any) => {
 	);
 };
 
-export default withRouter(AdminMenuList);
+export default AdminMenuList;

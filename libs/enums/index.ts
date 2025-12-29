@@ -14,7 +14,6 @@ export * from './notification.enum';
 export * from './nutrition.enum';
 export * from './payment.enum';
 export * from './progress.enum';
-export * from './property.enum';
 export * from './review.enum';
 export * from './subscription.enum';
 export * from './view.enum';

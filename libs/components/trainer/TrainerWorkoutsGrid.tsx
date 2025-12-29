@@ -184,10 +184,10 @@ const TrainerWorkoutsGrid: React.FC<TrainerWorkoutsGridProps> = ({ workouts, loa
 						sx={{ backgroundColor: '#FAFAFA' }}
 					>
 						<MenuItem value="ALL">All</MenuItem>
-						<MenuItem value="BEGINNER">Beginner</MenuItem>
-						<MenuItem value="INTERMEDIATE">Intermediate</MenuItem>
-						<MenuItem value="ADVANCED">Advanced</MenuItem>
-						<MenuItem value="EXPERT">Expert</MenuItem>
+						<MenuItem value={WorkoutDifficulty.BEGINNER}>Beginner</MenuItem>
+						<MenuItem value={WorkoutDifficulty.INTERMEDIATE}>Intermediate</MenuItem>
+						<MenuItem value={WorkoutDifficulty.ADVANCED}>Advanced</MenuItem>
+						<MenuItem value={WorkoutDifficulty.EXPERT}>Expert</MenuItem>
 					</Select>
 				</FormControl>
 

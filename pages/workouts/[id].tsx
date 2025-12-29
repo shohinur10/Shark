@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Stack, Box, Typography, Button, Chip, Divider, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
+import { Stack, Box, Typography, Button, Chip, Divider, List, ListItem, ListItemText, CircularProgress, ListItemButton } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -13,9 +13,11 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { useQuery } from '@apollo/client';
-import { GET_WORKOUT } from '../../apollo/user/query';
+import { GET_WORKOUT, GET_EXERCISE } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
 import { WorkoutDifficulty, WorkoutCategory, WorkoutDuration } from '../../libs/enums/workout.enum';
+import { Exercise } from '../../libs/types/exercise/exercise';
+import Link from 'next/link';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -243,13 +245,7 @@ const WorkoutDetailPage: NextPage = () => {
 						{workout.workoutExercises && workout.workoutExercises.length > 0 ? (
 							<List>
 								{workout.workoutExercises.map((exerciseId, index) => (
-									<ListItem key={exerciseId || index} className={'exercise-item'}>
-										<ListItemText
-											primary={`Exercise ${index + 1}`}
-											secondary={exerciseId ? `Exercise ID: ${exerciseId}` : 'Exercise details coming soon'}
-										/>
-										{/* TODO: Fetch and display actual exercise details using GET_EXERCISE query */}
-									</ListItem>
+									<ExerciseListItem key={exerciseId || index} exerciseId={exerciseId} index={index} />
 								))}
 							</List>
 						) : (
@@ -295,6 +291,82 @@ const WorkoutDetailPage: NextPage = () => {
 			</Stack>
 		);
 	}
+};
+
+// Component to fetch and display individual exercise details
+const ExerciseListItem = ({ exerciseId, index }: { exerciseId: string; index: number }) => {
+	const { data, loading, error } = useQuery(GET_EXERCISE, {
+		skip: !exerciseId || typeof exerciseId !== 'string',
+		variables: { input: exerciseId },
+		fetchPolicy: 'cache-and-network',
+	});
+
+	const exercise: Exercise | null = data?.getExercise || null;
+
+	if (loading) {
+		return (
+			<ListItem className={'exercise-item'}>
+				<CircularProgress size={20} sx={{ mr: 2 }} />
+				<ListItemText primary={`Exercise ${index + 1}`} secondary="Loading exercise details..." />
+			</ListItem>
+		);
+	}
+
+	if (error || !exercise) {
+		return (
+			<ListItem className={'exercise-item'}>
+				<ListItemText
+					primary={`Exercise ${index + 1}`}
+					secondary={exerciseId ? `Exercise ID: ${exerciseId} (Unable to load details)` : 'Exercise details unavailable'}
+				/>
+			</ListItem>
+		);
+	}
+
+	return (
+		<Link href={`/exercises/${exercise._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+			<ListItemButton className={'exercise-item'} component="div">
+				<Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+					<Box sx={{ mr: 2, minWidth: 60, textAlign: 'center' }}>
+						<Typography variant="h6" color="primary">
+							{index + 1}
+						</Typography>
+					</Box>
+					<Box sx={{ flex: 1 }}>
+						<ListItemText
+							primary={exercise.exerciseName}
+							secondary={
+								<Stack direction="row" spacing={1} sx={{ mt: 0.5 }} flexWrap="wrap">
+									{exercise.targetMuscles && exercise.targetMuscles.length > 0 && (
+										<Chip
+											label={exercise.targetMuscles[0].replace(/_/g, ' ')}
+											size="small"
+											variant="outlined"
+											sx={{ height: 20, fontSize: '0.7rem' }}
+										/>
+									)}
+									{exercise.exerciseType && (
+										<Chip
+											label={exercise.exerciseType.replace(/_/g, ' ')}
+											size="small"
+											variant="outlined"
+											sx={{ height: 20, fontSize: '0.7rem' }}
+										/>
+									)}
+									{exercise.exerciseDifficulty && (
+										<Typography variant="caption" color="text.secondary">
+											Difficulty: {exercise.exerciseDifficulty}/10
+										</Typography>
+									)}
+								</Stack>
+							}
+						/>
+					</Box>
+					<FitnessCenterIcon sx={{ color: 'text.secondary' }} />
+				</Box>
+			</ListItemButton>
+		</Link>
+	);
 };
 
 export default withLayoutBasic(WorkoutDetailPage);

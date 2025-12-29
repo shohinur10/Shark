@@ -272,16 +272,16 @@ const RegisterPage: NextPage = () => {
 								className={'role-option'}
 							/>
 							<FormControlLabel
-								value="AGENT"
+								value="TRAINER"
 								control={<Radio />}
-								label="Agent"
+								label="Trainer"
 								className={'role-option'}
 							/>
 						</RadioGroup>
 						<FormHelperText className={'role-helper-text'}>
 							{formData.userType === 'USER' 
 								? 'User: Train, track progress, and join the community'
-								: 'Agent: Manage clients and publish programs'}
+								: 'Trainer: Manage clients and publish programs'}
 						</FormHelperText>
 					</FormControl>
 
@@ -497,16 +497,16 @@ const RegisterPage: NextPage = () => {
 										className={'role-option'}
 									/>
 									<FormControlLabel
-										value="AGENT"
+										value="TRAINER"
 										control={<Radio />}
-										label="Agent"
+										label="Trainer"
 										className={'role-option'}
 									/>
 								</RadioGroup>
 								<FormHelperText className={'role-helper-text'}>
 									{formData.userType === 'USER' 
 										? 'User: Train, track progress, and join the community'
-										: 'Agent: Manage clients and publish programs'}
+										: 'Trainer: Manage clients and publish programs'}
 								</FormHelperText>
 							</FormControl>
 

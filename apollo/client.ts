@@ -77,8 +77,8 @@ function createIsomorphicLink() {
 				...getHeaders(),
 			},
 		}));
-		if (typeof window !== 'undefined') {
-			console.warn('requesting.. ', operation);
+		if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+			console.log('GraphQL Request:', operation.operationName || 'Unknown');
 		}
 		return forward(operation);
 	});

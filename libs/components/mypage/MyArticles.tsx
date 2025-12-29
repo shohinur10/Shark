@@ -7,7 +7,6 @@ import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { T } from '../../types/common';
 import { BoardArticle } from '../../types/board-article/board-article';
-import { LIKE_TARGET_PROPERTY } from '../../../apollo/user/mutation';
 import { GET_BOARD_ARTICLES } from '../../../apollo/user/query';
 import { Message } from '../../enums/common.enum';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../sweetAlert';
@@ -23,7 +22,6 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 	const [totalCount, setTotalCount] = useState<number>(0);
 
 	/** APOLLO REQUESTS **/
-	const [likeTargetProperty] = useMutation(LIKE_TARGET_PROPERTY);
 	const {
 		loading: boardArticlesLoading,
 		data: boardArticlesData,
@@ -44,20 +42,21 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 		setSearchCommunity({ ...searchCommunity, page: value });
 	};
 
-	const likePropertyHandler = async (user: T, id: string) => {
+	const likeArticleHandler = async (user: T, id: string) => {
 		try {
 			if (!id) return;
 			if (!user._id) throw new Error(Message.NOT_AUTHENTICATED);
 
-			await likeTargetProperty({
-				variables: { input: id },
-			});
+			// TODO: Implement article like functionality
+			// await likeTargetArticle({
+			//     variables: { input: id },
+			// });
 
 			await boardArticlesRefetch({ input: searchCommunity });
 
 			await sweetTopSmallSuccessAlert('Success', 800);
 		} catch (err: any) {
-			console.log('Error, likePropertyHandler', err.message);
+			console.log('Error, likeArticleHandler', err.message);
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};
@@ -78,7 +77,7 @@ const MyArticles: NextPage = ({ initialInput, ...props }: T) => {
 						boardArticles?.map((boardArticle: BoardArticle) => {
 							return (
 								<CommunityCard
-									likeArticleHandler={likePropertyHandler}
+									likeArticleHandler={likeArticleHandler}
 									boardArticle={boardArticle}
 									key={boardArticle?._id}
 									size={'small'}

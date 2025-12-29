@@ -70,8 +70,15 @@ $auth-radius: 16px;
 				.logo-section {
 					display: flex;
 					align-items: center;
+					justify-content: center;
 					gap: $spacing-sm;
 					margin-bottom: $spacing-2xl;
+
+					img {
+						width: 48px;
+						height: 48px;
+						object-fit: contain;
+					}
 
 					.fitness-icon {
 						font-size: 32px;
@@ -443,31 +450,44 @@ $auth-radius: 16px;
 		}
 	}
 
-	// LOGIN PAGE - Centered Card Design (Calm, Focused, Returning User)
+	// LOGIN PAGE - Modern Gym Theme Design
 	.login-page {
+		position: relative;
+		padding: 0;
+		width: 100%;
+		min-height: 100vh;
+		background: linear-gradient(135deg, #181A20 0%, #2A2D35 100%);
+		overflow: hidden;
+
+		.container {
+			align-items: center;
+			justify-content: center;
+			min-height: 100vh;
+			padding: 40px 20px;
+		}
+
 		.login-container {
 			justify-content: center;
 			align-items: center;
-			max-width: 480px;
+			max-width: 500px;
 			margin: 0 auto;
-			min-height: calc(100vh - 200px);
-			padding: $spacing-3xl 0;
+			width: 100%;
 
 			.login-card {
 				width: 100%;
 				display: flex;
 				flex-direction: column;
-				padding: $spacing-3xl;
+				padding: 50px 40px;
 				background: $auth-card-bg;
-				border-radius: 16px;
-				box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-				border: 1px solid $auth-border;
-				animation: cardFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+				border-radius: 24px;
+				box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+				border: none;
+				animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
-				@keyframes cardFadeIn {
+				@keyframes slideUp {
 					from {
 						opacity: 0;
-						transform: translateY(20px);
+						transform: translateY(30px);
 					}
 					to {
 						opacity: 1;
@@ -487,14 +507,77 @@ $auth-radius: 16px;
 				.login-header {
 					text-align: center;
 					margin-bottom: $spacing-3xl;
+					animation: fadeInDown 0.8s ease;
+
+					@keyframes fadeInDown {
+						from {
+							opacity: 0;
+							transform: translateY(-20px);
+						}
+						to {
+							opacity: 1;
+							transform: translateY(0);
+						}
+					}
+
+					.logo-section {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						gap: 12px;
+						margin-bottom: 24px;
+
+						.logo-img {
+							width: 56px;
+							height: 56px;
+							object-fit: contain;
+							animation: pulse 2s ease-in-out infinite;
+
+							@keyframes pulse {
+								0%, 100% {
+									transform: scale(1);
+								}
+								50% {
+									transform: scale(1.05);
+								}
+							}
+						}
+
+						.logo-text {
+							font-family: $font;
+							font-size: 20px;
+							font-weight: 700;
+							background: linear-gradient(135deg, #E10600 0%, #FF3D00 100%);
+							-webkit-background-clip: text;
+							-webkit-text-fill-color: transparent;
+							background-clip: text;
+						}
+					}
+
+					.fitness-icon {
+						font-size: 48px;
+						color: #E10600;
+						margin-bottom: 16px;
+						animation: bounce 2s ease-in-out infinite;
+
+						@keyframes bounce {
+							0%, 100% {
+								transform: translateY(0);
+							}
+							50% {
+								transform: translateY(-10px);
+							}
+						}
+					}
 
 					.login-title {
-						font-size: 32px;
+						font-size: 36px;
 						font-weight: 700;
 						color: $auth-text-primary;
 						margin-bottom: $spacing-sm;
 						text-transform: none;
 						letter-spacing: -0.5px;
+						line-height: 1.2;
 					}
 
 					.login-subtitle {
@@ -543,25 +626,42 @@ $auth-radius: 16px;
 					}
 
 					.login-button {
-						background: #E10600;
+						background: linear-gradient(135deg, #E10600 0%, #FF3D00 100%);
 						color: #FFFFFF;
 						font-size: 16px;
 						font-weight: 600;
 						padding: 16px 24px;
-						border-radius: 15px;
+						border-radius: 12px;
 						text-transform: none;
-						box-shadow: 0 2px 8px rgba(225, 6, 0, 0.2);
+						box-shadow: 0 4px 16px rgba(225, 6, 0, 0.3);
 						transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+						position: relative;
+						overflow: hidden;
+
+						&::before {
+							content: '';
+							position: absolute;
+							top: 0;
+							left: -100%;
+							width: 100%;
+							height: 100%;
+							background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+							transition: left 0.5s;
+						}
 
 						&:hover {
-							background: darken(#E10600, 5%);
-							box-shadow: 0 6px 20px rgba(225, 6, 0, 0.35);
-							transform: translateY(-2px);
+							background: linear-gradient(135deg, #C10500 0%, #E10600 100%);
+							box-shadow: 0 8px 24px rgba(225, 6, 0, 0.4);
+							transform: translateY(-3px);
+
+							&::before {
+								left: 100%;
+							}
 						}
 
 						&:active {
-							transform: translateY(0);
-							box-shadow: 0 3px 12px rgba(225, 6, 0, 0.3);
+							transform: translateY(-1px);
+							box-shadow: 0 4px 16px rgba(225, 6, 0, 0.3);
 						}
 
 						&:disabled {

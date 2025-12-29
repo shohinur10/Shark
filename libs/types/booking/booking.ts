@@ -1,6 +1,6 @@
 import { BookingStatus, BookingType, SessionDuration } from '../../enums/booking.enum';
 import { Member } from '../member/member';
-import { TotalCounter } from '../property/property';
+import { TotalCounter } from "../common"';
 
 export interface Booking {
 	_id: string;
@@ -9,6 +9,7 @@ export interface Booking {
 	clientId: string;
 	providerId: string;
 	propertyId?: string;
+	serviceId?: string; // Service ID (MongoDB ObjectId)
 	bookingDate: Date;
 	bookingTime: string;
 	sessionDuration: SessionDuration;

@@ -1,4 +1,4 @@
-import { TotalCounter } from '../property/property';
+import { TotalCounter } from "../common"';
 
 export interface Supplement {
 	_id: string;

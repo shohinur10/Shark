@@ -10,7 +10,18 @@ export interface PriceBreakdown {
 
 /**
  * Calculate booking price based on service and duration
- * Supports both fixedPrice and pricePerHour pricing models
+ * 
+ * Derived selector that computes price from service data:
+ * - Uses service.fixedPrice if available
+ * - OR calculates: service.pricePerHour * (durationMinutes / 60)
+ * 
+ * Future enhancements (when discount fields are added to Service type):
+ * - Apply discountPercentage or discountAmount if available
+ * - Fallback to bookingPrice from backend response if provided
+ * 
+ * @param service - Service object with pricing information (fixedPrice or pricePerHour)
+ * @param durationMinutes - Duration in minutes
+ * @returns Calculated price (0 if invalid inputs)
  */
 export const calculateServicePrice = (
 	service: Service | null,
@@ -66,4 +77,6 @@ export const formatPrice = (price: number, currency: string = 'USD'): string => 
 		currency: currency,
 	}).format(price);
 };
+
+
 

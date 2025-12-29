@@ -1,161 +1,81 @@
-/** TRAINER PAGE - PREMIUM DESIGN **/
-
-.trainers-page {
-	width: 100%;
-	min-height: calc(100vh - 200px);
-	background-color: #FAFAFA;
-	padding-top: $spacing-2xl;
-	padding-bottom: $spacing-3xl;
-	padding-left: $spacing-md;
-	padding-right: $spacing-md;
-
-	// Main container with max-width
-	> .MuiBox-root {
-		max-width: 1300px;
+#pc-wrap {
+	.trainer-list-page {
+		position: relative;
+		padding: 147px 0 75px;
 		width: 100%;
-		margin: 0 auto;
-		padding-left: $spacing-md;
-		padding-right: $spacing-md;
-
-		@media (max-width: $breakpoint-md) {
-			padding-left: 0;
-			padding-right: 0;
-		}
-	}
-
-	// Compact Trainer Card
-	.trainer-card-compact {
-		display: flex;
-		flex-direction: column;
-		padding: $spacing-md;
-		border-radius: $radius-md;
-		border: 1px solid #E5E5E5;
-		background-color: #FFFFFF;
-		transition: all $transition-base;
-		cursor: pointer;
-		text-decoration: none;
-		color: inherit;
-		height: 100%;
-
-		&:hover {
-			border-color: $fitness-orange;
-			box-shadow: 0 4px 12px rgba(241, 119, 66, 0.15);
-			transform: translateY(-2px);
-		}
-	}
-
-	// Two-column grid container
-	.MuiGrid-container,
-	> .MuiBox-root > .MuiBox-root {
-		&[style*="grid"] {
-			max-width: 100%;
-			margin: 0 auto;
-		}
-	}
-}
-
-// Trainer Detail Page
-.trainer-detail-page {
-	width: 100%;
-	min-height: calc(100vh - 200px);
-	background-color: #FAFAFA;
-	padding-top: $spacing-2xl;
-	padding-bottom: $spacing-3xl;
-	padding-left: $spacing-md;
-	padding-right: $spacing-md;
-
-	// Main container with max-width
-	> .MuiBox-root {
-		max-width: 1300px;
-		width: 100%;
-		margin: 0 auto;
-		padding-left: $spacing-md;
-		padding-right: $spacing-md;
-
-		@media (max-width: $breakpoint-md) {
-			padding-left: 0;
-			padding-right: 0;
-		}
-	}
-
-	// Profile Header
-	.trainer-profile-header {
+		height: auto;
 		display: flex;
 		flex-direction: row;
-		gap: $spacing-lg;
-		padding: $spacing-lg;
-		background-color: #FFFFFF;
-		border-radius: $radius-md;
-		border: 1px solid #E5E5E5;
-		margin-bottom: $spacing-lg;
-
-		.MuiAvatar-root {
-			border: 3px solid #F5F5F5;
-			flex-shrink: 0;
-		}
-
-		@media (max-width: $breakpoint-md) {
+		justify-content: center;
+		.container {
+			display: flex;
 			flex-direction: column;
-			text-align: center;
-
-			.MuiAvatar-root {
-				margin: 0 auto;
+			.filter {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				.left {
+					display: flex;
+					flex-direction: row;
+					input {
+						padding: 22px 10px;
+						width: 333px;
+						height: 50px;
+						border-radius: 40px;
+						border: 1px solid #ddd;
+						background: #fff;
+						color: #181a20;
+						font-family: $font;
+						font-size: 14px;
+						font-style: normal;
+						font-weight: 400;
+						line-height: 26px;
+						box-sizing: border-box;
+					}
+				}
+				.right {
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					button {
+						margin-left: 10px;
+						color: #181a20;
+						font-family: $font;
+						font-size: 14px;
+						font-style: normal;
+						font-weight: bold;
+						line-height: 26px;
+						&:hover {
+							background: none;
+						}
+					}
+				}
+			}
+			.card-wrap {
+				position: relative;
+				margin-top: 35px;
+				width: 100%;
+				min-height: 500px;
+				height: auto;
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+			}
+			.pagination {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				span {
+					margin-top: 20px;
+					color: #181a20;
+					font-family: $font;
+					font-size: 14px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: 26px; /* 185.714% */
+				}
 			}
 		}
-	}
-
-	// Program Map
-	.trainer-program-map {
-		padding: $spacing-lg;
-		background-color: #FFFFFF;
-		border-radius: $radius-md;
-		border: 1px solid #E5E5E5;
-	}
-
-	// Workouts Grid
-	.trainer-workouts-grid {
-		.MuiCard-root {
-			border-radius: $radius-md;
-			border: 1px solid #E5E5E5;
-			overflow: hidden;
-			transition: all $transition-base;
-			cursor: pointer;
-
-			&:hover {
-				border-color: $fitness-orange;
-				box-shadow: 0 4px 12px rgba(241, 119, 66, 0.15);
-				transform: translateY(-2px);
-			}
-		}
-	}
-}
-
-// DNA Component
-.trainer-dna {
-	display: flex;
-	flex-direction: column;
-	gap: $spacing-xs;
-	align-items: flex-end;
-	flex-shrink: 0;
-}
-
-// Responsive Design
-@media (max-width: $breakpoint-md) {
-	.trainers-page {
-		padding-top: $spacing-lg;
-		padding-bottom: $spacing-xl;
-		padding-left: $spacing-sm;
-		padding-right: $spacing-sm;
-
-		.trainer-card-compact {
-			width: 100%;
-		}
-	}
-
-	.trainer-detail-page {
-		padding-top: $spacing-lg;
-		padding-bottom: $spacing-xl;
-		padding-left: $spacing-sm;
-		padding-right: $spacing-sm;
 	}
 }

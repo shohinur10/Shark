@@ -2,11 +2,16 @@ import React, { useCallback, useState } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { Box, Button, Checkbox, FormControlLabel, FormGroup, Stack } from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel, FormGroup, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { logIn, signUp } from '../../libs/auth';
 import { sweetMixinErrorAlert } from '../../libs/sweetAlert';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
+import PhoneIcon from '@mui/icons-material/Phone';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -61,8 +66,6 @@ const Join: NextPage = () => {
 		}
 	}, [input]);
 
-	console.log('+input: ', input);
-
 	if (device === 'mobile') {
 		return <div>LOGIN MOBILE</div>;
 	} else {
@@ -71,142 +74,178 @@ const Join: NextPage = () => {
 				<Stack className={'container'}>
 					<Stack className={'main'}>
 						<Stack className={'left'}>
-							{/* @ts-ignore */}
-							<Box className={'logo'}>
-								<img src="/img/logo/logoText.svg" alt="" />
-								<span>Shark</span>
+							{/* Logo Section */}
+							<Box className={'logo-section'}>
+								<img src="/img/logo/ChatGPT Image Nov 25, 2025, 11_45_12 PM.png" alt="Shark Logo" className={'logo-img'} />
+								<Typography variant="h4" className={'logo-text'}>
+									Shark Fitness
+								</Typography>
 							</Box>
-							<Box className={'info'}>
-								<span>{loginView ? 'login' : 'signup'}</span>
-								<p>{loginView ? 'Login' : 'Sign'} in with this account across the following sites.</p>
+
+							{/* Header */}
+							<Box className={'header-section'}>
+								<FitnessCenterIcon className={'fitness-icon'} />
+								<Typography variant="h3" className={'main-title'}>
+									{loginView ? 'Welcome Back!' : 'Start Your Journey'}
+								</Typography>
+								<Typography variant="body1" className={'subtitle'}>
+									{loginView
+										? 'Continue your fitness transformation and track your progress'
+										: 'Join thousands of members achieving their fitness goals'}
+								</Typography>
 							</Box>
-							<Box className={'input-wrap'}>
+
+							{/* Form */}
+							<Box className={'form-section'}>
 								<div className={'input-box'}>
-									<span>Nickname</span>
+									<PersonIcon className={'input-icon'} />
 									<input
 										type="text"
-										placeholder={'Enter Nickname'}
+										placeholder={'Nickname or Email'}
+										value={input.nick}
 										onChange={(e) => handleInput('nick', e.target.value)}
 										required={true}
 										onKeyDown={(event) => {
 											if (event.key == 'Enter' && loginView) doLogin();
 											if (event.key == 'Enter' && !loginView) doSignUp();
 										}}
+										className={'fitness-input'}
 									/>
 								</div>
 								<div className={'input-box'}>
-									<span>Password</span>
+									<LockIcon className={'input-icon'} />
 									<input
-										type="text"
-										placeholder={'Enter Password'}
+										type="password"
+										placeholder={'Password'}
+										value={input.password}
 										onChange={(e) => handleInput('password', e.target.value)}
 										required={true}
 										onKeyDown={(event) => {
 											if (event.key == 'Enter' && loginView) doLogin();
 											if (event.key == 'Enter' && !loginView) doSignUp();
 										}}
+										className={'fitness-input'}
+										autoComplete={loginView ? 'current-password' : 'new-password'}
 									/>
 								</div>
 								{!loginView && (
 									<div className={'input-box'}>
-										<span>Phone</span>
+										<PhoneIcon className={'input-icon'} />
 										<input
 											type="text"
-											placeholder={'Enter Phone'}
+											placeholder={'Phone Number'}
+											value={input.phone}
 											onChange={(e) => handleInput('phone', e.target.value)}
 											required={true}
 											onKeyDown={(event) => {
 												if (event.key == 'Enter') doSignUp();
 											}}
+											className={'fitness-input'}
 										/>
 									</div>
 								)}
 							</Box>
-							<Box className={'register'}>
+
+							{/* Options */}
+							<Box className={'options-section'}>
 								{!loginView && (
-									<div className={'type-option'}>
-										<span className={'text'}>I want to be registered as:</span>
-										<div>
-											<FormGroup>
-												<FormControlLabel
-													control={
-														<Checkbox
-															size="small"
-															name={'USER'}
-															onChange={checkUserTypeHandler}
-															checked={input?.type == 'USER'}
-														/>
-													}
-													label="User"
-												/>
-											</FormGroup>
-											<FormGroup>
-												<FormControlLabel
-													control={
-														<Checkbox
-															size="small"
-															name={'AGENT'}
-															onChange={checkUserTypeHandler}
-															checked={input?.type == 'AGENT'}
-														/>
-													}
-													label="Agent"
-												/>
-											</FormGroup>
+									<div className={'type-selection'}>
+										<Typography variant="body2" className={'type-label'}>
+											I want to join as:
+										</Typography>
+										<div className={'type-buttons'}>
+											<button
+												className={`type-btn ${input.type === 'USER' ? 'active' : ''}`}
+												onClick={() => handleInput('type', 'USER')}
+											>
+												<PersonIcon />
+												<span>User</span>
+											</button>
+											<button
+												className={`type-btn ${input.type === 'TRAINER' ? 'active' : ''}`}
+												onClick={() => handleInput('type', 'TRAINER')}
+											>
+												<FitnessCenterIcon />
+												<span>Trainer</span>
+											</button>
 										</div>
 									</div>
 								)}
 
 								{loginView && (
-									<div className={'remember-info'}>
+									<div className={'remember-section'}>
 										<FormGroup>
-											<FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Remember me" />
+											<FormControlLabel
+												control={<Checkbox defaultChecked size="small" className={'fitness-checkbox'} />}
+												label="Remember me"
+												className={'remember-label'}
+											/>
 										</FormGroup>
-										<a>Lost your password?</a>
+										<a href="/account/forgot-password" className={'forgot-link'}>
+											Forgot password?
+										</a>
 									</div>
 								)}
-
-								{loginView ? (
-									<Button
-										variant="contained"
-										endIcon={<img src="/img/icons/rightup.svg" alt="" />}
-										disabled={input.nick == '' || input.password == ''}
-										onClick={doLogin}
-									>
-										LOGIN
-									</Button>
-								) : (
-									<Button
-										variant="contained"
-										disabled={input.nick == '' || input.password == '' || input.phone == '' || input.type == ''}
-										onClick={doSignUp}
-										endIcon={<img src="/img/icons/rightup.svg" alt="" />}
-									>
-										SIGNUP
-									</Button>
-								)}
 							</Box>
-							<Box className={'ask-info'}>
-								{loginView ? (
-									<p>
-										Not registered yet?
-										<b
-											onClick={() => {
-												viewChangeHandler(false);
-											}}
-										>
-											SIGNUP
-										</b>
-									</p>
-								) : (
-									<p>
-										Have account?
-										<b onClick={() => viewChangeHandler(true)}> LOGIN</b>
-									</p>
-								)}
+
+							{/* Action Button */}
+							<Button
+								variant="contained"
+								className={'action-button'}
+								disabled={
+									loginView
+										? input.nick == '' || input.password == ''
+										: input.nick == '' || input.password == '' || input.phone == '' || input.type == ''
+								}
+								onClick={loginView ? doLogin : doSignUp}
+								endIcon={<ArrowForwardIcon />}
+							>
+								{loginView ? 'Continue Training' : 'Start Your Journey'}
+							</Button>
+
+							{/* Switch View */}
+							<Box className={'switch-section'}>
+								<Typography variant="body2" className={'switch-text'}>
+									{loginView ? "Don't have an account? " : 'Already have an account? '}
+									<button
+										className={'switch-button'}
+										onClick={() => {
+											viewChangeHandler(!loginView);
+										}}
+									>
+										{loginView ? 'Sign Up' : 'Log In'}
+									</button>
+								</Typography>
 							</Box>
 						</Stack>
-						<Stack className={'right'}></Stack>
+
+						{/* Right Side - Visual */}
+						<Stack className={'right'}>
+							<div className={'image-overlay'}></div>
+							<div className={'content-overlay'}>
+								<FitnessCenterIcon className={'overlay-icon'} />
+								<Typography variant="h4" className={'overlay-title'}>
+									Transform Your Body
+								</Typography>
+								<Typography variant="body1" className={'overlay-text'}>
+									Join our community of fitness enthusiasts and achieve your goals with personalized training programs
+								</Typography>
+								<div className={'features-list'}>
+									<div className={'feature-item'}>
+										<FitnessCenterIcon />
+										<span>Personalized Workouts</span>
+									</div>
+									<div className={'feature-item'}>
+										<FitnessCenterIcon />
+										<span>Expert Trainers</span>
+									</div>
+									<div className={'feature-item'}>
+										<FitnessCenterIcon />
+										<span>Track Progress</span>
+									</div>
+								</div>
+							</div>
+						</Stack>
 					</Stack>
 				</Stack>
 			</Stack>

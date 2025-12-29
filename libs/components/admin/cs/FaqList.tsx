@@ -19,6 +19,7 @@ import { Stack } from '@mui/material';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Faq } from '../../../types/faq/faq';
 import { FaqCategory, FaqStatus } from '../../../enums/faq.enum';
 

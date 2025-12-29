@@ -31,25 +31,20 @@ const withLayoutBasic = (Component: any) => {
 			const basePath = router.pathname.split('?')[0];
 
 			switch (basePath) {
-				case '/property':
-					title = 'Property Search';
-					desc = 'We are glad to see you again!';
-					bgImage = '/img/banner/properties.png';
-					break;
-				case '/agent':
-					title = 'Agents';
-					desc = 'Find the best trainers for you';
-					bgImage = '/img/banner/agents.webp';
-					break;
-				case '/agent/detail':
-					title = 'Agent Page';
+			case '/trainers':
+				title = 'Trainers';
+				desc = 'Find the best trainers for you';
+				bgImage = '/img/banner/header2.svg';
+				break;
+				case '/trainer/detail':
+					title = 'Trainer Page';
 					desc = 'Trainer Profile';
 					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/mypage':
 					title = 'My Page';
 					desc = 'Manage your profile and settings';
-					bgImage = '/img/banner/header1.svg';
+					bgImage = '/img/banner/header2.svg';
 					break;
 				case '/community':
 					title = 'Community';
@@ -253,7 +248,7 @@ const withLayoutBasic = (Component: any) => {
 				case '/member':
 					title = 'Member Page';
 					desc = 'Member information and settings';
-					bgImage = '/img/banner/header1.svg';
+					bgImage = '/img/banner/header2.svg';
 					break;
 				default:
 					// For any unmatched route, provide default header

@@ -51,11 +51,12 @@ const withAdminLayout = (Component: ComponentType) => {
 				}
 				// If user data is loaded but memberType is not ADMIN, redirect to home
 				// This handles both empty memberType (initial state) and non-admin types
-				if (!user.memberType || user.memberType !== MemberType.ADMIN) {
+				const userMemberType = user?.memberType;
+				if (!userMemberType || userMemberType !== MemberType.ADMIN) {
 					router.push('/').then();
 				}
 			}
-		}, [loading, user.memberType, router]);
+		}, [loading, user, router]);
 
 		/** HANDLERS **/
 		const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -73,13 +74,25 @@ const withAdminLayout = (Component: ComponentType) => {
 
 		// Show loading state while checking authentication
 		if (loading) {
-			return null;
+			return (
+				<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+					<Typography>Loading...</Typography>
+				</Box>
+			);
 		}
 		
 		// Check if user is authenticated and is admin
 		const jwt = getJwtToken();
-		if (!jwt || !user || user?.memberType !== MemberType.ADMIN) {
-			return null;
+		const userMemberType = user?.memberType;
+		if (!jwt || !user || userMemberType !== MemberType.ADMIN) {
+			return (
+				<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', flexDirection: 'column', gap: 2 }}>
+					<Typography variant="h6">Access Denied</Typography>
+					<Typography variant="body2" color="text.secondary">
+						You need admin privileges to access this page.
+					</Typography>
+				</Box>
+			);
 		}
 
 		return (
@@ -162,9 +175,9 @@ const withAdminLayout = (Component: ComponentType) => {
 						anchor="left"
 						className="aside"
 					>
-						<Toolbar sx={{ flexDirection: 'column', alignItems: 'flexStart' }}>
-							<Stack className={'logo-box'}>
-								<img src={'/img/logo/logoText.svg'} alt={'logo'} />
+						<Toolbar sx={{ flexDirection: 'column', alignItems: 'flexStart', pt: 3, pb: 2 }}>
+							<Stack className={'logo-box'} sx={{ mb: 3 }}>
+								<img src={'/img/logo/ChatGPT Image Nov 25, 2025, 11_45_12 PM.png'} alt={'Shark Logo'} />
 							</Stack>
 
 							<Stack
@@ -176,15 +189,21 @@ const withAdminLayout = (Component: ComponentType) => {
 									borderRadius: '8px',
 									px: '24px',
 									py: '11px',
+									width: '100%',
 								}}
 							>
 								<Avatar
 									src={user?.memberImage ? `${REACT_APP_API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
+									sx={{ width: 40, height: 40 }}
 								/>
-								<Typography variant={'body2'} p={1} ml={1}>
-									{user?.memberNick} <br />
-									{user?.memberPhone}
-								</Typography>
+								<Box sx={{ ml: 1, flex: 1, minWidth: 0 }}>
+									<Typography variant={'body2'} sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+										{user?.memberNick || 'Admin'}
+									</Typography>
+									<Typography variant={'caption'} sx={{ color: '#757575', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+										{user?.memberPhone || ''}
+									</Typography>
+								</Box>
 							</Stack>
 						</Toolbar>
 
@@ -194,7 +213,6 @@ const withAdminLayout = (Component: ComponentType) => {
 					</Drawer>
 
 					<Box component={'div'} id="bunker" sx={{ flexGrow: 1 }}>
-						{/*@ts-ignore*/}
 						<Component {...props} setSnackbar={setSnackbar} setTitle={setTitle} />
 					</Box>
 				</Box>

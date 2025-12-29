@@ -86,7 +86,7 @@ const MemberMenu = (props: MemberMenuProps) => {
 							Details
 						</Typography>
 						<List className={'sub-section'}>
-							{member?.memberType === 'AGENT' && (
+							{member?.memberType === 'TRAINER' && (
 								<ListItem className={category === 'properties' ? 'focus' : ''}>
 									<Link
 										href={{

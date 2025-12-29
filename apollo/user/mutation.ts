@@ -202,223 +202,6 @@ export const LIKE_TARGET_MEMBER = gql`
 
 `;
 
-/**************************
- *        PROPERTY        *
- *************************/
-
-export const CREATE_PROPERTY = gql`
-	mutation CreateProperty($input: PropertyInput!) {
-    createProperty(input: $input) {
-        _id
-        propertyType
-        propertyStatus
-        propertyLocation
-        propertyAddress
-        propertyTitle
-        propertyPrice
-        propertyCapacity
-        propertyEquipmentList
-        propertyAmenities
-        propertyOperatingHours
-        propertyRating
-        propertyViews
-        propertyLikes
-        propertyComments
-        propertyRank
-        propertyImages
-        propertyDesc
-        propertyBarter
-        propertyRent
-        propertyCondition
-        memberId
-        memberData {
-            _id
-            memberType
-            memberStatus
-            memberAuthType
-            memberPhone
-            memberNick
-            memberFullName
-            memberImage
-            memberAddress
-            memberDesc
-            memberProperties
-            memberArticles
-            memberFollowers
-            memberFollowings
-            memberPoints
-            memberLikes
-            memberViews
-            memberComments
-            memberRank
-            memberBlocks
-            memberWarnings
-            memberWorkouts
-            memberChallenges
-            memberAchievements
-            trainerRating
-            trainerExperience
-            trainerSpecialties
-            trainerCertifications
-            trainerBio
-            subscriptionId
-            deletedAt
-            createdAt
-            updatedAt
-            accessToken
-        }
-    }
-}
-
-`;
-
-export const UPDATE_PROPERTY = gql`
-mutation UpdateProperty ($input:PropertyUpdate!){
-    updateProperty(input: $input) {
-        _id
-        propertyType
-        propertyStatus
-        propertyLocation
-        propertyAddress
-        propertyTitle
-        propertyPrice
-        priceType
-        womenDiscountPercent
-        childrenDiscountPercent
-        childrenAgeLimit
-        extraClassDiscountPercent
-        perClassPrice
-        propertyCapacity
-        propertyEquipmentList
-        propertyAmenities
-        propertyOperatingHours
-        propertyRating
-        propertyViews
-        propertyLikes
-        propertyComments
-        propertyRank
-        propertyImages
-        propertyDesc
-        propertyRent
-        propertyCondition
-        deletedAt
-        createdAt
-        updatedAt
-        memberId
-        memberData {
-            _id
-            memberType
-            memberStatus
-            memberAuthType
-            memberPhone
-            memberNick
-            memberFullName
-            memberImage
-            memberAddress
-            memberDesc
-            memberProperties
-            memberArticles
-            memberFollowers
-            memberFollowings
-            memberPoints
-            memberLikes
-            memberViews
-            memberComments
-            memberRank
-            memberBlocks
-            memberWarnings
-            memberWorkouts
-            memberChallenges
-            memberAchievements
-            trainerRating
-            trainerExperience
-            trainerSpecialties
-            trainerCertifications
-            trainerBio
-            subscriptionId
-            deletedAt
-            createdAt
-            updatedAt
-            accessToken
-        }
-    }
-}
-
-`;
-
-export const LIKE_TARGET_PROPERTY = gql`
-	mutation LikeTargetProperty ($input:String!){
-    likeTargetProperty(propertyId: $input) {
-        _id
-        propertyType
-        propertyStatus
-        propertyLocation
-        propertyAddress
-        propertyTitle
-        propertyPrice
-        priceType
-        womenDiscountPercent
-        childrenDiscountPercent
-        childrenAgeLimit
-        extraClassDiscountPercent
-        perClassPrice
-        propertyCapacity
-        propertyEquipmentList
-        propertyAmenities
-        propertyOperatingHours
-        propertyRating
-        propertyViews
-        propertyLikes
-        propertyComments
-        propertyRank
-        propertyImages
-        propertyDesc
-        propertyRent
-        propertyCondition
-        deletedAt
-        createdAt
-        updatedAt
-        memberId
-        memberData {
-            _id
-            memberType
-            memberStatus
-            memberAuthType
-            memberPhone
-            memberNick
-            memberFullName
-            memberImage
-            memberAddress
-            memberDesc
-            memberProperties
-            memberArticles
-            memberFollowers
-            memberFollowings
-            memberPoints
-            memberLikes
-            memberViews
-            memberComments
-            memberRank
-            memberBlocks
-            memberWarnings
-            memberWorkouts
-            memberChallenges
-            memberAchievements
-            trainerRating
-            trainerExperience
-            trainerSpecialties
-            trainerCertifications
-            trainerBio
-            subscriptionId
-            deletedAt
-            createdAt
-            updatedAt
-            accessToken
-        }
-    }
-}
-
-`;
 
 /**************************
  *      BOARD-ARTICLE     *
@@ -1832,6 +1615,7 @@ export const CREATE_BOOKING = gql`
         clientId
         providerId
         propertyId
+        serviceId
         bookingDate
         bookingTime
         sessionDuration
@@ -2502,6 +2286,7 @@ mutation UpdateBooking ($input:BookingUpdate!){
 }
 `;
 
+export const DELETE_BOOKING = gql`
 mutation DeleteBooking($input:String!) {
     deleteBooking(bookingId: $input) {
         _id
@@ -2564,6 +2349,7 @@ mutation DeleteBooking($input:String!) {
         }
     }
 }
+`;
 
 
 
@@ -2968,10 +2754,652 @@ mutation DeleteService($input:String!) {
 
 `;
 
-
+export const REMOVE_SUPPLEMENT_FROM_BOOKING = gql`
 mutation RemoveSupplementFromBooking ($input:String!){    
     removeSupplementFromBooking(bookingId: $input, supplementId: $input)
 }
+`;
 
+
+
+export const SET_TRAINER_AVAILABILITY = gql`
+mutation SetTrainerAvailability($input:TrainerAvailabilitySlotInput!) {
+    setTrainerAvailability(input: $input) {
+        _id
+        trainerId
+        dayOfWeek
+        specificDate
+        startTime
+        endTime
+        availabilityType
+        isBlocked
+        notes
+        createdAt
+        updatedAt
+        trainerData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
+
+`;
+
+export const PROCESS_BOOKING_PAYMENT = gql`
+mutation ProcessBookingPayment($input:ProcessBookingPaymentInput!) {
+    processBookingPayment(input: $input) {
+        _id
+        memberId
+        transactionType
+        paymentStatus
+        paymentMethod
+        amount
+        currency
+        subscriptionId
+        bookingId
+        propertyId
+        mealPlanId
+        stripePaymentId
+        paypalTransactionId
+        receiptUrl
+        invoiceNumber
+        refundAmount
+        refundReason
+        refundedAt
+        description
+        paidAt
+        failedAt
+        failureReason
+        createdAt
+        updatedAt
+    }
+}
+
+`;
+
+export const ADD_TO_WAITLIST = gql`
+mutation AddToWaitlist($input:WaitlistInput!) {
+    addToWaitlist(input: $input) {
+        _id
+        bookingId
+        clientId
+        priority
+        status
+        notifiedAt
+        convertedAt
+        notes
+        createdAt
+        updatedAt
+        bookingData {
+            _id
+            bookingType
+            bookingStatus
+            clientId
+            providerId
+            propertyId
+            bookingDate
+            bookingTime
+            sessionDuration
+            bookingPrice
+            paymentId
+            bookingNotes
+            providerNotes
+            meetingLink
+            cancellationReason
+            cancelledBy
+            cancelledAt
+            completedAt
+            reviewId
+            deletedAt
+            createdAt
+            updatedAt
+        }
+        clientData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+
+`;
+
+export const REMOVE_FROM_WAITLIST = gql`
+mutation RemoveFromWaitlist($input:String!) {
+    removeFromWaitlist(waitlistId: $input)
+}
+
+`;
+
+export const CONVERT_WAITLIST_TO_BOOKING = gql`
+mutation ConvertWaitlistToBooking($input:String!){
+    convertWaitlistToBooking(waitlistId: $input) {
+        _id
+        bookingId
+        clientId
+        priority
+        status
+        notifiedAt
+        convertedAt
+        notes
+        createdAt
+        updatedAt
+        bookingData {
+            _id
+            bookingType
+            bookingStatus
+            clientId
+            providerId
+            propertyId
+            bookingDate
+            bookingTime
+            sessionDuration
+            bookingPrice
+            paymentId
+            bookingNotes
+            providerNotes
+            meetingLink
+            cancellationReason
+            cancelledBy
+            cancelledAt
+            completedAt
+            reviewId
+            deletedAt
+            createdAt
+            updatedAt
+        }
+        clientData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+    }
+}
+`;
+
+
+
+export const SYNC_BOOKING_TO_CALENDAR = gql`
+mutation SyncBookingToCalendar ($input:String!){
+    syncBookingToCalendar(bookingId: $input, calendarType: $input) {
+        success
+        calendarEventId
+        calendarUrl
+    }
+}
+
+
+`;
+
+
+export const CREATE_RECURRING_BOOKING = gql`
+mutation CreateRecurringBooking ($input:RecurringBookingInput!){
+    createRecurringBooking(input:$input) {
+        _id
+        bookingType
+        clientId
+        providerId
+        propertyId
+        serviceId
+        recurrencePattern
+        dayOfWeek
+        startTime
+        sessionDuration
+        bookingPrice
+        startDate
+        endDate
+        occurrences
+        status
+        bookingNotes
+        meetingLink
+        exceptionDates
+        generatedBookingIds
+        createdAt
+        updatedAt
+        clientData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+        providerData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+        generatedBookings {
+            _id
+            bookingType
+            bookingStatus
+            clientId
+            providerId
+            propertyId
+            bookingDate
+            bookingTime
+            sessionDuration
+            bookingPrice
+            paymentId
+            bookingNotes
+            providerNotes
+            meetingLink
+            cancellationReason
+            cancelledBy
+            cancelledAt
+            completedAt
+            reviewId
+            deletedAt
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+
+`;
+
+export const UPDATE_RECURRING_BOOKING = gql`
+mutation UpdateRecurringBooking($input:RecurringBookingUpdate!) {
+    updateRecurringBooking(input: $input) {
+        _id
+        bookingType
+        clientId
+        providerId
+        propertyId
+        serviceId
+        recurrencePattern
+        dayOfWeek
+        startTime
+        sessionDuration
+        bookingPrice
+        startDate
+        endDate
+        occurrences
+        status
+        bookingNotes
+        meetingLink
+        exceptionDates
+        generatedBookingIds
+        createdAt
+        updatedAt
+        clientData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+        providerData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+        generatedBookings {
+            _id
+            bookingType
+            bookingStatus
+            clientId
+            providerId
+            propertyId
+            bookingDate
+            bookingTime
+            sessionDuration
+            bookingPrice
+            paymentId
+            bookingNotes
+            providerNotes
+            meetingLink
+            cancellationReason
+            cancelledBy
+            cancelledAt
+            completedAt
+            reviewId
+            deletedAt
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+
+`;
+
+export const CANCEL_RECURRING_BOOKING = gql`
+mutation CancelRecurringBooking($input:String!) {
+    cancelRecurringBooking(recurringBookingId: $input) {
+        _id
+        bookingType
+        clientId
+        providerId
+        propertyId
+        serviceId
+        recurrencePattern
+        dayOfWeek
+        startTime
+        sessionDuration
+        bookingPrice
+        startDate
+        endDate
+        occurrences
+        status
+        bookingNotes
+        meetingLink
+        exceptionDates
+        generatedBookingIds
+        createdAt
+        updatedAt
+        clientData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+        providerData {
+            _id
+            memberType
+            memberStatus
+            memberAuthType
+            memberPhone
+            memberNick
+            memberFullName
+            memberImage
+            memberAddress
+            memberDesc
+            memberProperties
+            memberArticles
+            memberFollowers
+            memberFollowings
+            memberPoints
+            memberLikes
+            memberViews
+            memberComments
+            memberRank
+            memberBlocks
+            memberWarnings
+            memberWorkouts
+            memberChallenges
+            memberAchievements
+            trainerRating
+            trainerExperience
+            trainerSpecialties
+            trainerCertifications
+            trainerBio
+            subscriptionId
+            deletedAt
+            createdAt
+            updatedAt
+            accessToken
+        }
+        generatedBookings {
+            _id
+            bookingType
+            bookingStatus
+            clientId
+            providerId
+            propertyId
+            bookingDate
+            bookingTime
+            sessionDuration
+            bookingPrice
+            paymentId
+            bookingNotes
+            providerNotes
+            meetingLink
+            cancellationReason
+            cancelledBy
+            cancelledAt
+            completedAt
+            reviewId
+            deletedAt
+            createdAt
+            updatedAt
+        }
+    }
+}
 `;
 

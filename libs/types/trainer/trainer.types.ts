@@ -1,6 +1,6 @@
 import { Member } from '../member/member';
 import { Workout } from '../workout/workout';
-import { TotalCounter } from '../property/property';
+import { TotalCounter } from "../common"';
 import { TrainersInquiry } from '../member/member.input';
 import { TrainerWorkoutsInquiry } from '../workout/workout.input';
 

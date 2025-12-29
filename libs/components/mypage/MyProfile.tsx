@@ -35,19 +35,35 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 
 	/** LIFECYCLES **/
 	useEffect(() => {
-		setUpdateData({
-			...updateData,
-			memberNick: user.memberNick,
-			memberPhone: user.memberPhone,
-			memberAddress: user.memberAddress,
-			memberImage: user.memberImage,
-		});
-	}, [user]);
+		if (user && user._id) {
+			setUpdateData({
+				_id: user._id || '',
+				memberNick: user.memberNick || '',
+				memberPhone: user.memberPhone || '',
+				memberAddress: user.memberAddress || '',
+				memberImage: user.memberImage || '',
+			});
+		}
+	}, [user?._id, user?.memberNick, user?.memberPhone, user?.memberAddress, user?.memberImage]);
 
 	/** HANDLERS **/
 	const uploadImage = async (e: any) => {
 		try {
 			const image = e.target.files[0];
+			if (!image) return;
+
+			// Validate file size (5MB max)
+			if (image.size > 5 * 1024 * 1024) {
+				await sweetErrorHandling(new Error('Image size must be less than 5MB'));
+				return;
+			}
+
+			// Validate file type
+			if (!image.type.match(/^image\/(jpg|jpeg|png)$/i)) {
+				await sweetErrorHandling(new Error('Please upload a JPG, JPEG, or PNG image'));
+				return;
+			}
+
 			console.log('+image:', image);
 
 			const formData = new FormData();
@@ -81,22 +97,39 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 
 			const responseImage = response.data.data.imageUploader;
 			console.log('+responseImage: ', responseImage);
-			updateData.memberImage = responseImage;
-			setUpdateData({ ...updateData });
+			
+			// Update state properly
+			setUpdateData((prevData) => ({
+				...prevData,
+				memberImage: responseImage,
+			}));
+
+			await sweetMixinSuccessAlert('Profile photo uploaded successfully');
+			
+			// Reset file input to allow re-uploading the same file
+			e.target.value = '';
 
 			return `${REACT_APP_API_URL}/${responseImage}`;
-		} catch (err) {
+		} catch (err: any) {
 			console.log('Error, uploadImage:', err);
+			await sweetErrorHandling(err);
 		}
 	};
 
-	const updatePropertyHandler = useCallback(async () => {
+	const updatePropertyHandler = async () => {
 		try {
 			if (!user._id) throw new Error(Messages.error2);
-			updateData._id = user._id;
+			
+			// Get the latest updateData state
+			const dataToUpdate = {
+				...updateData,
+				_id: user._id,
+			};
+			
+			// Perform the update
 			const result = await updateMember({
 				variables: {
-					input: updateData,
+					input: dataToUpdate,
 				},
 			});
 
@@ -108,7 +141,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 		} catch (err: any) {
 			sweetErrorHandling(err).then();
 		}
-	}, [updateData]);
+	};
 
 	const handlePasswordChange = async () => {
 		if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {

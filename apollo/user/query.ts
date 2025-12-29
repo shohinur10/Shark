@@ -94,213 +94,6 @@ query GetMember ($input:String!){
 
 `);
 
-/**************************
- *        PROPERTY        *
- *************************/
-
-export const GET_PROPERTY = gql`
-	query GetProperty ($input:String!){
-    getProperty(propertyId: $input) {
-        _id
-        propertyType
-        propertyStatus
-        propertyLocation
-        propertyAddress
-        propertyTitle
-        propertyPrice
-        priceType
-        womenDiscountPercent
-        childrenDiscountPercent
-        childrenAgeLimit
-        extraClassDiscountPercent
-        perClassPrice
-        propertyCapacity
-        propertyEquipmentList
-        propertyAmenities
-        propertyOperatingHours
-        propertyRating
-        propertyViews
-        propertyLikes
-        propertyComments
-        propertyRank
-        propertyImages
-        propertyDesc
-        propertyRent
-        propertyCondition
-        deletedAt
-        createdAt
-        updatedAt
-        memberId
-        memberData {
-            _id
-            memberType
-            memberStatus
-            memberAuthType
-            memberPhone
-            memberNick
-            memberFullName
-            memberImage
-            memberAddress
-            memberDesc
-            memberProperties
-            memberArticles
-            memberFollowers
-            memberFollowings
-            memberPoints
-            memberLikes
-            memberViews
-            memberComments
-            memberRank
-            memberBlocks
-            memberWarnings
-            memberWorkouts
-            memberChallenges
-            memberAchievements
-            trainerRating
-            trainerExperience
-            trainerSpecialties
-            trainerCertifications
-            trainerBio
-            subscriptionId
-            deletedAt
-            createdAt
-            updatedAt
-            accessToken
-        }
-    }
-}
-
-`;
-
-export const GET_MY_PROPERTIES= gql`
-	query GetMyProperties ($input:MyPropertiesInquiry!){
-    getMyProperties(input: $input) {
-        list {
-            _id
-            propertyType
-            propertyStatus
-            propertyLocation
-            propertyAddress
-            propertyTitle
-            propertyPrice
-            priceType
-            womenDiscountPercent
-            childrenDiscountPercent
-            childrenAgeLimit
-            extraClassDiscountPercent
-            perClassPrice
-            propertyCapacity
-            propertyEquipmentList
-            propertyAmenities
-            propertyOperatingHours
-            propertyRating
-            propertyViews
-            propertyLikes
-            propertyComments
-            propertyRank
-            propertyImages
-            propertyDesc
-            propertyRent
-            propertyCondition
-            deletedAt
-            createdAt
-            updatedAt
-            memberId
-        }
-        metaCounter {
-            total
-        }
-    }
-}
-
-`;
-
-
-export const GET_FAVORITES = gql`
-	query GetFavorites ($input:OrdinaryInquiry!){
-    getFavorites(input: $input) {
-        list {
-            _id
-            propertyType
-            propertyStatus
-            propertyLocation
-            propertyAddress
-            propertyTitle
-            propertyPrice
-            priceType
-            womenDiscountPercent
-            childrenDiscountPercent
-            childrenAgeLimit
-            extraClassDiscountPercent
-            perClassPrice
-            propertyCapacity
-            propertyEquipmentList
-            propertyAmenities
-            propertyOperatingHours
-            propertyRating
-            propertyViews
-            propertyLikes
-            propertyComments
-            propertyRank
-            propertyImages
-            propertyDesc
-            propertyRent
-            propertyCondition
-            deletedAt
-            createdAt
-            updatedAt
-            memberId
-        }
-        metaCounter {
-            total
-        }
-    }
-}
-
-`;
-
-export const GET_VISITED = gql`
-	query GetVisited ($input:OrdinaryInquiry!){
-    getVisited(input: $input) {
-        list {
-            _id
-            propertyType
-            propertyStatus
-            propertyLocation
-            propertyAddress
-            propertyTitle
-            propertyPrice
-            priceType
-            womenDiscountPercent
-            childrenDiscountPercent
-            childrenAgeLimit
-            extraClassDiscountPercent
-            perClassPrice
-            propertyCapacity
-            propertyEquipmentList
-            propertyAmenities
-            propertyOperatingHours
-            propertyRating
-            propertyViews
-            propertyLikes
-            propertyComments
-            propertyRank
-            propertyImages
-            propertyDesc
-            propertyRent
-            propertyCondition
-            deletedAt
-            createdAt
-            updatedAt
-            memberId
-        }
-        metaCounter {
-            total
-        }
-    }
-}
-
-`;
 
 /**************************
  *      BOARD-ARTICLE     *
@@ -1132,6 +925,13 @@ query GetChallenges($input:ChallengesInquiry!) {
             deletedAt
             createdAt
             updatedAt
+            participants {
+                memberId
+                joinedAt
+                currentProgress
+                completed
+                completedAt
+            }
         }
         metaCounter {
             total
@@ -1140,47 +940,6 @@ query GetChallenges($input:ChallengesInquiry!) {
 }
 `;
 
-export const GET_VISITED_PROPERTIES = gql`
-query GetVisitedProperties ($input:OrdinaryInquiry!){
-    getVisitedProperties(input: $input) {
-        list {
-            _id
-            propertyType
-            propertyStatus
-            propertyLocation
-            propertyAddress
-            propertyTitle
-            propertyPrice
-            priceType
-            womenDiscountPercent
-            childrenDiscountPercent
-            childrenAgeLimit
-            extraClassDiscountPercent
-            perClassPrice
-            propertyCapacity
-            propertyEquipmentList
-            propertyAmenities
-            propertyOperatingHours
-            propertyRating
-            propertyViews
-            propertyLikes
-            propertyComments
-            propertyRank
-            propertyImages
-            propertyDesc
-            propertyRent
-            propertyCondition
-            deletedAt
-            createdAt
-            updatedAt
-            memberId
-        }
-        metaCounter {
-            total
-        }
-    }
-}
-`;
 
 export const GET_VISITED_WORKOUTS = gql`
 query GetVisitedWorkouts($input:OrdinaryInquiry!) {
@@ -1782,6 +1541,7 @@ query GetBookings($input:BookingsInquiry!) {
             clientId
             providerId
             propertyId
+            serviceId
             bookingDate
             bookingTime
             sessionDuration
@@ -1797,6 +1557,41 @@ query GetBookings($input:BookingsInquiry!) {
             reviewId
             createdAt
             updatedAt
+            memberData {
+                _id
+                memberType
+                memberStatus
+                memberAuthType
+                memberPhone
+                memberNick
+                memberFullName
+                memberImage
+                memberAddress
+                memberDesc
+                memberProperties
+                memberArticles
+                memberFollowers
+                memberFollowings
+                memberPoints
+                memberLikes
+                memberViews
+                memberComments
+                memberRank
+                memberBlocks
+                memberWarnings
+                memberWorkouts
+                memberChallenges
+                memberAchievements
+                trainerRating
+                trainerExperience
+                trainerSpecialties
+                trainerCertifications
+                trainerBio
+                subscriptionId
+                deletedAt
+                createdAt
+                updatedAt
+            }
         }
         metaCounter {
             total
@@ -2029,6 +1824,7 @@ query GetAllServices ($input:ServicesInquiry!){
             title
             description
             bookingType
+            difficulty
             pricePerHour
             fixedPrice
             durationOptions
@@ -2069,7 +1865,7 @@ query GetBookingStats($input:BookingStatsInput!) {
 `;
 
 
-
+export const GET_SERVICE_STATS = gql`
 query GetServiceStats($input:String!) {
     getServiceStats(serviceId: $input) {
         serviceId
@@ -2079,8 +1875,9 @@ query GetServiceStats($input:String!) {
         averageBookingValue
     }
 }
+`;
 
-
+export const GET_TRAINER_STATS = gql`
 query GetTrainerStats ($input:String!){
     getTrainerStats(trainerId: $input) {
         trainerId
@@ -2092,11 +1889,9 @@ query GetTrainerStats ($input:String!){
         clientRetentionRate
     }
 }
-
-
 `;
 
-
+export const GET_BOOKING_SUPPLEMENTS = gql`
 query GetBookingSupplements($input:String!) {
     getBookingSupplements(bookingId: $input) {
         list {
@@ -2113,9 +1908,9 @@ query GetBookingSupplements($input:String!) {
         }
     }
 }
-
-
 `;
+
+export const GET_RECOMMENDED_SUPPLEMENTS = gql`
 query GetRecommendedSupplements($input:RecommendedSupplementsInput!) {
     getRecommendedSupplements(input: $input) {
         _id
@@ -2130,5 +1925,117 @@ query GetRecommendedSupplements($input:RecommendedSupplementsInput!) {
         createdAt
         updatedAt
     }
+}
+`;
+
+
+
+
+export const GET_TRAINER_SCHEDULE = gql`
+query GetTrainerSchedule ($input:TrainerScheduleInput!){
+    getTrainerSchedule(input: $input) {
+        trainerId
+        startDate
+        endDate
+        availabilitySlots {
+            _id
+            trainerId
+            dayOfWeek
+            specificDate
+            startTime
+            endTime
+            availabilityType
+            isBlocked
+            notes
+            createdAt
+            updatedAt
+        }
+        bookings {
+            _id
+            bookingType
+            bookingStatus
+            clientId
+            providerId
+            propertyId
+            bookingDate
+            bookingTime
+            sessionDuration
+            bookingPrice
+            paymentId
+            bookingNotes
+            providerNotes
+            meetingLink
+            cancellationReason
+            cancelledBy
+            cancelledAt
+            completedAt
+            reviewId
+            deletedAt
+            createdAt
+            updatedAt
+        }
+    }
+}
+`;
+
+
+export const GET_PAYMENT_STATUS = gql`
+query GetPaymentStatus ($input:String!){
+    getPaymentStatus(bookingId: $input) {
+        _id
+        memberId
+        transactionType
+        paymentStatus
+        paymentMethod
+        amount
+        currency
+        subscriptionId
+        bookingId
+        propertyId
+        mealPlanId
+        stripePaymentId
+        paypalTransactionId
+        receiptUrl
+        invoiceNumber
+        refundAmount
+        refundReason
+        refundedAt
+        description
+        paidAt
+        failedAt
+        failureReason
+        createdAt
+        updatedAt
+    }
+}
+`;
+
+
+
+
+export const GET_WAITLIST = gql`
+query GetWaitlist($input:String!) {
+    getWaitlist(bookingId: $input) {
+        total
+        list {
+            _id
+            bookingId
+            clientId
+            priority
+            status
+            notifiedAt
+            convertedAt
+            notes
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+`;
+
+export const EXPORT_BOOKINGS_TO_CALENDAR = gql`
+query ExportBookingsToCalendar ($input:String!){
+    exportBookingsToCalendar(format: $input)
 }
 `;

@@ -5,13 +5,14 @@ export interface BookingInput {
 	bookingType: BookingType;
 	providerId: string;
 	propertyId?: string;
-	bookingDate: Date;
-	bookingTime: string;
-	sessionDuration: number;
+	serviceId?: string; // Recommended for server-side validation
+	bookingDate: Date | string; // ISO date string or Date object
+	bookingTime: string; // HH:mm format (24-hour)
+	sessionDuration: number; // Duration in minutes
 	bookingPrice: number;
-	bookingNotes?: string;
-	meetingLink?: string;
-	clientId?: string;
+	bookingNotes?: string; // Optional, 5-500 characters if provided
+	meetingLink?: string; // Optional, required for ONLINE_SESSION type
+	clientId?: string; // Optional, will be derived from auth token if not provided
 }
 
 interface BISearch {

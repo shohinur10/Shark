@@ -1,5 +1,5 @@
 import { FaqCategory, FaqStatus } from '../../enums/faq.enum';
-import { TotalCounter } from '../property/property';
+import { TotalCounter } from "../common"';
 
 export interface Faq {
 	_id: string;
