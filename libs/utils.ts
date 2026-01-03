@@ -35,7 +35,7 @@ export const likeTargetMemberHandler = async (likeTargetMember: any, id: string)
 	try {
 		await likeTargetMember({
 			variables: {
-				input: id,
+				memberId: id,
 			},
 		});
 	} catch (err: any) {

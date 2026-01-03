@@ -2039,3 +2039,158 @@ query ExportBookingsToCalendar ($input:String!){
     exportBookingsToCalendar(format: $input)
 }
 `;
+
+/**************************
+ *   ROUTINE ASSIGNMENTS  *
+ *************************/
+
+export const GET_USER_ASSIGNED_ROUTINES = gql`
+	query GetUserAssignedRoutines($input: UserRoutineInquiry!) {
+		getUserAssignedRoutines(input: $input) {
+			list {
+				_id
+				trainerId
+				userId
+				routineType
+				routineId
+				status
+				startDate
+				endDate
+				completedAt
+				trainerNotes
+				userFeedback
+				priority
+				trainerData {
+					_id
+					memberNick
+					memberImage
+				}
+				userData {
+					_id
+					memberNick
+					memberImage
+				}
+				mealPlanData {
+					_id
+					mealPlanTitle
+					mealPlanDesc
+					duration
+					calorieTarget
+				}
+				workoutData {
+					_id
+					workoutTitle
+					workoutDesc
+					workoutDuration
+					workoutDifficulty
+				}
+				createdAt
+				updatedAt
+			}
+			metaCounter
+		}
+	}
+`;
+
+export const GET_ROUTINE_COMPLETIONS = gql`
+	query GetRoutineCompletions($input: RoutineCompletionsInput!) {
+		getRoutineCompletions(input: $input) {
+			list {
+				_id
+				userId
+				routineType
+				routineId
+				assignmentId
+				completionDate
+				completionPercentage
+				notes
+				rating
+				eligibleForBonus
+				userData {
+					_id
+					memberNick
+					memberImage
+				}
+				createdAt
+				updatedAt
+			}
+			metaCounter
+		}
+	}
+`;
+
+export const GET_BONUS_REWARDS = gql`
+	query GetBonusRewards($input: BonusRewardsInput!) {
+		getBonusRewards(input: $input) {
+			list {
+				_id
+				userId
+				trainerId
+				earnedDate
+				bonusType
+				pointsAwarded
+				description
+				mealPlanCompletionId
+				workoutCompletionId
+				claimed
+				claimedAt
+				userData {
+					_id
+					memberNick
+					memberImage
+				}
+				trainerData {
+					_id
+					memberNick
+					memberImage
+				}
+				createdAt
+				updatedAt
+			}
+			metaCounter
+		}
+	}
+`;
+
+export const GET_TRAINER_CLIENTS = gql`
+	query GetTrainerClients {
+		getTrainerClients {
+			_id
+			userId
+			assignmentsCount
+			activeAssignments
+			completedAssignments
+			lastAssignment
+			userData {
+				_id
+				memberNick
+				memberImage
+				memberFullName
+				memberEmail
+				memberPhone
+			}
+		}
+	}
+`;
+
+/**************************
+ *         MEMBERS         *
+ *************************/
+
+export const GET_MEMBERS = gql`
+	query GetMembers($input: MembersInquiry!) {
+		getMembers(input: $input) {
+			list {
+				_id
+				memberNick
+				memberFullName
+				memberImage
+				memberType
+				memberStatus
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;

@@ -70,7 +70,7 @@ const TrainerProfileHeader: React.FC<TrainerProfileHeaderProps> = ({ trainer, on
 				return;
 			}
 
-			await likeTargetMember({ variables: { input: trainer._id } });
+			await likeTargetMember({ variables: { memberId: trainer._id } });
 			await sweetTopSmallSuccessAlert('Success!', 800);
 			onRefetch?.();
 		} catch (err: any) {

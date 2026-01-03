@@ -3403,3 +3403,64 @@ mutation CancelRecurringBooking($input:String!) {
 }
 `;
 
+/**************************
+ *   ROUTINE ASSIGNMENTS  *
+ *************************/
+
+export const ASSIGN_MEAL_PLAN_TO_USER = gql`
+	mutation AssignMealPlanToUser($input: AssignRoutineInput!) {
+		assignMealPlanToUser(input: $input) {
+			_id
+			trainerId
+			userId
+			routineType
+			routineId
+			status
+			startDate
+			endDate
+			trainerNotes
+			priority
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
+export const ASSIGN_WORKOUT_TO_USER = gql`
+	mutation AssignWorkoutToUser($input: AssignRoutineInput!) {
+		assignWorkoutToUser(input: $input) {
+			_id
+			trainerId
+			userId
+			routineType
+			routineId
+			status
+			startDate
+			endDate
+			trainerNotes
+			priority
+			createdAt
+			updatedAt
+		}
+	}
+`;
+
+export const MARK_ROUTINE_COMPLETE = gql`
+	mutation MarkRoutineComplete($input: MarkRoutineCompleteInput!) {
+		markRoutineComplete(input: $input) {
+			_id
+			userId
+			routineType
+			routineId
+			assignmentId
+			completionDate
+			completionPercentage
+			notes
+			rating
+			eligibleForBonus
+			createdAt
+			updatedAt
+		}
+	}
+`;
+

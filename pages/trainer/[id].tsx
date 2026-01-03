@@ -84,7 +84,7 @@ const TrainerProfilePage: NextPage = () => {
 	const { data: trainerData, loading: trainerLoading, error: trainerError, refetch: refetchTrainer } = useQuery(GET_MEMBER, {
 		variables: { input: id as string },
 		fetchPolicy: 'cache-and-network',
-		skip: !id || typeof window === 'undefined',
+		skip: !id,
 		onError: (error) => {
 			console.error('❌ GET_MEMBER query error:', error);
 		},
@@ -107,7 +107,7 @@ const TrainerProfilePage: NextPage = () => {
 	const { data: workoutsData, loading: workoutsLoading, error: workoutsError } = useQuery(GET_TRAINER_WORKOUTS, {
 		variables: { input: workoutsInquiry },
 		fetchPolicy: 'cache-and-network',
-		skip: !id || typeof window === 'undefined',
+		skip: !id,
 		onError: (error) => {
 			const errorDetails = {
 				message: error.message,
@@ -145,7 +145,7 @@ const TrainerProfilePage: NextPage = () => {
 	const { data: servicesData, loading: servicesLoading, error: servicesError } = useQuery(GET_ALL_SERVICES, {
 		variables: { input: servicesInquiry },
 		fetchPolicy: 'cache-and-network',
-		skip: !id || typeof window === 'undefined',
+		skip: !id,
 		onError: (error) => {
 			const errorDetails = {
 				message: error.message,
@@ -190,7 +190,7 @@ const TrainerProfilePage: NextPage = () => {
 	const { data: reviewsData, loading: reviewsLoading, error: reviewsError } = useQuery(GET_REVIEWS, {
 		variables: { input: reviewsInquiry },
 		fetchPolicy: 'cache-and-network',
-		skip: !id || typeof window === 'undefined',
+		skip: !id,
 		onError: (error) => {
 			const errorDetails = {
 				message: error.message,

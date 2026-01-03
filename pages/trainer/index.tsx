@@ -115,7 +115,7 @@ const TrainerList: NextPage = ({ initialInput, ...props }: any) => {
 			if (!user._id) throw new Error(Messages.error2);
 
 			await likeTargetMember({
-				variables: { input: id },
+				variables: { memberId: id },
 			});
 
 			await getTrainersRefetch({ input: searchFilter });

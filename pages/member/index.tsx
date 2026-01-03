@@ -87,7 +87,7 @@ const MemberPage: NextPage = () => {
 			if (!id) return;
 			if (!user._id) throw new Error(Messages.error2);
 
-			await likeTargetMember({ variables: { input: id } });
+			await likeTargetMember({ variables: { memberId: id } });
 
 			await sweetTopSmallSuccessAlert('Success!', 800);
 			await refetch({ input: query });

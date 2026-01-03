@@ -131,21 +131,56 @@ const withLayoutBasic = (Component: any) => {
 					desc = 'Find expert trainers to guide your journey';
 					bgImage = '/img/banner/header2.svg';
 					break;
-				case '/trainer/[id]':
-					title = 'Trainer Profile';
-					desc = 'Meet your personal trainer';
-					bgImage = '/img/banner/header2.svg';
-					break;
-				case '/trainer/create':
-					title = 'Create Workout';
-					desc = 'Design your custom workout program';
-					bgImage = '/img/banner/header2.svg';
-					break;
-				case '/trainer/meal-plan':
-					title = 'Create Meal Plan';
-					desc = 'Design your custom meal plan';
-					bgImage = '/img/banner/header2.svg';
-					break;
+			case '/trainer/[id]':
+				title = 'Trainer Profile';
+				desc = 'Meet your personal trainer';
+				bgImage = '/img/banner/header2.svg';
+				break;
+			case '/trainer/dashboard':
+				title = 'Trainer Dashboard';
+				desc = 'Manage your clients and routines';
+				bgImage = '/img/banner/header2.svg';
+				break;
+			case '/trainer/clients':
+				title = 'My Clients';
+				desc = 'Manage and track your clients';
+				bgImage = '/img/banner/header2.svg';
+				break;
+			case '/trainer/clients/[clientId]/progress':
+				title = 'Client Progress';
+				desc = 'Track client progress and completions';
+				bgImage = '/img/banner/header2.svg';
+				break;
+			case '/trainer/assign-routine':
+				title = 'Assign Routine';
+				desc = 'Assign meal plans or workouts to clients';
+				bgImage = '/img/banner/header2.svg';
+				break;
+			case '/trainer/meal-plans':
+				title = 'My Meal Plans';
+				desc = 'Create and manage your meal plans';
+				bgImage = '/img/banner/header2.svg';
+				break;
+			case '/trainer/workouts':
+				title = 'My Workouts';
+				desc = 'Create and manage your workouts';
+				bgImage = '/img/banner/header2.svg';
+				break;
+			case '/trainer/analytics':
+				title = 'Analytics';
+				desc = 'Track your performance and client engagement';
+				bgImage = '/img/banner/header2.svg';
+				break;
+			case '/trainer/create':
+				title = 'Create Workout';
+				desc = 'Design your custom workout program';
+				bgImage = '/img/banner/header2.svg';
+				break;
+			case '/trainer/meal-plan':
+				title = 'Create Meal Plan';
+				desc = 'Design your custom meal plan';
+				bgImage = '/img/banner/header2.svg';
+				break;
 				case '/coaching':
 					title = 'Coaching';
 					desc = 'Get personalized coaching and guidance';
