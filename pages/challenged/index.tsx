@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { NextPage } from 'next';
 import {
 	Container,
@@ -91,14 +91,48 @@ const ChallengedPage: NextPage = () => {
 			};
 			console.error('❌ GET_CHALLENGES query error:', JSON.stringify(errorDetails, null, 2));
 		},
+		onCompleted: (data) => {
+			console.log('✅ GET_CHALLENGES query completed:', {
+				totalChallenges: data?.getChallenges?.list?.length || 0,
+				userId: user?._id,
+				sampleChallenge: data?.getChallenges?.list?.[0] ? {
+					id: data.getChallenges.list[0]._id,
+					title: data.getChallenges.list[0].challengeTitle,
+					participantsCount: data.getChallenges.list[0].participants?.length || 0,
+					participants: data.getChallenges.list[0].participants?.map((p: Participant) => ({
+						memberId: p.memberId,
+						matchesUser: p.memberId === user?._id,
+					})) || [],
+				} : null,
+			});
+		},
 	});
 
 	// Filter challenges where user is a participant
 	const myChallenges = useMemo(() => {
-		if (!challengesData?.getChallenges?.list || !user?._id) return [];
-		return challengesData.getChallenges.list.filter((challenge: Challenge) => {
-			return challenge.participants?.some((p: Participant) => p.memberId === user._id);
+		if (!challengesData?.getChallenges?.list || !user?._id) {
+			console.log('🔍 Filtering challenges:', {
+				hasData: !!challengesData?.getChallenges?.list,
+				hasUserId: !!user?._id,
+				totalChallenges: challengesData?.getChallenges?.list?.length || 0,
+			});
+			return [];
+		}
+		const filtered = challengesData.getChallenges.list.filter((challenge: Challenge) => {
+			const isParticipant = challenge.participants?.some((p: Participant) => {
+				// Convert both to strings for comparison to handle potential type mismatches
+				const participantMemberId = String(p.memberId || '');
+				const userMemberId = String(user._id || '');
+				return participantMemberId === userMemberId;
+			});
+			return isParticipant;
 		});
+		console.log('🔍 Filtered challenges:', {
+			totalChallenges: challengesData.getChallenges.list.length,
+			myChallengesCount: filtered.length,
+			userId: user._id,
+		});
+		return filtered;
 	}, [challengesData, user?._id]);
 
 	// Apply search filter
@@ -175,6 +209,18 @@ const ChallengedPage: NextPage = () => {
 		if (!myProgress || !challenge.targetValue) return 0;
 		return Math.min(100, (myProgress.currentProgress / challenge.targetValue) * 100);
 	};
+
+	// Debug: Check if query is being skipped
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			console.log('🔍 Query skip status:', {
+				isSkipped: typeof window === 'undefined' || !user?._id,
+				hasWindow: typeof window !== 'undefined',
+				hasUser: !!user?._id,
+				userId: user?._id,
+			});
+		}
+	}, [user?._id]);
 
 	if (!user?._id) {
 		return (

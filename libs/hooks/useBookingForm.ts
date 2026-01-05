@@ -19,11 +19,12 @@ import { prepareBookingInput } from '../utils/booking.utils';
 
 export interface BookingFormState {
 	trainerId: string | null;
-	serviceId: string | null;
+	serviceId: string | null; // Optional - kept for backward compatibility
 	bookingDate: string | null; // ISO string format: YYYY-MM-DD
 	bookingTime: string | null;
 	durationMinutes: number;
-	locationType: string;
+	bookingType: BookingType | null; // Manual booking type selection
+	bookingPrice: number; // Manual price input
 	notes: string;
 }
 
@@ -34,10 +35,10 @@ export interface UseBookingFormReturn {
 	
 	// Data
 	trainers: any[];
-	services: Service[];
+	services: Service[]; // Kept for backward compatibility but not required
 	availableSlots: string[];
 	selectedTrainer: any | null;
-	selectedService: Service | null;
+	selectedService: Service | null; // Kept for backward compatibility
 	totalPrice: number;
 	
 	// Loading states
@@ -56,11 +57,12 @@ export interface UseBookingFormReturn {
 	
 	// Handlers
 	setTrainerId: (trainerId: string | null) => void;
-	setServiceId: (serviceId: string | null) => void;
+	setServiceId: (serviceId: string | null) => void; // Kept for backward compatibility
 	setBookingDate: (date: Date | null) => void;
 	setBookingTime: (time: string | null) => void;
 	setDuration: (duration: number) => void;
-	setLocationType: (location: string) => void;
+	setBookingType: (bookingType: BookingType | null) => void;
+	setBookingPrice: (price: number) => void;
 	setNotes: (notes: string) => void;
 	submit: () => Promise<void>;
 	clearValidationError: (field: keyof ValidationErrors) => void;
@@ -73,14 +75,15 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	
-	// Form state - all values start as null/empty, will be set from real backend data
+	// Form state - all values start as null/empty
 	const [state, setState] = useState<BookingFormState>({
 		trainerId: null,
 		serviceId: null,
 		bookingDate: null, // ISO string format: YYYY-MM-DD
 		bookingTime: null,
 		durationMinutes: 0,
-		locationType: '', // Will be set from selectedService.bookingType (real backend data)
+		bookingType: BookingType.PERSONAL_TRAINING, // Default booking type
+		bookingPrice: 0,
 		notes: '',
 	});
 
@@ -129,7 +132,7 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		},
 	});
 
-	// Fetch services - only ACTIVE services
+	// Fetch services - only ACTIVE services (optional, kept for backward compatibility)
 	const servicesQuery: ServicesInquiry = useMemo(() => ({
 		page: 1,
 		limit: 100,
@@ -145,7 +148,7 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 			input: servicesQuery,
 		},
 		fetchPolicy: 'cache-and-network',
-		skip: typeof window === 'undefined', // Skip during SSR to avoid hydration errors
+		skip: true, // Skip service fetching - we're using manual inputs instead
 		onCompleted: (data) => {
 			console.log('✅ GET_ALL_SERVICES query completed:', {
 				servicesCount: data?.getAllServices?.list?.length || 0,
@@ -154,24 +157,8 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 			});
 		},
 		onError: (error) => {
-			// Improved error logging with proper serialization
-			const errorDetails = {
-				message: error.message,
-				graphQLErrors: error.graphQLErrors?.map((err: any) => ({
-					message: err.message,
-					locations: err.locations,
-					path: err.path,
-					extensions: err.extensions,
-				})),
-				networkError: error.networkError ? {
-					name: error.networkError.name,
-					message: error.networkError.message,
-					statusCode: (error.networkError as any)?.statusCode,
-					result: (error.networkError as any)?.result,
-				} : null,
-			};
-			console.error('❌ GET_ALL_SERVICES query error:', JSON.stringify(errorDetails, null, 2));
-			console.error('Full error object:', error);
+			// Silently handle errors since services are optional now
+			console.log('Services query skipped (using manual inputs)');
 		},
 	});
 
@@ -266,47 +253,36 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		}
 	}, [state.trainerId, trainers]);
 
-	// Get selected service
+	// Get selected service (kept for backward compatibility)
 	const selectedService = useMemo(() => {
 		if (!state.serviceId || !services.length) return null;
 		return services.find((s: Service) => s._id === state.serviceId) || null;
 	}, [state.serviceId, services]);
 
-	// Set booking type from service when service is selected (real backend data)
-	useEffect(() => {
-		if (selectedService && selectedService.bookingType) {
-			setState(prev => ({ ...prev, locationType: selectedService.bookingType }));
+	// Use manual booking price, fallback to service pricing if service is selected
+	const servicePrice = useServicePricing(selectedService, state.durationMinutes);
+	const totalPrice = useMemo(() => {
+		if (state.bookingPrice > 0) {
+			return state.bookingPrice;
 		}
-	}, [selectedService]);
-
-	// Reset duration if current duration is not in service's options
-	useEffect(() => {
-		if (selectedService && selectedService.durationOptions && state.durationMinutes > 0) {
-			if (!selectedService.durationOptions.includes(state.durationMinutes)) {
-				setState(prev => ({ ...prev, durationMinutes: 0 }));
-			}
-		}
-	}, [selectedService, state.durationMinutes]);
-
-	// Calculate total price
-	const totalPrice = useServicePricing(selectedService, state.durationMinutes);
+		// Fallback to service pricing if service is selected
+		return servicePrice;
+	}, [state.bookingPrice, servicePrice]);
 
 	// Reset time when trainer or date changes
 	useEffect(() => {
 		setState(prev => ({ ...prev, bookingTime: null }));
 	}, [state.trainerId, state.bookingDate]);
 
-	// Form validation
+	// Form validation - updated to use bookingType instead of serviceId
 	const isFormValid = useMemo(() => {
-		return isBookingFormValid(
-			{
-				trainerId: state.trainerId,
-				serviceId: state.serviceId,
-				bookingDate: state.bookingDate,
-				bookingTime: state.bookingTime,
-				durationMinutes: state.durationMinutes,
-				locationType: state.locationType,
-			},
+		return !!(
+			state.trainerId &&
+			state.bookingType &&
+			state.bookingDate &&
+			state.bookingTime &&
+			state.durationMinutes > 0 &&
+			state.bookingPrice > 0 &&
 			user?._id
 		);
 	}, [state, user?._id]);
@@ -314,14 +290,13 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 	// Update validation errors when fields change
 	useEffect(() => {
 		if (showValidation) {
-			const errors = validateBookingForm({
-				trainerId: state.trainerId,
-				serviceId: state.serviceId,
-				bookingDate: state.bookingDate,
-				bookingTime: state.bookingTime,
-				durationMinutes: state.durationMinutes,
-				locationType: state.locationType,
-			});
+			const errors: ValidationErrors = {};
+			if (!state.trainerId) errors.trainerId = 'Please select a trainer';
+			if (!state.bookingType) errors.bookingType = 'Please select a booking type';
+			if (!state.bookingDate) errors.date = 'Please select a date';
+			if (!state.bookingTime) errors.time = 'Please select a time';
+			if (!state.durationMinutes || state.durationMinutes <= 0) errors.duration = 'Please select a duration';
+			if (!state.bookingPrice || state.bookingPrice <= 0) errors.price = 'Please enter a valid price';
 			setValidationErrors(errors);
 		}
 	}, [state, showValidation]);
@@ -391,9 +366,27 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		}
 	}, [validationErrors.duration]);
 
-	const setLocationType = useCallback((location: string | null) => {
-		setState(prev => ({ ...prev, locationType: location || '' }));
-	}, []);
+	const setBookingType = useCallback((bookingType: BookingType | null) => {
+		setState(prev => ({ ...prev, bookingType: bookingType || BookingType.PERSONAL_TRAINING }));
+		if (validationErrors.bookingType) {
+			setValidationErrors(prev => {
+				const newErrors = { ...prev };
+				delete newErrors.bookingType;
+				return newErrors;
+			});
+		}
+	}, [validationErrors.bookingType]);
+
+	const setBookingPrice = useCallback((price: number) => {
+		setState(prev => ({ ...prev, bookingPrice: price }));
+		if (validationErrors.price) {
+			setValidationErrors(prev => {
+				const newErrors = { ...prev };
+				delete newErrors.price;
+				return newErrors;
+			});
+		}
+	}, [validationErrors.price]);
 
 	const setNotes = useCallback((notes: string) => {
 		setState(prev => ({ ...prev, notes }));
@@ -417,14 +410,13 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		}
 
 		// Validate form
-		const errors = validateBookingForm({
-			trainerId: state.trainerId,
-			serviceId: state.serviceId,
-			bookingDate: state.bookingDate,
-			bookingTime: state.bookingTime,
-			durationMinutes: state.durationMinutes,
-			locationType: state.locationType,
-		});
+		const errors: ValidationErrors = {};
+		if (!state.trainerId) errors.trainerId = 'Please select a trainer';
+		if (!state.bookingType) errors.bookingType = 'Please select a booking type';
+		if (!state.bookingDate) errors.date = 'Please select a date';
+		if (!state.bookingTime) errors.time = 'Please select a time';
+		if (!state.durationMinutes || state.durationMinutes <= 0) errors.duration = 'Please select a duration';
+		if (!state.bookingPrice || state.bookingPrice <= 0) errors.price = 'Please enter a valid price';
 
 		setValidationErrors(errors);
 		setShowValidation(true);
@@ -434,17 +426,17 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 			return;
 		}
 
-		// Prepare booking input
+		// Prepare booking input - service is now optional
 		const bookingInput = prepareBookingInput(
-			selectedService,
+			selectedService, // Optional - can be null
 			state.trainerId,
 			state.bookingDate,
 			state.bookingTime,
 			state.durationMinutes,
-			totalPrice,
+			state.bookingPrice || totalPrice, // Use manual price or calculated price
 			user._id,
 			state.notes,
-			state.locationType
+			state.bookingType || undefined // Pass booking type directly
 		);
 
 		if (!bookingInput) {
@@ -527,7 +519,8 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 		setBookingDate,
 		setBookingTime,
 		setDuration,
-		setLocationType,
+		setBookingType,
+		setBookingPrice,
 		setNotes,
 		submit,
 		clearValidationError,

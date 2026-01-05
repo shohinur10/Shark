@@ -102,9 +102,9 @@ export const isDateValid = (date: Date | null): boolean => {
  * - bookingTime: "HH:mm" format (24-hour, 2-digit)
  * - sessionDuration: number (minutes)
  * - providerId: MongoDB ObjectId (24-char hex string)
- * - serviceId: MongoDB ObjectId (recommended for validation)
+ * - serviceId: MongoDB ObjectId (optional - recommended for validation)
  * 
- * @param service - Selected service object
+ * @param service - Selected service object (optional)
  * @param trainerId - Trainer ID (MongoDB ObjectId)
  * @param bookingDate - Date string in ISO format (YYYY-MM-DD)
  * @param bookingTime - Time string in HH:mm format (24-hour)
@@ -112,7 +112,7 @@ export const isDateValid = (date: Date | null): boolean => {
  * @param bookingPrice - Calculated price
  * @param clientId - Client ID (MongoDB ObjectId)
  * @param notes - Optional booking notes (5-500 characters)
- * @param locationType - Booking type (BookingType enum)
+ * @param bookingType - Booking type (BookingType enum) - required if no service
  */
 export const prepareBookingInput = (
 	service: Service | null,
@@ -123,10 +123,22 @@ export const prepareBookingInput = (
 	bookingPrice: number,
 	clientId: string,
 	notes?: string,
-	locationType?: string
+	bookingType?: BookingType
 ): BookingInput | null => {
-	if (!service || !trainerId || !bookingDate || !bookingTime || !clientId || durationMinutes === 0) {
+	// Validate required fields (service is now optional)
+	if (!trainerId || !bookingDate || !bookingTime || !clientId || durationMinutes === 0) {
 		return null;
+	}
+
+	// Validate bookingType is provided (either from service or parameter)
+	let finalBookingType: BookingType;
+	if (bookingType && Object.values(BookingType).includes(bookingType)) {
+		finalBookingType = bookingType;
+	} else if (service?.bookingType) {
+		finalBookingType = service.bookingType;
+	} else {
+		// Default to PERSONAL_TRAINING if neither provided
+		finalBookingType = BookingType.PERSONAL_TRAINING;
 	}
 
 	// Validate bookingDate is in YYYY-MM-DD format
@@ -144,20 +156,8 @@ export const prepareBookingInput = (
 		return null;
 	}
 
-	// Use bookingType from service (real backend data) as primary source
-	// Fallback to locationType if provided, otherwise use service.bookingType
-	let finalBookingType: BookingType;
-	if (locationType && Object.values(BookingType).includes(locationType as BookingType)) {
-		finalBookingType = locationType as BookingType;
-	} else if (service.bookingType) {
-		finalBookingType = service.bookingType;
-	} else {
-		// Last resort fallback (should not happen if service data is correct)
-		finalBookingType = BookingType.PERSONAL_TRAINING;
-	}
-
-	// Validate duration is in service's durationOptions
-	if (service.durationOptions && !service.durationOptions.includes(durationMinutes)) {
+	// Validate duration if service is provided and has durationOptions
+	if (service?.durationOptions && !service.durationOptions.includes(durationMinutes)) {
 		return null;
 	}
 
@@ -172,7 +172,7 @@ export const prepareBookingInput = (
 	return {
 		bookingType: finalBookingType,
 		providerId: trainerId, // MongoDB ObjectId (24-char hex string)
-		serviceId: service._id, // Recommended for server-side validation
+		serviceId: service?._id, // Optional - recommended for server-side validation
 		bookingDate: bookingDate, // ISO format "YYYY-MM-DD" (string)
 		bookingTime: bookingTime, // "HH:mm" format (24-hour)
 		sessionDuration: durationMinutes, // Number (minutes)

@@ -12,7 +12,7 @@ export interface MealInput {
 	mealType: MealType;
 	mealName: string;
 	ingredients?: string[];
-	instructions?: string;
+	instructions?: string[];
 	calories: number;
 	protein: number;
 	carbs: number;

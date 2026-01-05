@@ -1,9 +1,11 @@
 export interface ValidationErrors {
 	trainerId?: string;
 	serviceId?: string;
+	bookingType?: string;
 	date?: string;
 	time?: string;
 	duration?: string;
+	price?: string;
 	location?: string;
 }
 

@@ -56,7 +56,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 	},
 });
 
-const steps = ['Select Trainer', 'Choose Service', 'Pick Date & Time', 'Review & Confirm'];
+const steps = ['Select Trainer', 'Booking Details', 'Pick Date & Time', 'Review & Confirm'];
 
 const NewBookingPage: NextPage = () => {
 	const router = useRouter();
@@ -104,10 +104,10 @@ const NewBookingPage: NextPage = () => {
 		if (activeStep === 0 && !bookingForm.state.trainerId) {
 			return;
 		}
-		if (activeStep === 1 && !bookingForm.state.serviceId) {
+		if (activeStep === 1 && (!bookingForm.state.bookingType || !bookingForm.state.durationMinutes || !bookingForm.state.bookingPrice)) {
 			return;
 		}
-		if (activeStep === 2 && (!bookingForm.state.bookingDate || !bookingForm.state.bookingTime || !bookingForm.state.durationMinutes)) {
+		if (activeStep === 2 && (!bookingForm.state.bookingDate || !bookingForm.state.bookingTime)) {
 			return;
 		}
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -399,138 +399,71 @@ const NewBookingPage: NextPage = () => {
 									</Box>
 								)}
 
-								{/* Step 2: Choose Service */}
+								{/* Step 2: Booking Details */}
 								{activeStep === 1 && (
 									<Box>
 										<Typography variant="h5" sx={{ fontWeight: 600, mb: 3, color: '#212121' }}>
-											Choose Your Service
+											Booking Details
 										</Typography>
 										
-										{/* Debug info in development */}
-										{process.env.NODE_ENV === 'development' && (
-											<Alert severity="info" sx={{ mb: 2 }}>
-												<Box>
-													<Typography variant="caption" sx={{ display: 'block', fontFamily: 'monospace', fontSize: '0.7rem' }}>
-														Services Debug: Loading={String(bookingForm.servicesLoading)}, 
-														Error={bookingForm.servicesError ? 'Yes' : 'No'}, 
-														Count={bookingForm.services.length}
-													</Typography>
-													{bookingForm.servicesError && (
-														<Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: '#d32f2f', fontFamily: 'monospace', fontSize: '0.7rem' }}>
-															Error: {bookingForm.servicesError.message || 'Unknown error'}
-														</Typography>
+										<Grid container spacing={3}>
+											{/* Booking Type */}
+											<Grid item xs={12} sm={6}>
+												<FormControl fullWidth error={!!bookingForm.validationErrors.bookingType}>
+													<InputLabel>Booking Type *</InputLabel>
+													<Select
+														value={bookingForm.state.bookingType || ''}
+														onChange={(e) => bookingForm.setBookingType(e.target.value as BookingType)}
+														label="Booking Type *"
+													>
+														{Object.values(BookingType).map((type) => (
+															<MenuItem key={type} value={type}>
+																{getBookingTypeLabel(type)}
+															</MenuItem>
+														))}
+													</Select>
+													{bookingForm.validationErrors.bookingType && (
+														<FormHelperText>{bookingForm.validationErrors.bookingType}</FormHelperText>
 													)}
-												</Box>
-											</Alert>
-										)}
-										
-										{bookingForm.servicesError && (
-											<Alert severity="error" sx={{ mb: 2 }}>
-												<Box>
-													<Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
-														Error loading services
-													</Typography>
-													<Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>
-														{bookingForm.servicesError.message || 'Unknown error occurred'}
-													</Typography>
-													{bookingForm.servicesError.graphQLErrors && bookingForm.servicesError.graphQLErrors.length > 0 && (
-														<Typography variant="caption" sx={{ display: 'block', color: '#d32f2f' }}>
-															{bookingForm.servicesError.graphQLErrors.map((err: any, idx: number) => (
-																<span key={idx}>{err.message}</span>
-															))}
-														</Typography>
-													)}
-													{bookingForm.servicesError.networkError && (
-														<Typography variant="caption" sx={{ display: 'block', color: '#d32f2f' }}>
-															Network error: {bookingForm.servicesError.networkError.message}
-														</Typography>
-													)}
-												</Box>
-											</Alert>
-										)}
-										
-										<FormControl fullWidth error={!!bookingForm.validationErrors.serviceId} sx={{ mb: 3 }}>
-											<InputLabel>Select Service</InputLabel>
-											<Select
-												value={bookingForm.state.serviceId || ''}
-												onChange={(e) => bookingForm.setServiceId(e.target.value || null)}
-												label="Select Service"
-												disabled={bookingForm.servicesLoading}
-											>
-												{bookingForm.servicesLoading ? (
-													<MenuItem disabled>
-														<CircularProgress size={20} sx={{ mr: 2 }} />
-														Loading services...
-													</MenuItem>
-												) : bookingForm.servicesError ? (
-													<MenuItem disabled>Error loading services</MenuItem>
-												) : bookingForm.services.length > 0 ? (
-													bookingForm.services.map((service: any) => (
-														<MenuItem key={service._id} value={service._id}>
-															<Box>
-																<Typography variant="body1" sx={{ fontWeight: 500 }}>
-																	{service.title}
-																</Typography>
-																{service.description && (
-																	<Typography variant="caption" sx={{ color: '#616161' }}>
-																		{service.description.substring(0, 60)}...
-																	</Typography>
-																)}
-															</Box>
-														</MenuItem>
-													))
-												) : (
-													<MenuItem disabled>No services available</MenuItem>
-												)}
-											</Select>
-											{bookingForm.validationErrors.serviceId && (
-												<FormHelperText>{bookingForm.validationErrors.serviceId}</FormHelperText>
-											)}
-										</FormControl>
+												</FormControl>
+											</Grid>
 
-										{bookingForm.selectedService && (
-											<Paper
-												elevation={0}
-												sx={{
-													p: 3,
-													backgroundColor: '#f5f5f5',
-													borderRadius: 2,
-													border: '1px solid #e0e0e0',
-												}}
-											>
-												<Stack spacing={2}>
-													<Box>
-														<Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-															{bookingForm.selectedService.title}
-														</Typography>
-														{bookingForm.selectedService.description && (
-															<Typography variant="body2" sx={{ color: '#616161', mb: 2 }}>
-																{bookingForm.selectedService.description}
-															</Typography>
-														)}
-													</Box>
-													<Divider />
-													<Grid container spacing={2}>
-														<Grid item xs={6}>
-															<Typography variant="caption" sx={{ color: '#616161' }}>
-																Session Type
-															</Typography>
-															<Typography variant="body2" sx={{ fontWeight: 500 }}>
-																{getBookingTypeLabel(bookingForm.selectedService.bookingType)}
-															</Typography>
-														</Grid>
-														<Grid item xs={6}>
-															<Typography variant="caption" sx={{ color: '#616161' }}>
-																Available Durations
-															</Typography>
-															<Typography variant="body2" sx={{ fontWeight: 500 }}>
-																{bookingForm.selectedService.durationOptions?.map((d: number) => formatDurationForDisplay(d)).join(', ') || 'N/A'}
-															</Typography>
-														</Grid>
-													</Grid>
-												</Stack>
-											</Paper>
-										)}
+											{/* Duration */}
+											<Grid item xs={12} sm={6}>
+												<FormControl fullWidth error={!!bookingForm.validationErrors.duration}>
+													<InputLabel>Session Duration *</InputLabel>
+													<Select
+														value={bookingForm.state.durationMinutes || ''}
+														onChange={(e) => bookingForm.setDuration(Number(e.target.value))}
+														label="Session Duration *"
+													>
+														<MenuItem value={30}>30 minutes</MenuItem>
+														<MenuItem value={45}>45 minutes</MenuItem>
+														<MenuItem value={60}>1 hour</MenuItem>
+														<MenuItem value={90}>1.5 hours</MenuItem>
+														<MenuItem value={120}>2 hours</MenuItem>
+													</Select>
+													{bookingForm.validationErrors.duration && (
+														<FormHelperText>{bookingForm.validationErrors.duration}</FormHelperText>
+													)}
+												</FormControl>
+											</Grid>
+
+											{/* Price */}
+											<Grid item xs={12} sm={6}>
+												<TextField
+													fullWidth
+													type="number"
+													label="Price ($) *"
+													value={bookingForm.state.bookingPrice || ''}
+													onChange={(e) => bookingForm.setBookingPrice(parseFloat(e.target.value) || 0)}
+													inputProps={{ min: 0, step: 0.01 }}
+													error={!!bookingForm.validationErrors.price}
+													helperText={bookingForm.validationErrors.price || 'Enter the total price for this session'}
+													required
+												/>
+											</Grid>
+										</Grid>
 									</Box>
 								)}
 
@@ -597,33 +530,6 @@ const NewBookingPage: NextPage = () => {
 												</FormControl>
 											</Grid>
 
-											{/* Duration Select */}
-											<Grid item xs={12} sm={6}>
-												<FormControl fullWidth error={!!bookingForm.validationErrors.duration}>
-													<InputLabel>Session Duration</InputLabel>
-													<Select
-														value={bookingForm.state.durationMinutes || ''}
-														onChange={(e) => bookingForm.setDuration(Number(e.target.value))}
-														label="Session Duration"
-														disabled={!bookingForm.selectedService || !bookingForm.selectedService.durationOptions?.length}
-													>
-														{!bookingForm.selectedService ? (
-															<MenuItem disabled>Select a service first</MenuItem>
-														) : bookingForm.selectedService.durationOptions && bookingForm.selectedService.durationOptions.length > 0 ? (
-															bookingForm.selectedService.durationOptions.map((minutes: number) => (
-																<MenuItem key={minutes} value={minutes}>
-																	{formatDurationForDisplay(minutes)}
-																</MenuItem>
-															))
-														) : (
-															<MenuItem disabled>No duration options available</MenuItem>
-														)}
-													</Select>
-													{bookingForm.validationErrors.duration && (
-														<FormHelperText>{bookingForm.validationErrors.duration}</FormHelperText>
-													)}
-												</FormControl>
-											</Grid>
 
 											{/* Notes */}
 											<Grid item xs={12}>
@@ -659,13 +565,13 @@ const NewBookingPage: NextPage = () => {
 													</Typography>
 												</Box>
 												<Divider />
-												{/* Service Info */}
+												{/* Booking Type Info */}
 												<Box>
 													<Typography variant="caption" sx={{ color: '#616161', textTransform: 'uppercase', letterSpacing: 1 }}>
-														Service
+														Booking Type
 													</Typography>
 													<Typography variant="h6" sx={{ mt: 0.5, fontWeight: 600 }}>
-														{bookingForm.selectedService?.title || '—'}
+														{bookingForm.state.bookingType ? getBookingTypeLabel(bookingForm.state.bookingType) : '—'}
 													</Typography>
 												</Box>
 												<Divider />
@@ -719,8 +625,8 @@ const NewBookingPage: NextPage = () => {
 											onClick={handleNext}
 											disabled={
 												(activeStep === 0 && !bookingForm.state.trainerId) ||
-												(activeStep === 1 && !bookingForm.state.serviceId) ||
-												(activeStep === 2 && (!bookingForm.state.bookingDate || !bookingForm.state.bookingTime || !bookingForm.state.durationMinutes))
+												(activeStep === 1 && (!bookingForm.state.bookingType || !bookingForm.state.durationMinutes || !bookingForm.state.bookingPrice)) ||
+												(activeStep === 2 && (!bookingForm.state.bookingDate || !bookingForm.state.bookingTime))
 											}
 										>
 											Next
@@ -766,10 +672,10 @@ const NewBookingPage: NextPage = () => {
 									<Divider />
 									<Box>
 										<Typography variant="caption" sx={{ color: '#616161' }}>
-											Service
+											Booking Type
 										</Typography>
 										<Typography variant="body2" sx={{ fontWeight: 500 }}>
-											{bookingForm.selectedService?.title || 'Not selected'}
+											{bookingForm.state.bookingType ? getBookingTypeLabel(bookingForm.state.bookingType) : 'Not selected'}
 										</Typography>
 									</Box>
 									<Divider />
