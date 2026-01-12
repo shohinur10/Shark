@@ -2060,6 +2060,7 @@ export const GET_USER_ASSIGNED_ROUTINES = gql`
 				trainerNotes
 				userFeedback
 				priority
+				progressPercentage
 				trainerData {
 					_id
 					memberNick
@@ -2068,6 +2069,7 @@ export const GET_USER_ASSIGNED_ROUTINES = gql`
 				userData {
 					_id
 					memberNick
+					memberFullName
 					memberImage
 				}
 				mealPlanData {

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { Stack } from '@mui/material';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { Member } from '../../types/member/member';
+import { REACT_APP_API_URL } from '../../config';
 
 interface TopTrainerProps {
 	trainer: Member;
@@ -12,7 +13,7 @@ const TopTrainerCard = (props: TopTrainerProps) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
 	const trainerImage = trainer?.memberImage
-		? `${process.env.REACT_APP_API_URL}/${trainer?.memberImage}`
+		? `${REACT_APP_API_URL}/${trainer?.memberImage}`
 		: '/img/profile/defaultUser.svg';
 
 	/** HANDLERS **/

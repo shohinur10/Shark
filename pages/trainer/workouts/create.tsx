@@ -48,6 +48,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import AIWorkoutGenerator from '../../../libs/components/trainer/AIWorkoutGenerator';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -85,6 +87,7 @@ const CreateWorkoutPage: NextPage = () => {
 	const [error, setError] = useState('');
 	const [exerciseDialogOpen, setExerciseDialogOpen] = useState(false);
 	const [exerciseSearchText, setExerciseSearchText] = useState('');
+	const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
 
 	const [createWorkout] = useMutation(CREATE_WORKOUT);
 
@@ -136,7 +139,8 @@ const CreateWorkoutPage: NextPage = () => {
 			);
 			formData.append('0', file);
 
-			const response = await axios.post(`${process.env.REACT_APP_API_GRAPHQL_URL}`, formData, {
+			const graphQLUrl = process.env.NEXT_PUBLIC_API_GRAPHQL_URL || process.env.REACT_APP_API_GRAPHQL_URL || 'http://localhost:3005/graphql';
+			const response = await axios.post(graphQLUrl, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					'apollo-require-preflight': true,
@@ -321,12 +325,31 @@ const CreateWorkoutPage: NextPage = () => {
 	return (
 		<Stack className="create-workout-page" sx={{ p: 4, maxWidth: 1200, mx: 'auto' }}>
 			<Stack className="page-header" sx={{ mb: 4 }}>
-				<Typography variant="h3" className="page-title" sx={{ mb: 1 }}>
-					Create New Workout
-				</Typography>
-				<Typography variant="body1" className="page-subtitle" color="text.secondary">
-					Design a comprehensive workout routine for your clients
-				</Typography>
+				<Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+					<Box>
+						<Typography variant="h3" className="page-title" sx={{ mb: 1 }}>
+							Create New Workout
+						</Typography>
+						<Typography variant="body1" className="page-subtitle" color="text.secondary">
+							Design a comprehensive workout routine for your clients
+						</Typography>
+					</Box>
+					<Button
+						variant="outlined"
+						startIcon={<AutoAwesomeIcon />}
+						onClick={() => setAiGeneratorOpen(true)}
+						sx={{
+							borderColor: '#E10600',
+							color: '#E10600',
+							'&:hover': {
+								borderColor: '#C10500',
+								backgroundColor: 'rgba(225, 6, 0, 0.08)',
+							},
+						}}
+					>
+						AI Generate
+					</Button>
+				</Stack>
 			</Stack>
 
 			{error && (
@@ -681,6 +704,20 @@ const CreateWorkoutPage: NextPage = () => {
 					<Button onClick={() => setExerciseDialogOpen(false)}>Done</Button>
 				</DialogActions>
 			</Dialog>
+
+			{/* AI Workout Generator Dialog */}
+			<AIWorkoutGenerator
+				open={aiGeneratorOpen}
+				onClose={() => setAiGeneratorOpen(false)}
+				onGenerate={(generatedWorkout) => {
+					setWorkoutData({
+						...workoutData,
+						...generatedWorkout,
+						// Keep existing exercises if any, or use generated ones
+						workoutExercises: generatedWorkout.workoutExercises || workoutData.workoutExercises || [],
+					});
+				}}
+			/>
 		</Stack>
 	);
 };

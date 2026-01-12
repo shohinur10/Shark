@@ -79,49 +79,81 @@ const TrainerProfilePage: NextPage = () => {
 	const [reviewsPage, setReviewsPage] = useState(1);
 
 	const limit = 12;
+	const trainerId = typeof id === 'string' ? id : undefined;
 
 	// Fetch trainer profile
 	const { data: trainerData, loading: trainerLoading, error: trainerError, refetch: refetchTrainer } = useQuery(GET_MEMBER, {
-		variables: { input: id as string },
+		variables: { input: trainerId! },
 		fetchPolicy: 'cache-and-network',
-		skip: !id,
+		skip: !trainerId,
 		onError: (error) => {
-			console.error('❌ GET_MEMBER query error:', error);
+			// Only log non-network errors (member not found, etc.)
+			if (error.networkError?.message !== 'Failed to fetch') {
+				const errorDetails: any = {
+					message: error.message,
+				};
+				if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+					errorDetails.graphQLErrors = error.graphQLErrors.map((err: any) => {
+						const errObj: any = { message: err.message };
+						if (err.locations) errObj.locations = err.locations;
+						if (err.path) errObj.path = err.path;
+						return errObj;
+					});
+				}
+				if (error.networkError) {
+					errorDetails.networkError = {
+						name: error.networkError.name,
+						message: error.networkError.message,
+					};
+				}
+				console.error('❌ GET_MEMBER query error:', JSON.stringify(errorDetails, null, 2));
+			}
 		},
 	});
 
 	const trainer = trainerData?.getMember as Member | undefined;
 
 	// Fetch trainer workouts
-	const workoutsInquiry: TrainerWorkoutsInquiry = useMemo(
-		() => ({
-			trainerId: id as string,
-			page: workoutsPage,
-			limit,
-			sort: 'createdAt',
-			direction: Direction.DESC,
-		}),
-		[id, workoutsPage, limit]
+	const workoutsInquiry: TrainerWorkoutsInquiry | null = useMemo(
+		() => {
+			if (!trainerId) return null;
+			return {
+				trainerId: trainerId,
+				page: workoutsPage,
+				limit,
+				sort: 'createdAt',
+				direction: Direction.DESC,
+			};
+		},
+		[trainerId, workoutsPage, limit]
 	);
 
 	const { data: workoutsData, loading: workoutsLoading, error: workoutsError } = useQuery(GET_TRAINER_WORKOUTS, {
-		variables: { input: workoutsInquiry },
+		variables: { input: workoutsInquiry! },
 		fetchPolicy: 'cache-and-network',
-		skip: !id,
+		skip: !trainerId || !workoutsInquiry,
 		onError: (error) => {
-			const errorDetails = {
-				message: error.message,
-				graphQLErrors: error.graphQLErrors?.map((err: any) => ({
-					message: err.message,
-					locations: err.locations,
-					path: err.path,
-				})),
-				networkError: error.networkError ? {
-					name: error.networkError.name,
-					message: error.networkError.message,
-				} : null,
-			};
-			console.error('❌ GET_TRAINER_WORKOUTS query error:', JSON.stringify(errorDetails, null, 2));
+			// Only log non-network errors
+			if (error.networkError?.message !== 'Failed to fetch') {
+				const errorDetails: any = {
+					message: error.message,
+				};
+				if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+					errorDetails.graphQLErrors = error.graphQLErrors.map((err: any) => {
+						const errObj: any = { message: err.message };
+						if (err.locations) errObj.locations = err.locations;
+						if (err.path) errObj.path = err.path;
+						return errObj;
+					});
+				}
+				if (error.networkError) {
+					errorDetails.networkError = {
+						name: error.networkError.name,
+						message: error.networkError.message,
+					};
+				}
+				console.error('❌ GET_TRAINER_WORKOUTS query error:', JSON.stringify(errorDetails, null, 2));
+			}
 		},
 	});
 
@@ -145,21 +177,29 @@ const TrainerProfilePage: NextPage = () => {
 	const { data: servicesData, loading: servicesLoading, error: servicesError } = useQuery(GET_ALL_SERVICES, {
 		variables: { input: servicesInquiry },
 		fetchPolicy: 'cache-and-network',
-		skip: !id,
+		skip: !trainerId,
 		onError: (error) => {
-			const errorDetails = {
-				message: error.message,
-				graphQLErrors: error.graphQLErrors?.map((err: any) => ({
-					message: err.message,
-					locations: err.locations,
-					path: err.path,
-				})),
-				networkError: error.networkError ? {
-					name: error.networkError.name,
-					message: error.networkError.message,
-				} : null,
-			};
-			console.error('❌ GET_ALL_SERVICES query error (Trainer Profile):', JSON.stringify(errorDetails, null, 2));
+			// Only log non-network errors
+			if (error.networkError?.message !== 'Failed to fetch') {
+				const errorDetails: any = {
+					message: error.message,
+				};
+				if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+					errorDetails.graphQLErrors = error.graphQLErrors.map((err: any) => {
+						const errObj: any = { message: err.message };
+						if (err.locations) errObj.locations = err.locations;
+						if (err.path) errObj.path = err.path;
+						return errObj;
+					});
+				}
+				if (error.networkError) {
+					errorDetails.networkError = {
+						name: error.networkError.name,
+						message: error.networkError.message,
+					};
+				}
+				console.error('❌ GET_ALL_SERVICES query error (Trainer Profile):', JSON.stringify(errorDetails, null, 2));
+			}
 		},
 	});
 
@@ -176,35 +216,46 @@ const TrainerProfilePage: NextPage = () => {
 	const servicesTotal = servicesData?.getAllServices?.metaCounter?.[0]?.total || 0;
 
 	// Fetch reviews
-	const reviewsInquiry: ReviewsInquiry = useMemo(
-		() => ({
-			page: reviewsPage,
-			limit,
-			sort: 'createdAt',
-			direction: Direction.DESC,
-			trainerId: id as string,
-		}),
-		[id, reviewsPage, limit]
+	const reviewsInquiry: ReviewsInquiry | null = useMemo(
+		() => {
+			if (!trainerId) return null;
+			return {
+				page: reviewsPage,
+				limit,
+				sort: 'createdAt',
+				direction: Direction.DESC,
+				trainerId: trainerId,
+			};
+		},
+		[trainerId, reviewsPage, limit]
 	);
 
 	const { data: reviewsData, loading: reviewsLoading, error: reviewsError } = useQuery(GET_REVIEWS, {
-		variables: { input: reviewsInquiry },
+		variables: { input: reviewsInquiry! },
 		fetchPolicy: 'cache-and-network',
-		skip: !id,
+		skip: !trainerId || !reviewsInquiry,
 		onError: (error) => {
-			const errorDetails = {
-				message: error.message,
-				graphQLErrors: error.graphQLErrors?.map((err: any) => ({
-					message: err.message,
-					locations: err.locations,
-					path: err.path,
-				})),
-				networkError: error.networkError ? {
-					name: error.networkError.name,
-					message: error.networkError.message,
-				} : null,
-			};
-			console.error('❌ GET_REVIEWS query error:', JSON.stringify(errorDetails, null, 2));
+			// Only log non-network errors
+			if (error.networkError?.message !== 'Failed to fetch') {
+				const errorDetails: any = {
+					message: error.message,
+				};
+				if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+					errorDetails.graphQLErrors = error.graphQLErrors.map((err: any) => {
+						const errObj: any = { message: err.message };
+						if (err.locations) errObj.locations = err.locations;
+						if (err.path) errObj.path = err.path;
+						return errObj;
+					});
+				}
+				if (error.networkError) {
+					errorDetails.networkError = {
+						name: error.networkError.name,
+						message: error.networkError.message,
+					};
+				}
+				console.error('❌ GET_REVIEWS query error:', JSON.stringify(errorDetails, null, 2));
+			}
 		},
 	});
 

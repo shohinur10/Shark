@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
@@ -25,8 +25,15 @@ const Join: NextPage = () => {
 	const [input, setInput] = useState({ nick: '', password: '', phone: '', type: 'USER' });
 	const [loginView, setLoginView] = useState<boolean>(true);
 
+	// Clear form fields when component mounts
+	useEffect(() => {
+		setInput({ nick: '', password: '', phone: '', type: 'USER' });
+	}, []);
+
 	/** HANDLERS **/
 	const viewChangeHandler = (state: boolean) => {
+		// Clear form fields when switching between login/signup
+		setInput({ nick: '', password: '', phone: '', type: 'USER' });
 		setLoginView(state);
 	};
 
@@ -50,21 +57,29 @@ const Join: NextPage = () => {
 		console.warn(input);
 		try {
 			await logIn(input.nick, input.password);
+			// Clear form fields after successful login
+			setInput({ nick: '', password: '', phone: '', type: 'USER' });
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
 			await sweetMixinErrorAlert(err.message);
+			// Clear password field on error for security
+			setInput((prev) => ({ ...prev, password: '' }));
 		}
-	}, [input]);
+	}, [input, router]);
 
 	const doSignUp = useCallback(async () => {
 		console.warn(input);
 		try {
 			await signUp(input.nick, input.password, input.phone, input.type);
+			// Clear form fields after successful signup
+			setInput({ nick: '', password: '', phone: '', type: 'USER' });
 			await router.push(`${router.query.referrer ?? '/'}`);
 		} catch (err: any) {
 			await sweetMixinErrorAlert(err.message);
+			// Clear password field on error for security
+			setInput((prev) => ({ ...prev, password: '' }));
 		}
-	}, [input]);
+	}, [input, router]);
 
 	if (device === 'mobile') {
 		return <div>LOGIN MOBILE</div>;
@@ -110,6 +125,8 @@ const Join: NextPage = () => {
 											if (event.key == 'Enter' && !loginView) doSignUp();
 										}}
 										className={'fitness-input'}
+										autoComplete="off"
+										autoFocus={false}
 									/>
 								</div>
 								<div className={'input-box'}>
@@ -126,13 +143,14 @@ const Join: NextPage = () => {
 										}}
 										className={'fitness-input'}
 										autoComplete={loginView ? 'current-password' : 'new-password'}
+										autoFocus={false}
 									/>
 								</div>
 								{!loginView && (
 									<div className={'input-box'}>
 										<PhoneIcon className={'input-icon'} />
 										<input
-											type="text"
+											type="tel"
 											placeholder={'Phone Number'}
 											value={input.phone}
 											onChange={(e) => handleInput('phone', e.target.value)}
@@ -141,6 +159,8 @@ const Join: NextPage = () => {
 												if (event.key == 'Enter') doSignUp();
 											}}
 											className={'fitness-input'}
+											autoComplete="off"
+											autoFocus={false}
 										/>
 									</div>
 								)}

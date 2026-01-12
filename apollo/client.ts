@@ -38,31 +38,53 @@ const tokenRefreshLink = new TokenRefreshLink({
 
 // Custom WebSocket client
 class LoggingWebSocket {
-	private socket: WebSocket;
+	private socket: WebSocket | null = null;
 
 	constructor(url: string) {
-		this.socket = new WebSocket(`${url}?token=${getJwtToken()}`);
-		socketVar(this.socket);
+		try {
+			this.socket = new WebSocket(`${url}?token=${getJwtToken()}`);
+			socketVar(this.socket);
 
-		this.socket.onopen = () => {
-			console.log('WebSocket connection!');
-		};
+			this.socket.onopen = () => {
+				if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+					console.log('WebSocket connection established');
+				}
+			};
 
-		this.socket.onmessage = (msg) => {
-			console.log('WebSocket message:', msg.data);
-		};
+			this.socket.onmessage = (msg) => {
+				if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+					console.log('WebSocket message:', msg.data);
+				}
+			};
 
-		this.socket.onerror = (error) => {
-			console.log('WebSocket, error:', error);
-		};
+			this.socket.onerror = (error) => {
+				// Silently handle WebSocket errors (backend might not be running)
+				if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+					console.log('WebSocket connection error (this is normal if backend is not running)');
+				}
+			};
+
+			this.socket.onclose = () => {
+				// Silently handle WebSocket close
+			};
+		} catch (error) {
+			// Silently handle WebSocket creation errors
+			if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+				console.log('WebSocket initialization failed (this is normal if backend is not running)');
+			}
+		}
 	}
 
 	send(data: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-		this.socket.send(data);
+		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+			this.socket.send(data);
+		}
 	}
 
 	close() {
-		this.socket.close();
+		if (this.socket) {
+			this.socket.close();
+		}
 	}
 }
 
@@ -87,14 +109,27 @@ function createIsomorphicLink() {
 	const errorLink = onError(({ graphQLErrors, networkError, response }) => {
 		if (graphQLErrors) {
 			graphQLErrors.map(({ message, locations, path, extensions }) => {
-				console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
-				if (typeof window !== 'undefined' && !message.includes('input')) {
+				if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+					// Only log Location and Path if they exist
+					const locationStr = locations ? `, Location: ${JSON.stringify(locations)}` : '';
+					const pathStr = path ? `, Path: ${JSON.stringify(path)}` : '';
+					console.log(`[GraphQL error]: Message: ${message}${locationStr}${pathStr}`);
+				}
+				// Only show user-facing errors for non-network issues
+				if (typeof window !== 'undefined' && !message.includes('input') && !message.includes('Failed to fetch')) {
 					sweetErrorAlert(message);
 				}
 			});
 		}
+		// Suppress connection refused errors (backend not running)
 		if (networkError) {
-			console.log(`[Network error]: ${networkError}`);
+			const errorMessage = networkError.message || String(networkError);
+			// Only log if it's not a connection refused error
+			if (!errorMessage.includes('Failed to fetch') && !errorMessage.includes('ERR_CONNECTION_REFUSED')) {
+				if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+					console.log(`[Network error]: ${networkError}`);
+				}
+			}
 		}
 		// @ts-ignore
 		if (networkError?.statusCode === 401) {

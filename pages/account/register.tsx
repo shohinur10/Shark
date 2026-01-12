@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import {
@@ -60,6 +60,21 @@ const RegisterPage: NextPage = () => {
 		password?: string;
 		confirmPassword?: string;
 	}>({});
+
+	// Clear form fields when component mounts
+	useEffect(() => {
+		setFormData({
+			nick: '',
+			phone: '',
+			password: '',
+			confirmPassword: '',
+			userType: 'USER',
+			agreeToTerms: false,
+			motivationTips: false,
+		});
+		setError('');
+		setFieldErrors({});
+	}, []);
 
 	const handleInputChange = (field: string, value: any) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
@@ -124,9 +139,25 @@ const RegisterPage: NextPage = () => {
 
 		try {
 			await signUp(formData.nick, formData.password, formData.phone, formData.userType);
+			// Clear form fields after successful registration
+			setFormData({
+				nick: '',
+				phone: '',
+				password: '',
+				confirmPassword: '',
+				userType: 'USER',
+				agreeToTerms: false,
+				motivationTips: false,
+			});
 			await router.push((router.query.referrer as string) || '/dashboard');
 		} catch (err: any) {
 			setError(err.message || 'Registration failed. Please try again.');
+			// Clear password fields on error for security
+			setFormData((prev) => ({
+				...prev,
+				password: '',
+				confirmPassword: '',
+			}));
 			await sweetMixinErrorAlert(err.message || 'Registration failed');
 		} finally {
 			setLoading(false);
@@ -170,6 +201,7 @@ const RegisterPage: NextPage = () => {
 						helperText={fieldErrors.nick}
 						required
 						className={'form-input'}
+						autoComplete="off"
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position="start">
@@ -192,6 +224,7 @@ const RegisterPage: NextPage = () => {
 						helperText={fieldErrors.phone}
 						required
 						className={'form-input'}
+						autoComplete="off"
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position="start">
@@ -213,6 +246,7 @@ const RegisterPage: NextPage = () => {
 						helperText={fieldErrors.password}
 						required
 						className={'form-input'}
+						autoComplete="new-password"
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position="start">
@@ -240,6 +274,7 @@ const RegisterPage: NextPage = () => {
 						helperText={fieldErrors.confirmPassword}
 						required
 						className={'form-input'}
+						autoComplete="new-password"
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position="start">
@@ -394,6 +429,7 @@ const RegisterPage: NextPage = () => {
 								helperText={fieldErrors.nick}
 								required
 								className={'form-input'}
+								autoComplete="off"
 								InputProps={{
 									startAdornment: (
 										<InputAdornment position="start">
@@ -412,6 +448,7 @@ const RegisterPage: NextPage = () => {
 								value={formData.phone}
 								onChange={(e) => handleInputChange('phone', e.target.value)}
 								onKeyPress={handleKeyPress}
+								autoComplete="off"
 								error={!!fieldErrors.phone}
 								helperText={fieldErrors.phone}
 								required
@@ -438,6 +475,7 @@ const RegisterPage: NextPage = () => {
 								helperText={fieldErrors.password}
 								required
 								className={'form-input'}
+								autoComplete="new-password"
 								InputProps={{
 									startAdornment: (
 										<InputAdornment position="start">
@@ -465,6 +503,7 @@ const RegisterPage: NextPage = () => {
 								helperText={fieldErrors.confirmPassword}
 								required
 								className={'form-input'}
+								autoComplete="new-password"
 								InputProps={{
 									startAdornment: (
 										<InputAdornment position="start">

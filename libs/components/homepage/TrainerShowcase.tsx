@@ -84,6 +84,19 @@ const TrainerShowcase = () => {
 
 	const displayTrainers = trainers.length > 0 ? trainers : sampleTrainers;
 
+	// Helper function to get the correct image URL
+	const getTrainerImageUrl = (trainer: any) => {
+		if (!trainer.memberImage) {
+			return '/img/profile/defaultUser.svg';
+		}
+		// If it's already a full URL or starts with /img/, use it as is (sample trainers)
+		if (trainer.memberImage.startsWith('http') || trainer.memberImage.startsWith('/img/')) {
+			return trainer.memberImage;
+		}
+		// Otherwise, it's a relative path from the API, prepend the API URL
+		return `${REACT_APP_API_URL}/${trainer.memberImage}`;
+	};
+
 	if (device === 'mobile') {
 		return (
 			<Stack className={'trainer-showcase'}>
@@ -99,7 +112,7 @@ const TrainerShowcase = () => {
 										<CardContent>
 											<Stack direction="column" alignItems="center" spacing={1}>
 												<Avatar
-													src={trainer.memberImage || undefined}
+													src={getTrainerImageUrl(trainer)}
 													sx={{ width: 80, height: 80 }}
 												>
 													{(trainer.memberFullName || trainer.memberNick)?.charAt(0) || 'T'}
@@ -145,7 +158,7 @@ const TrainerShowcase = () => {
 										<Box
 											className={'trainer-image'}
 											style={{
-												backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), url(${trainer.memberImage || '/img/bodybuilders/pexels-gabflicks-13122470.jpg'})`,
+												backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), url(${getTrainerImageUrl(trainer)})`,
 											}}
 										>
 											<Chip

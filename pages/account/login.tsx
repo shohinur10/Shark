@@ -47,6 +47,13 @@ const LoginPage: NextPage = () => {
 	const [fieldErrors, setFieldErrors] = useState<{ nick?: string; password?: string }>({});
 	const [isEmail, setIsEmail] = useState(false);
 
+	// Clear form fields when component mounts
+	useEffect(() => {
+		setFormData({ nick: '', password: '', rememberMe: false });
+		setError('');
+		setFieldErrors({});
+	}, []);
+
 	useEffect(() => {
 		// Check if input is email format
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -92,10 +99,14 @@ const LoginPage: NextPage = () => {
 
 		try {
 			await logIn(formData.nick, formData.password);
+			// Clear form fields after successful login
+			setFormData({ nick: '', password: '', rememberMe: false });
 			await router.push((router.query.referrer as string) || '/dashboard');
 		} catch (err: any) {
 			const errorMessage = err.message || 'Login failed. Please check your credentials.';
 			setError(errorMessage);
+			// Clear password field on error for security
+			setFormData((prev) => ({ ...prev, password: '' }));
 			await sweetMixinErrorAlert(errorMessage);
 		} finally {
 			setLoading(false);
@@ -139,6 +150,7 @@ const LoginPage: NextPage = () => {
 						helperText={fieldErrors.nick}
 						required
 						className={'form-input'}
+						autoComplete="off"
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position="start">
@@ -161,6 +173,7 @@ const LoginPage: NextPage = () => {
 						helperText={fieldErrors.password}
 						required
 						className={'form-input'}
+						autoComplete="current-password"
 						InputProps={{
 							startAdornment: (
 								<InputAdornment position="start">
@@ -276,6 +289,7 @@ const LoginPage: NextPage = () => {
 								helperText={fieldErrors.nick}
 								required
 								className={'form-input'}
+								autoComplete="off"
 								InputProps={{
 									startAdornment: (
 										<InputAdornment position="start">
@@ -298,6 +312,7 @@ const LoginPage: NextPage = () => {
 								helperText={fieldErrors.password}
 								required
 								className={'form-input'}
+								autoComplete="current-password"
 								InputProps={{
 									startAdornment: (
 										<InputAdornment position="start">

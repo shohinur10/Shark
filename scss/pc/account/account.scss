@@ -17,7 +17,7 @@ $auth-radius: 16px;
 		padding: 60px 0px;
 		width: 100%;
 		min-height: calc(100vh - 200px);
-		background: $auth-bg;
+		background: #FFFFFF;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -456,7 +456,7 @@ $auth-radius: 16px;
 		padding: 0;
 		width: 100%;
 		min-height: 100vh;
-		background: linear-gradient(135deg, #181A20 0%, #2A2D35 100%);
+		background: #FFFFFF;
 		overflow: hidden;
 
 		.container {
@@ -999,7 +999,7 @@ $auth-radius: 16px;
 	&.mobile {
 		.register-page {
 			padding: 40px 20px;
-			background: $auth-bg;
+			background: #FFFFFF;
 			min-height: calc(100vh - 200px);
 			display: flex;
 			align-items: center;
@@ -1176,7 +1176,7 @@ $auth-radius: 16px;
 
 		.login-page {
 			padding: 40px 20px;
-			background: $auth-bg;
+			background: #FFFFFF;
 			min-height: calc(100vh - 200px);
 			display: flex;
 			align-items: center;

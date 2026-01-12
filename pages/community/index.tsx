@@ -52,6 +52,10 @@ import NewsIcon from '@mui/icons-material/Article';
 import HumorIcon from '@mui/icons-material/SentimentVerySatisfied';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Link from 'next/link';
 
 export const getStaticProps = async ({ locale }: any) => ({
@@ -231,8 +235,11 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 		{ value: 'FREE', label: 'Feed', icon: FeedIcon },
 		{ value: 'SUCCESS_STORY', label: 'Progress', icon: ProgressIcon },
 		{ value: 'WORKOUT_TIPS', label: 'Tips', icon: TipsIcon },
+		{ value: 'NUTRITION', label: 'Nutrition', icon: RestaurantIcon },
 		{ value: 'MOTIVATION', label: 'Motivation', icon: MotivationIcon },
 		{ value: 'QUESTION', label: 'Q&A', icon: QuestionAnswerIcon },
+		{ value: 'EQUIPMENT_REVIEW', label: 'Equipment', icon: FitnessCenterIcon },
+		{ value: 'GYM_REVIEW', label: 'Gym Reviews', icon: LocationOnIcon },
 		{ value: 'NEWS', label: 'News', icon: NewsIcon },
 		{ value: 'HUMOR', label: 'Humor', icon: HumorIcon },
 	];
@@ -243,8 +250,11 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 			FREE: { title: 'Community Feed', subtitle: 'Express your opinions freely here without content restrictions' },
 			SUCCESS_STORY: { title: 'Progress Stories', subtitle: 'Share your transformation journey and inspire others' },
 			WORKOUT_TIPS: { title: 'Workout Tips', subtitle: 'Share workout tips, techniques, and advice' },
+			NUTRITION: { title: 'Nutrition', subtitle: 'Share diet tips, meal plans, and nutrition advice' },
 			MOTIVATION: { title: 'Motivation', subtitle: 'Get motivated and stay inspired on your fitness journey' },
 			QUESTION: { title: 'Questions & Answers', subtitle: 'Ask questions and get answers from the community' },
+			EQUIPMENT_REVIEW: { title: 'Equipment Reviews', subtitle: 'Review and discuss gym equipment, gear, and accessories' },
+			GYM_REVIEW: { title: 'Gym Reviews', subtitle: 'Share your experiences and reviews of gyms and fitness studios' },
 			NEWS: { title: 'News', subtitle: 'Stay updated with the latest fitness news and trends' },
 			HUMOR: { title: 'Humor', subtitle: 'Share funny moments and lighten up the community' },
 		};
@@ -1275,6 +1285,96 @@ const Community: NextPage = ({ initialInput, ...props }: T) => {
 													>
 														<Typography sx={{ fontSize: '15px', color: '#6B6B6B' }}>
 															No humor posts found!
+														</Typography>
+													</Card>
+												)}
+											</Stack>
+										</TabPanel>
+										<TabPanel value="NUTRITION" sx={{ padding: 0 }}>
+											<Stack className="list-box" spacing={2}>
+												{totalCount ? (
+													boardArticles?.map((boardArticle: BoardArticle) => {
+														return (
+															<CommunityCard
+																boardArticle={boardArticle}
+																key={boardArticle?._id}
+																likeArticleHandler={likeArticleHandler}
+															/>
+														);
+													})
+												) : (
+													<Card
+														elevation={0}
+														sx={{
+															backgroundColor: '#FFFFFF',
+															borderRadius: '16px',
+															border: '1px solid #E5E5E5',
+															padding: '60px 32px',
+															textAlign: 'center',
+														}}
+													>
+														<Typography sx={{ fontSize: '15px', color: '#6B6B6B' }}>
+															No nutrition posts yet! Share your diet tips and meal plans.
+														</Typography>
+													</Card>
+												)}
+											</Stack>
+										</TabPanel>
+										<TabPanel value="EQUIPMENT_REVIEW" sx={{ padding: 0 }}>
+											<Stack className="list-box" spacing={2}>
+												{totalCount ? (
+													boardArticles?.map((boardArticle: BoardArticle) => {
+														return (
+															<CommunityCard
+																boardArticle={boardArticle}
+																key={boardArticle?._id}
+																likeArticleHandler={likeArticleHandler}
+															/>
+														);
+													})
+												) : (
+													<Card
+														elevation={0}
+														sx={{
+															backgroundColor: '#FFFFFF',
+															borderRadius: '16px',
+															border: '1px solid #E5E5E5',
+															padding: '60px 32px',
+															textAlign: 'center',
+														}}
+													>
+														<Typography sx={{ fontSize: '15px', color: '#6B6B6B' }}>
+															No equipment reviews yet! Share your experience with gym equipment.
+														</Typography>
+													</Card>
+												)}
+											</Stack>
+										</TabPanel>
+										<TabPanel value="GYM_REVIEW" sx={{ padding: 0 }}>
+											<Stack className="list-box" spacing={2}>
+												{totalCount ? (
+													boardArticles?.map((boardArticle: BoardArticle) => {
+														return (
+															<CommunityCard
+																boardArticle={boardArticle}
+																key={boardArticle?._id}
+																likeArticleHandler={likeArticleHandler}
+															/>
+														);
+													})
+												) : (
+													<Card
+														elevation={0}
+														sx={{
+															backgroundColor: '#FFFFFF',
+															borderRadius: '16px',
+															border: '1px solid #E5E5E5',
+															padding: '60px 32px',
+															textAlign: 'center',
+														}}
+													>
+														<Typography sx={{ fontSize: '15px', color: '#6B6B6B' }}>
+															No gym reviews yet! Share your experience with gyms and studios.
 														</Typography>
 													</Card>
 												)}
