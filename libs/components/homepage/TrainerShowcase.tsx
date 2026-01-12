@@ -107,7 +107,7 @@ const TrainerShowcase = () => {
 					<Grid container spacing={2}>
 						{displayTrainers.slice(0, 2).map((trainer: any) => (
 							<Grid item xs={6} key={trainer._id}>
-								<Link href={`/trainers/${trainer._id}`}>
+								<Link href={`/trainer/${trainer._id}`}>
 									<Card className={'trainer-card'}>
 										<CardContent>
 											<Stack direction="column" alignItems="center" spacing={1}>
@@ -144,7 +144,7 @@ const TrainerShowcase = () => {
 								Connect with certified fitness professionals ready to guide your transformation
 							</Typography>
 						</Box>
-						<Link href="/trainers">
+						<Link href="/trainer">
 							<Button variant="outlined" className={'view-all-btn'}>
 								View All Trainers
 							</Button>
@@ -153,7 +153,7 @@ const TrainerShowcase = () => {
 					<Grid container spacing={3}>
 						{displayTrainers.map((trainer: any) => (
 							<Grid item xs={12} sm={6} md={3} key={trainer._id}>
-								<Link href={`/trainers/${trainer._id}`}>
+								<Link href={`/trainer/${trainer._id}`}>
 									<Card className={'trainer-card'}>
 										<Box
 											className={'trainer-image'}

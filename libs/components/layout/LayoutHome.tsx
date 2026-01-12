@@ -41,35 +41,37 @@ const withLayoutMain = (Component: any) => {
 							<Component {...props} />
 						</Stack>
 
-						<Stack id={'footer'}>
-							<Footer />
-						</Stack>
+					<Stack id={'footer'}>
+						<Footer />
 					</Stack>
-				</>
-			);
-		} else {
-			return (
-				<>
-					<Head>
-						<title>Shark</title>
-						<meta name={'title'} content={`Shark`} />
-					</Head>
-					<Stack id="pc-wrap">
-						<Stack id={'top'}>
-							<Top />
-						</Stack>
-
-						<Stack id={'main'}>
-							<Component {...props} />
-						</Stack>
-
-						<Stack id={'footer'}>
-							<Footer />
-						</Stack>
+					<Chat />
+				</Stack>
+			</>
+		);
+	} else {
+		return (
+			<>
+				<Head>
+					<title>Shark</title>
+					<meta name={'title'} content={`Shark`} />
+				</Head>
+				<Stack id="pc-wrap">
+					<Stack id={'top'}>
+						<Top />
 					</Stack>
-				</>
-			);
-		}
+
+					<Stack id={'main'}>
+						<Component {...props} />
+					</Stack>
+
+					<Stack id={'footer'}>
+						<Footer />
+					</Stack>
+					<Chat />
+				</Stack>
+			</>
+		);
+	}
 	};
 };
 

@@ -28,12 +28,7 @@ const TrainerCard = (props: TrainerCardProps) => {
 	} else {
 		return (
 			<Stack className="trainer-general-card">
-				<Link
-					href={{
-						pathname: '/trainer/detail',
-						query: { trainerId: trainer?._id },
-					}}
-				>
+				<Link href={`/trainer/${trainer?._id}`}>
 					<Box
 						component={'div'}
 						className={'trainer-img'}
@@ -49,12 +44,7 @@ const TrainerCard = (props: TrainerCardProps) => {
 
 				<Stack className={'trainer-desc'}>
 					<Box component={'div'} className={'trainer-info'}>
-						<Link
-							href={{
-								pathname: '/trainer/detail',
-								query: { trainerId: 'id' },
-							}}
-						>
+						<Link href={`/trainer/${trainer?._id}`}>
 							<strong>{trainer?.memberFullName ?? trainer?.memberNick}</strong>
 						</Link>
 						<span>Trainer</span>

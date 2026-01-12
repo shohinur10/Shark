@@ -7,7 +7,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState, useEffect, useMemo } from 'react';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
@@ -30,7 +29,6 @@ import { GET_MEAL_PLANS, GET_SUPPLEMENTS } from '../../apollo/user/query';
 import { NutritionGoal, DietaryPreference } from '../../libs/enums/nutrition.enum';
 import { MealPlan } from '../../libs/types/mealplan/mealplan';
 import { MealPlansInquiry } from '../../libs/types/mealplan/mealplan.input';
-import { Recipe, RecipeTag } from '../../libs/types/recipe/recipe';
 import { Direction } from '../../libs/enums/common.enum';
 import { T } from '../../libs/types/common';
 import { getJwtToken } from '../../libs/auth';
@@ -87,8 +85,8 @@ const nutritionContent = [
 		id: '2',
 		type: 'image',
 		thumbnail: '/img/bodybuilders/pexels-gabflicks-13122470.jpg',
-		title: 'Healthy Recipes',
-		category: 'Recipes',
+		title: 'Nutrition Tips',
+		category: 'Tips',
 	},
 	{
 		id: '3',
@@ -438,7 +436,7 @@ const NutritionPage: NextPage = () => {
 							Nutrition & Meal Planning
 						</Typography>
 						<Typography variant="body1" className={'page-subtitle'}>
-							Fuel your body with personalized meal plans and recipes
+						Fuel your body with personalized meal plans
 						</Typography>
 					</Stack>
 
@@ -628,7 +626,6 @@ const NutritionPage: NextPage = () => {
 							<Tab label="Macro Calculator" icon={<CalculateIcon />} iconPosition="start" />
 							<Tab label="Vitamins & Supplements" icon={<StarIcon />} iconPosition="start" />
 							<Tab label="Meal Plans" icon={<MenuBookIcon />} iconPosition="start" />
-							<Tab label="Recipes" icon={<LocalDiningIcon />} iconPosition="start" />
 						</Tabs>
 					</Box>
 
@@ -1503,163 +1500,6 @@ const NutritionPage: NextPage = () => {
 						</Box>
 					)}
 
-					{/* Recipes Tab */}
-					{tabValue === 5 && (
-						<Box className={'recipes-section'}>
-							<Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
-								<Box>
-									<Typography variant="h5" className={'section-title'} gutterBottom>
-										Recipe Library
-									</Typography>
-									<Typography variant="body1" className={'section-description'}>
-										Discover delicious, nutritious recipes to fuel your fitness journey
-									</Typography>
-								</Box>
-								<Button variant="contained" className={'browse-all-btn'}>
-									Browse All Recipes
-								</Button>
-							</Stack>
-							<Grid container spacing={3}>
-								{([
-									{ 
-										id: 1, 
-										name: 'Grilled Chicken & Quinoa Bowl', 
-										calories: 450, 
-										time: 30, 
-										tags: [RecipeTag.HIGH_PROTEIN, RecipeTag.EASY, RecipeTag.LUNCH], 
-										image: '/img/bodybuilders/pexels-gabflicks-13122470.jpg',
-										macros: { protein: 45, carbs: 50, fats: 12 }
-									},
-									{ 
-										id: 2, 
-										name: 'Salmon Power Salad', 
-										calories: 380, 
-										time: 25, 
-										tags: [RecipeTag.LOW_CARB, RecipeTag.HIGH_PROTEIN, RecipeTag.LUNCH], 
-										image: '/img/bodybuilders/pexels-kuiyibo-13958866.jpg',
-										macros: { protein: 35, carbs: 20, fats: 18 }
-									},
-									{ 
-										id: 3, 
-										name: 'Protein Smoothie Bowl', 
-										calories: 320, 
-										time: 10, 
-										tags: [RecipeTag.QUICK, RecipeTag.HIGH_PROTEIN, RecipeTag.BREAKFAST, RecipeTag.POST_WORKOUT], 
-										image: '/img/bodybuilders/pexels-leonmart-1552108.jpg',
-										macros: { protein: 30, carbs: 40, fats: 8 }
-									},
-									{ 
-										id: 4, 
-										name: 'Lean Beef Stir Fry', 
-										calories: 420, 
-										time: 20, 
-										tags: [RecipeTag.HIGH_PROTEIN, RecipeTag.QUICK, RecipeTag.DINNER], 
-										image: '/img/bodybuilders/pexels-mralpha-13451637.jpg',
-										macros: { protein: 40, carbs: 35, fats: 15 }
-									},
-									{ 
-										id: 5, 
-										name: 'Veggie Power Wrap', 
-										calories: 350, 
-										time: 15, 
-										tags: [RecipeTag.VEGETARIAN, RecipeTag.EASY, RecipeTag.LUNCH, RecipeTag.MEAL_PREP], 
-										image: '/img/bodybuilders/pexels-mralpha-24809802.jpg',
-										macros: { protein: 15, carbs: 45, fats: 12 }
-									},
-									{ 
-										id: 6, 
-										name: 'Greek Yogurt Parfait', 
-										calories: 280, 
-										time: 5, 
-										tags: [RecipeTag.QUICK, RecipeTag.HIGH_PROTEIN, RecipeTag.BREAKFAST, RecipeTag.SNACK], 
-										image: '/img/bodybuilders/pexels-oscar-machado-937103-3014237.jpg',
-										macros: { protein: 25, carbs: 30, fats: 8 }
-									},
-									{ 
-										id: 7, 
-										name: 'Keto Avocado Egg Bowl', 
-										calories: 320, 
-										time: 15, 
-										tags: [RecipeTag.KETO, RecipeTag.LOW_CARB, RecipeTag.HIGH_PROTEIN, RecipeTag.BREAKFAST], 
-										image: '/img/bodybuilders/pexels-gabflicks-13122470.jpg',
-										macros: { protein: 20, carbs: 8, fats: 24 }
-									},
-									{ 
-										id: 8, 
-										name: 'Vegan Buddha Bowl', 
-										calories: 400, 
-										time: 25, 
-										tags: [RecipeTag.VEGAN, RecipeTag.EASY, RecipeTag.LUNCH, RecipeTag.MEAL_PREP], 
-										image: '/img/bodybuilders/pexels-kuiyibo-13958866.jpg',
-										macros: { protein: 18, carbs: 55, fats: 12 }
-									},
-								] as any[]).map((recipe) => (
-									<Grid item xs={12} sm={6} md={4} key={recipe.id}>
-										<Link href={`/nutrition/recipes/${recipe.id}`}>
-											<Card className={'recipe-card'}>
-												<CardMedia
-													component="div"
-													className={'recipe-image'}
-													style={{
-														backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url(${recipe.image})`,
-														backgroundSize: 'cover',
-														backgroundPosition: 'center',
-														height: 250,
-													}}
-												>
-													<Box className={'recipe-overlay'}>
-														<Stack direction="row" spacing={2}>
-															<Chip 
-																icon={<LocalFireDepartmentIcon />} 
-																label={`${recipe.calories} cal`} 
-																size="small" 
-																className={'recipe-calorie-chip'} 
-															/>
-															<Chip 
-																icon={<RestaurantIcon />} 
-																label={`${recipe.time} min`} 
-																size="small" 
-																className={'recipe-time-chip'} 
-															/>
-														</Stack>
-													</Box>
-												</CardMedia>
-												<CardContent>
-													<Typography variant="h6" className={'recipe-title'} gutterBottom>
-														{recipe.name}
-													</Typography>
-													{recipe.macros && (
-														<Stack direction="row" spacing={1} mb={1} flexWrap="wrap">
-															<Chip 
-																label={`P: ${recipe.macros.protein}g`} 
-																size="small" 
-																className={'recipe-macro-chip protein'} 
-															/>
-															<Chip 
-																label={`C: ${recipe.macros.carbs}g`} 
-																size="small" 
-																className={'recipe-macro-chip carbs'} 
-															/>
-															<Chip 
-																label={`F: ${recipe.macros.fats}g`} 
-																size="small" 
-																className={'recipe-macro-chip fats'} 
-															/>
-														</Stack>
-													)}
-													<Stack direction="row" spacing={1} flexWrap="wrap">
-														{recipe.tags.map((tag: string, idx: number) => (
-															<Chip key={idx} label={tag.replace(/_/g, ' ')} size="small" className={'recipe-tag'} />
-														))}
-													</Stack>
-												</CardContent>
-											</Card>
-										</Link>
-									</Grid>
-								))}
-							</Grid>
-						</Box>
-					)}
 
 					{/* Insights Section */}
 					<Box id="insights-section" className={'insights-section'} sx={{ mt: 6, mb: 4 }}>

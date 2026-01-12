@@ -1,22 +1,23 @@
-import React, { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState, useMemo } from 'react';
 import { NextPage } from 'next';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
-import { Stack, Box, Button, Pagination } from '@mui/material';
-import { Menu, MenuItem } from '@mui/material';
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import { Stack, Box, Button, Pagination, Typography, Grid, Card, CardContent, TextField, FormControl, InputLabel, Select, MenuItem, Chip, Alert, Skeleton } from '@mui/material';
 import TrainerCard from '../../libs/components/common/TrainerCard';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { Member } from '../../libs/types/member/member';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { LIKE_TARGET_MEMBER } from '../../apollo/user/mutation';
 import { T } from '../../libs/types/common';
 import { GET_TRAINERS } from '../../apollo/user/query';
 import { Messages } from '../../libs/config';
-
+import { userVar } from '../../apollo/store';
 import { sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
-
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
@@ -27,10 +28,7 @@ export const getStaticProps = async ({ locale }: any) => ({
 const TrainerList: NextPage = ({ initialInput, ...props }: any) => {
 	const device = useDeviceDetect();
 	const router = useRouter();
-	const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
-	const [filterSortName, setFilterSortName] = useState('Recent');
-	const [sortingOpen, setSortingOpen] = useState(false);
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const user = useReactiveVar(userVar);
 	const [searchFilter, setSearchFilter] = useState<any>(
 		router?.query?.input ? JSON.parse(router?.query?.input as string) : initialInput,
 	);
@@ -38,6 +36,7 @@ const TrainerList: NextPage = ({ initialInput, ...props }: any) => {
 	const [total, setTotal] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [searchText, setSearchText] = useState<string>('');
+	const [sortBy, setSortBy] = useState<'createdAt' | 'memberLikes' | 'memberViews'>('createdAt');
 
 	/** APOLLO REQUESTS **/
 	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
@@ -48,67 +47,44 @@ const TrainerList: NextPage = ({ initialInput, ...props }: any) => {
 		refetch: getTrainersRefetch,
 	} = useQuery(GET_TRAINERS, {
 		fetchPolicy: 'network-only',
-		variables: { input: searchFilter },
+		variables: { 
+			input: {
+				...searchFilter,
+				sort: sortBy,
+				direction: sortBy === 'createdAt' ? 'DESC' : 'DESC',
+				search: {
+					...searchFilter.search,
+					text: searchText || undefined,
+				},
+			},
+		},
 		notifyOnNetworkStatusChange: true,
 		onCompleted: (data: T) => {
 			setTrainers(data?.getTrainers?.list);
 			setTotal(data?.getTrainers?.metaCounter[0]?.total);
 		},
 	});
+
 	/** LIFECYCLES **/
-	
-		
 	useEffect(() => {
 		if (router.query.input) {
 			const input_obj = JSON.parse(router?.query?.input as string);
 			setSearchFilter(input_obj);
 		} else
-			router.replace(`/trainers?input=${JSON.stringify(searchFilter)}`, `/trainers?input=${JSON.stringify(searchFilter)}`);
+			router.replace(`/trainer?input=${JSON.stringify(searchFilter)}`, `/trainer?input=${JSON.stringify(searchFilter)}`);
 
 		setCurrentPage(searchFilter.page === undefined ? 1 : searchFilter.page);
 	}, [router]);
 
 	/** HANDLERS **/
-	const sortingClickHandler = (e: MouseEvent<HTMLElement>) => {
-		setAnchorEl(e.currentTarget);
-		setSortingOpen(true);
-	};
-
-	const sortingCloseHandler = () => {
-		setSortingOpen(false);
-		setAnchorEl(null);
-	};
-
-	const sortingHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-		switch (e.currentTarget.id) {
-			case 'recent':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'DESC' });
-				setFilterSortName('Recent');
-				break;
-			case 'old':
-				setSearchFilter({ ...searchFilter, sort: 'createdAt', direction: 'ASC' });
-				setFilterSortName('Oldest order');
-				break;
-			case 'likes':
-				setSearchFilter({ ...searchFilter, sort: 'memberLikes', direction: 'DESC' });
-				setFilterSortName('Likes');
-				break;
-			case 'views':
-				setSearchFilter({ ...searchFilter, sort: 'memberViews', direction: 'DESC' });
-				setFilterSortName('Views');
-				break;
-		}
-		setSortingOpen(false);
-		setAnchorEl2(null);
-	};
-
 	const paginationChangeHandler = async (event: ChangeEvent<unknown>, value: number) => {
 		searchFilter.page = value;
-		await router.push(`/trainers?input=${JSON.stringify(searchFilter)}`, `/trainers?input=${JSON.stringify(searchFilter)}`, {
+		await router.push(`/trainer?input=${JSON.stringify(searchFilter)}`, `/trainer?input=${JSON.stringify(searchFilter)}`, {
 			scroll: false,
 		});
 		setCurrentPage(value);
 	};
+
 	const likeMemberHandler = async (user: any, id: string) => {
 		try {
 			if (!id) return;
@@ -126,52 +102,165 @@ const TrainerList: NextPage = ({ initialInput, ...props }: any) => {
 			sweetMixinErrorAlert(err.message).then();
 		}
 	};
+
+	const handleSortChange = (newSort: 'createdAt' | 'memberLikes' | 'memberViews') => {
+		setSortBy(newSort);
+		setCurrentPage(1);
+	};
+
+	const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			setCurrentPage(1);
+			getTrainersRefetch();
+		}
+	};
+
 	if (device === 'mobile') {
 		return <h1>TRAINERS PAGE MOBILE</h1>;
 	} else {
 		return (
-			<Stack className={'trainer-list-page'}>
-				<Stack className={'container'}>
-					<Stack className={'filter'}>
-						<Box component={'div'} className={'left'}>
-							<input
-								type="text"
-								placeholder={'Search for a trainer'}
+			<Stack className={'trainer-list-page'} sx={{ p: 4 }}>
+				<Stack className={'container'} sx={{ maxWidth: 1200, mx: 'auto' }}>
+					{/* Header with Create Buttons for Trainers */}
+					{(user?.memberType === 'TRAINER' || user?.memberType === 'ADMIN') && (
+						<Box sx={{ mb: 4 }}>
+							<Typography variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
+								Trainer Dashboard
+							</Typography>
+							<Grid container spacing={2}>
+								<Grid item xs={12} sm={6}>
+									<Card
+										sx={{
+											cursor: 'pointer',
+											transition: 'transform 0.2s, box-shadow 0.2s',
+											'&:hover': {
+												transform: 'translateY(-4px)',
+												boxShadow: 4,
+											},
+											height: '100%',
+										}}
+										onClick={() => router.push('/trainer/workouts/create')}
+									>
+										<CardContent>
+											<Stack direction="row" spacing={2} alignItems="center">
+												<Box
+													sx={{
+														p: 2,
+														borderRadius: 2,
+														backgroundColor: '#E0F7FA',
+														display: 'flex',
+														alignItems: 'center',
+														justifyContent: 'center',
+													}}
+												>
+													<FitnessCenterIcon sx={{ fontSize: 40, color: '#4ECDC4' }} />
+												</Box>
+												<Box sx={{ flex: 1 }}>
+													<Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+														Create Workout
+													</Typography>
+													<Typography variant="body2" color="text.secondary">
+														Design a comprehensive workout routine
+													</Typography>
+												</Box>
+												<AddIcon sx={{ color: 'text.secondary' }} />
+											</Stack>
+										</CardContent>
+									</Card>
+								</Grid>
+								<Grid item xs={12} sm={6}>
+									<Card
+										sx={{
+											cursor: 'pointer',
+											transition: 'transform 0.2s, box-shadow 0.2s',
+											'&:hover': {
+												transform: 'translateY(-4px)',
+												boxShadow: 4,
+											},
+											height: '100%',
+										}}
+										onClick={() => router.push('/trainer/meal-plans/create')}
+									>
+										<CardContent>
+											<Stack direction="row" spacing={2} alignItems="center">
+												<Box
+													sx={{
+														p: 2,
+														borderRadius: 2,
+														backgroundColor: '#FFE5E5',
+														display: 'flex',
+														alignItems: 'center',
+														justifyContent: 'center',
+													}}
+												>
+													<RestaurantIcon sx={{ fontSize: 40, color: '#FF6B6B' }} />
+												</Box>
+												<Box sx={{ flex: 1 }}>
+													<Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+														Create Meal Plan
+													</Typography>
+													<Typography variant="body2" color="text.secondary">
+														Design a comprehensive meal plan
+													</Typography>
+												</Box>
+												<AddIcon sx={{ color: 'text.secondary' }} />
+											</Stack>
+										</CardContent>
+									</Card>
+								</Grid>
+							</Grid>
+						</Box>
+					)}
+
+					{/* Trainer Cards Section */}
+					<Box sx={{ mb: 3 }}>
+						<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+							<Typography variant="h5" sx={{ fontWeight: 600 }}>
+								All Trainers
+							</Typography>
+						</Stack>
+						
+						{/* Search and Sort */}
+						<Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+							<TextField
+								placeholder="Search for a trainer"
 								value={searchText}
 								onChange={(e: any) => setSearchText(e.target.value)}
-								onKeyDown={(event: any) => {
-									if (event.key == 'Enter') {
-										setSearchFilter({
-											...searchFilter,
-											search: { ...searchFilter.search, text: searchText },
-										});
-									}
+								onKeyDown={handleSearch}
+								sx={{ flex: 1 }}
+								InputProps={{
+									startAdornment: <SearchIcon sx={{ color: '#9E9E9E', mr: 1 }} />,
 								}}
 							/>
+							<FormControl sx={{ minWidth: 200 }}>
+								<InputLabel>Sort by</InputLabel>
+								<Select value={sortBy} label="Sort by" onChange={(e) => handleSortChange(e.target.value as any)}>
+									<MenuItem value="createdAt">Recent</MenuItem>
+									<MenuItem value="memberLikes">Most Liked</MenuItem>
+									<MenuItem value="memberViews">Most Viewed</MenuItem>
+								</Select>
+							</FormControl>
+						</Stack>
 						</Box>
-						<Box component={'div'} className={'right'}>
-							<span>Sort by</span>
-							<div>
-								<Button onClick={sortingClickHandler} endIcon={<KeyboardArrowDownRoundedIcon />}>
-									{filterSortName}
+
+					{/* Loading State */}
+					{getTrainersLoading ? (
+						<Grid container spacing={3}>
+							{[1, 2, 3, 4, 5, 6].map((i) => (
+								<Grid item xs={12} sm={6} md={4} key={i}>
+									<Skeleton variant="rectangular" height={300} sx={{ borderRadius: 2 }} />
+								</Grid>
+							))}
+						</Grid>
+					) : getTrainersError ? (
+						<Alert severity="error" sx={{ mb: 2 }}>
+							Error loading trainers. Please try again.
+							<Button onClick={() => getTrainersRefetch()} sx={{ ml: 2 }}>
+								Retry
 								</Button>
-								<Menu anchorEl={anchorEl} open={sortingOpen} onClose={sortingCloseHandler} sx={{ paddingTop: '5px' }}>
-									<MenuItem onClick={sortingHandler} id={'recent'} disableRipple>
-										Recent
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'old'} disableRipple>
-										Oldest
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'likes'} disableRipple>
-										Likes
-									</MenuItem>
-									<MenuItem onClick={sortingHandler} id={'views'} disableRipple>
-										Views
-									</MenuItem>
-								</Menu>
-							</div>
-						</Box>
-					</Stack>
+						</Alert>
+					) : (
+						<>
 					<Stack className={'card-wrap'}>
 						{trainers?.length === 0 ? (
 							<div className={'no-data'}>
@@ -180,12 +269,12 @@ const TrainerList: NextPage = ({ initialInput, ...props }: any) => {
 							</div>
 						) : (
 							trainers.map((trainer: Member) => {
-								return <TrainerCard trainer={trainer} key={trainer._id} likeMemberHandler={likeMemberHandler}
-								/>;
+										return <TrainerCard trainer={trainer} key={trainer._id} likeMemberHandler={likeMemberHandler} />;
 							})
 						)}
 					</Stack>
-					<Stack className={'pagination'}>
+
+							<Stack className={'pagination'} sx={{ mt: 4 }}>
 						<Stack className="pagination-box">
 							{trainers.length !== 0 && Math.ceil(total / searchFilter.limit) > 1 && (
 								<Stack className="pagination-box">
@@ -206,6 +295,8 @@ const TrainerList: NextPage = ({ initialInput, ...props }: any) => {
 							</span>
 						)}
 					</Stack>
+						</>
+					)}
 				</Stack>
 			</Stack>
 		);

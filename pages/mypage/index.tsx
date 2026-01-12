@@ -16,8 +16,20 @@ import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import MyProfile from '../../libs/components/mypage/MyProfile';
 import MyArticles from '../../libs/components/mypage/MyArticles';
-import { useMutation, useReactiveVar } from '@apollo/client';
+import { useMutation, useReactiveVar, useQuery } from '@apollo/client';
 import { userVar } from '../../apollo/store';
+import { GET_WORKOUTS, GET_MEAL_PLANS, GET_BOOKINGS } from '../../apollo/user/query';
+import { WorkoutsInquiry } from '../../libs/types/workout/workout.input';
+import { MealPlansInquiry } from '../../libs/types/mealplan/mealplan.input';
+import { BookingsInquiry } from '../../libs/types/booking/booking.input';
+import { Workout } from '../../libs/types/workout/workout';
+import { MealPlan } from '../../libs/types/mealplan/mealplan';
+import { Booking } from '../../libs/types/booking/booking';
+import { Direction } from '../../libs/enums/common.enum';
+import Link from 'next/link';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import EventIcon from '@mui/icons-material/Event';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import MyMenu from '../../libs/components/mypage/MyMenu';
 import WriteArticle from '../../libs/components/mypage/WriteArticle';
 import MemberFollowers from '../../libs/components/member/MemberFollowers';
@@ -80,6 +92,73 @@ const MyPage: NextPage = () => {
 	const [subscribe] = useMutation(SUBSCRIBE);
 	const [unsubscribe] = useMutation(UNSUBSCRIBE);
 	const [likeTargetMember] = useMutation(LIKE_TARGET_MEMBER);
+
+	// Fetch user's workout routines
+	const userWorkoutsQuery: WorkoutsInquiry = useMemo(
+		() => ({
+			page: 1,
+			limit: 6,
+			sort: 'createdAt',
+			direction: Direction.DESC,
+			search: {
+				createdBy: user?._id,
+			},
+		}),
+		[user?._id],
+	);
+
+	const { data: workoutsData, loading: workoutsLoading } = useQuery(GET_WORKOUTS, {
+		variables: { input: userWorkoutsQuery },
+		fetchPolicy: 'cache-and-network',
+		skip: !user?._id,
+	});
+
+	// Fetch user's meal plan routines
+	const userMealPlansQuery: MealPlansInquiry = useMemo(
+		() => ({
+			page: 1,
+			limit: 100, // Get more to filter client-side
+			sort: 'createdAt',
+			direction: Direction.DESC,
+		}),
+		[],
+	);
+
+	const { data: mealPlansData, loading: mealPlansLoading } = useQuery(GET_MEAL_PLANS, {
+		variables: { input: userMealPlansQuery },
+		fetchPolicy: 'cache-and-network',
+		skip: !user?._id,
+	});
+
+	// Fetch user's bookings
+	const userBookingsQuery: BookingsInquiry = useMemo(
+		() => ({
+			page: 1,
+			limit: 6,
+			sort: 'createdAt',
+			direction: Direction.DESC,
+			clientId: user?._id,
+		}),
+		[user?._id],
+	);
+
+	const { data: bookingsData, loading: bookingsLoading } = useQuery(GET_BOOKINGS, {
+		variables: { input: userBookingsQuery },
+		fetchPolicy: 'cache-and-network',
+		skip: !user?._id,
+	});
+
+	const userWorkouts = useMemo(() => {
+		const allWorkouts = (workoutsData?.getWorkouts?.list || []) as Workout[];
+		return allWorkouts.filter((workout) => workout.createdBy === user?._id);
+	}, [workoutsData, user?._id]);
+
+	const userMealPlans = useMemo(() => {
+		const allMealPlans = (mealPlansData?.getMealPlans?.list || []) as MealPlan[];
+		return allMealPlans.filter((mealPlan) => mealPlan.createdBy === user?._id);
+	}, [mealPlansData, user?._id]);
+
+	const userBookings = (bookingsData?.getBookings?.list || []) as Booking[];
 	
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -228,8 +307,8 @@ const MyPage: NextPage = () => {
 		const getPersonalInsights = () => {
 			const insights = [];
 			const articles = user?.memberArticles || 0;
-			const followers = user?.memberFollowers || 0;
-			const workouts = user?.memberWorkouts || 0;
+			const followers = (user as any)?.memberFollowers || 0;
+			const workouts = (user as any)?.memberWorkouts || 0;
 			const points = user?.memberPoints || 0;
 
 			if (articles > 0) {
@@ -608,6 +687,387 @@ const MyPage: NextPage = () => {
 							>
 								Community Posts
 							</Typography>
+						</Card>
+					</Grid>
+				</Grid>
+
+				{/* My Routines & Bookings Section */}
+				<Grid container spacing={3} sx={{ mb: 3 }}>
+					{/* My Workout Routines */}
+					<Grid item xs={12} md={4}>
+						<Card
+							elevation={0}
+							sx={{
+								backgroundColor: '#FFFFFF',
+								borderRadius: '16px',
+								border: '1px solid #E5E5E5',
+								padding: '24px',
+								height: '100%',
+								display: 'flex',
+								flexDirection: 'column',
+							}}
+						>
+							<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+								<Stack direction="row" alignItems="center" spacing={1.5}>
+									<FitnessCenterIcon sx={{ fontSize: '24px', color: '#E10600' }} />
+									<Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#111111' }}>
+										My Workout Routines
+									</Typography>
+								</Stack>
+								{userWorkouts.length > 0 && (
+									<Button
+										component={Link}
+										href="/workouts"
+										size="small"
+										endIcon={<ArrowForwardIcon />}
+										sx={{
+											textTransform: 'none',
+											color: '#E10600',
+											fontWeight: 600,
+											'&:hover': { backgroundColor: 'rgba(225, 6, 0, 0.08)' },
+										}}
+									>
+										View All
+									</Button>
+								)}
+							</Stack>
+							<Divider sx={{ borderColor: '#E5E5E5', mb: 2 }} />
+							{workoutsLoading ? (
+								<Box sx={{ textAlign: 'center', py: 4 }}>
+									<Typography sx={{ color: '#6B6B6B' }}>Loading...</Typography>
+								</Box>
+							) : userWorkouts.length === 0 ? (
+								<Box sx={{ textAlign: 'center', py: 4, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+									<FitnessCenterIcon sx={{ fontSize: '48px', color: '#E5E5E5', mb: 2 }} />
+									<Typography sx={{ color: '#6B6B6B', mb: 2 }}>No workout routines yet</Typography>
+									<Button
+										component={Link}
+										href="/trainer"
+										variant="outlined"
+										size="small"
+										sx={{
+											borderColor: '#E10600',
+											color: '#E10600',
+											textTransform: 'none',
+											'&:hover': { borderColor: '#C10500', backgroundColor: 'rgba(225, 6, 0, 0.08)' },
+										}}
+									>
+										Connect with Trainer
+									</Button>
+								</Box>
+							) : (
+								<Stack spacing={2} sx={{ flex: 1 }}>
+									{userWorkouts.slice(0, 3).map((workout) => (
+										<Card
+											key={workout._id}
+											elevation={0}
+											sx={{
+												border: '1px solid #E5E5E5',
+												borderRadius: '12px',
+												padding: '16px',
+												transition: 'all 0.2s',
+												'&:hover': {
+													borderColor: '#E10600',
+													boxShadow: '0 4px 12px rgba(225, 6, 0, 0.1)',
+												},
+											}}
+										>
+											<Button
+												component={Link}
+												href={`/workouts/${workout._id}`}
+												fullWidth
+												sx={{
+													textAlign: 'left',
+													textTransform: 'none',
+													padding: 0,
+													justifyContent: 'flex-start',
+													color: '#111111',
+													'&:hover': { backgroundColor: 'transparent' },
+												}}
+											>
+												<Stack spacing={1} sx={{ width: '100%' }}>
+													<Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#111111' }}>
+														{workout.workoutTitle}
+													</Typography>
+													<Stack direction="row" spacing={1} flexWrap="wrap">
+														<Chip
+															label={workout.workoutCategory.replace(/_/g, ' ')}
+															size="small"
+															sx={{
+																height: '20px',
+																fontSize: '11px',
+																backgroundColor: '#F5F5F5',
+																color: '#616161',
+															}}
+														/>
+														<Chip
+															label={workout.workoutDifficulty}
+															size="small"
+															sx={{
+																height: '20px',
+																fontSize: '11px',
+																backgroundColor: '#F5F5F5',
+																color: '#616161',
+															}}
+														/>
+													</Stack>
+												</Stack>
+											</Button>
+										</Card>
+									))}
+								</Stack>
+							)}
+						</Card>
+					</Grid>
+
+					{/* My Meal Plan Routines */}
+					<Grid item xs={12} md={4}>
+						<Card
+							elevation={0}
+							sx={{
+								backgroundColor: '#FFFFFF',
+								borderRadius: '16px',
+								border: '1px solid #E5E5E5',
+								padding: '24px',
+								height: '100%',
+								display: 'flex',
+								flexDirection: 'column',
+							}}
+						>
+							<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+								<Stack direction="row" alignItems="center" spacing={1.5}>
+									<RestaurantIcon sx={{ fontSize: '24px', color: '#E10600' }} />
+									<Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#111111' }}>
+										My Meal Plan Routines
+									</Typography>
+								</Stack>
+								{userMealPlans.length > 0 && (
+									<Button
+										component={Link}
+										href="/nutrition/meal-plans"
+										size="small"
+										endIcon={<ArrowForwardIcon />}
+										sx={{
+											textTransform: 'none',
+											color: '#E10600',
+											fontWeight: 600,
+											'&:hover': { backgroundColor: 'rgba(225, 6, 0, 0.08)' },
+										}}
+									>
+										View All
+									</Button>
+								)}
+							</Stack>
+							<Divider sx={{ borderColor: '#E5E5E5', mb: 2 }} />
+							{mealPlansLoading ? (
+								<Box sx={{ textAlign: 'center', py: 4 }}>
+									<Typography sx={{ color: '#6B6B6B' }}>Loading...</Typography>
+								</Box>
+							) : userMealPlans.length === 0 ? (
+								<Box sx={{ textAlign: 'center', py: 4, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+									<RestaurantIcon sx={{ fontSize: '48px', color: '#E5E5E5', mb: 2 }} />
+									<Typography sx={{ color: '#6B6B6B', mb: 2 }}>No meal plan routines yet</Typography>
+									<Button
+										component={Link}
+										href="/trainer"
+										variant="outlined"
+										size="small"
+										sx={{
+											borderColor: '#E10600',
+											color: '#E10600',
+											textTransform: 'none',
+											'&:hover': { borderColor: '#C10500', backgroundColor: 'rgba(225, 6, 0, 0.08)' },
+										}}
+									>
+										Connect with Trainer
+									</Button>
+								</Box>
+							) : (
+								<Stack spacing={2} sx={{ flex: 1 }}>
+									{userMealPlans.slice(0, 3).map((mealPlan) => (
+										<Card
+											key={mealPlan._id}
+											elevation={0}
+											sx={{
+												border: '1px solid #E5E5E5',
+												borderRadius: '12px',
+												padding: '16px',
+												transition: 'all 0.2s',
+												'&:hover': {
+													borderColor: '#E10600',
+													boxShadow: '0 4px 12px rgba(225, 6, 0, 0.1)',
+												},
+											}}
+										>
+											<Button
+												component={Link}
+												href={`/nutrition/meal-plans/${mealPlan._id}`}
+												fullWidth
+												sx={{
+													textAlign: 'left',
+													textTransform: 'none',
+													padding: 0,
+													justifyContent: 'flex-start',
+													color: '#111111',
+													'&:hover': { backgroundColor: 'transparent' },
+												}}
+											>
+												<Stack spacing={1} sx={{ width: '100%' }}>
+													<Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#111111' }}>
+														{mealPlan.mealPlanTitle}
+													</Typography>
+													<Stack direction="row" spacing={1} flexWrap="wrap">
+														<Chip
+															label={mealPlan.nutritionGoal.replace(/_/g, ' ')}
+															size="small"
+															sx={{
+																height: '20px',
+																fontSize: '11px',
+																backgroundColor: '#F5F5F5',
+																color: '#616161',
+															}}
+														/>
+														<Chip
+															label={`${mealPlan.calorieTarget} cal`}
+															size="small"
+															sx={{
+																height: '20px',
+																fontSize: '11px',
+																backgroundColor: '#F5F5F5',
+																color: '#616161',
+															}}
+														/>
+													</Stack>
+												</Stack>
+											</Button>
+										</Card>
+									))}
+								</Stack>
+							)}
+						</Card>
+					</Grid>
+
+					{/* My Bookings */}
+					<Grid item xs={12} md={4}>
+						<Card
+							elevation={0}
+							sx={{
+								backgroundColor: '#FFFFFF',
+								borderRadius: '16px',
+								border: '1px solid #E5E5E5',
+								padding: '24px',
+								height: '100%',
+								display: 'flex',
+								flexDirection: 'column',
+							}}
+						>
+							<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+								<Stack direction="row" alignItems="center" spacing={1.5}>
+									<EventIcon sx={{ fontSize: '24px', color: '#E10600' }} />
+									<Typography sx={{ fontSize: '18px', fontWeight: 700, color: '#111111' }}>
+										My Bookings
+									</Typography>
+								</Stack>
+								{userBookings.length > 0 && (
+									<Button
+										component={Link}
+										href="/bookings"
+										size="small"
+										endIcon={<ArrowForwardIcon />}
+										sx={{
+											textTransform: 'none',
+											color: '#E10600',
+											fontWeight: 600,
+											'&:hover': { backgroundColor: 'rgba(225, 6, 0, 0.08)' },
+										}}
+									>
+										View All
+									</Button>
+								)}
+							</Stack>
+							<Divider sx={{ borderColor: '#E5E5E5', mb: 2 }} />
+							{bookingsLoading ? (
+								<Box sx={{ textAlign: 'center', py: 4 }}>
+									<Typography sx={{ color: '#6B6B6B' }}>Loading...</Typography>
+								</Box>
+							) : userBookings.length === 0 ? (
+								<Box sx={{ textAlign: 'center', py: 4, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+									<EventIcon sx={{ fontSize: '48px', color: '#E5E5E5', mb: 2 }} />
+									<Typography sx={{ color: '#6B6B6B', mb: 2 }}>No bookings yet</Typography>
+									<Button
+										component={Link}
+										href="/trainer"
+										variant="outlined"
+										size="small"
+										sx={{
+											borderColor: '#E10600',
+											color: '#E10600',
+											textTransform: 'none',
+											'&:hover': { borderColor: '#C10500', backgroundColor: 'rgba(225, 6, 0, 0.08)' },
+										}}
+									>
+										Book a Session
+									</Button>
+								</Box>
+							) : (
+								<Stack spacing={2} sx={{ flex: 1 }}>
+									{userBookings.slice(0, 3).map((booking) => (
+										<Card
+											key={booking._id}
+											elevation={0}
+											sx={{
+												border: '1px solid #E5E5E5',
+												borderRadius: '12px',
+												padding: '16px',
+												transition: 'all 0.2s',
+												'&:hover': {
+													borderColor: '#E10600',
+													boxShadow: '0 4px 12px rgba(225, 6, 0, 0.1)',
+												},
+											}}
+										>
+											<Stack spacing={1}>
+												<Stack direction="row" alignItems="center" justifyContent="space-between">
+													<Typography sx={{ fontSize: '15px', fontWeight: 600, color: '#111111' }}>
+														{booking.bookingType.replace(/_/g, ' ')}
+													</Typography>
+													<Chip
+														label={booking.bookingStatus}
+														size="small"
+														sx={{
+															height: '20px',
+															fontSize: '11px',
+															backgroundColor:
+																booking.bookingStatus === 'CONFIRMED'
+																	? '#E8F5E9'
+																	: booking.bookingStatus === 'PENDING'
+																	? '#FFF3E0'
+																	: '#FFEBEE',
+															color:
+																booking.bookingStatus === 'CONFIRMED'
+																	? '#2E7D32'
+																	: booking.bookingStatus === 'PENDING'
+																	? '#E65100'
+																	: '#C62828',
+														}}
+													/>
+												</Stack>
+												{booking.memberData && (
+													<Typography sx={{ fontSize: '13px', color: '#6B6B6B' }}>
+														Trainer: {booking.memberData.memberFullName || booking.memberData.memberNick}
+													</Typography>
+												)}
+												<Stack direction="row" spacing={1} alignItems="center">
+													<CalendarTodayIcon sx={{ fontSize: '14px', color: '#6B6B6B' }} />
+													<Typography sx={{ fontSize: '12px', color: '#6B6B6B' }}>
+														{new Date(booking.bookingDate).toLocaleDateString()} at {booking.bookingTime}
+													</Typography>
+												</Stack>
+											</Stack>
+										</Card>
+									))}
+								</Stack>
+							)}
 						</Card>
 					</Grid>
 				</Grid>

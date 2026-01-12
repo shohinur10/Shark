@@ -32,7 +32,7 @@ import withLayoutBasic from '../../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { CREATE_WORKOUT } from '../../../apollo/user/mutation';
-import { GET_EXERCISES } from '../../../apollo/user/query';
+import { GET_EXERCISES, GET_WORKOUTS } from '../../../apollo/user/query';
 import { WorkoutInput } from '../../../libs/types/workout/workout.input';
 import { WorkoutCategory, WorkoutDifficulty, WorkoutDuration, WorkoutEquipment, WorkoutStatus } from '../../../libs/enums/workout.enum';
 import { ExercisesInquiry } from '../../../libs/types/exercise/exercise.input';
@@ -89,7 +89,22 @@ const CreateWorkoutPage: NextPage = () => {
 	const [exerciseSearchText, setExerciseSearchText] = useState('');
 	const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
 
-	const [createWorkout] = useMutation(CREATE_WORKOUT);
+	const [createWorkout] = useMutation(CREATE_WORKOUT, {
+		refetchQueries: [
+			{
+				query: GET_WORKOUTS,
+				variables: {
+					input: {
+						page: 1,
+						limit: 12,
+						sort: 'createdAt',
+						direction: Direction.DESC,
+						workoutStatus: 'PUBLISHED',
+					},
+				},
+			},
+		],
+	});
 
 	// Fetch exercises for selection
 	const exerciseInquiry: ExercisesInquiry = {
@@ -361,7 +376,7 @@ const CreateWorkoutPage: NextPage = () => {
 			<Stack spacing={4}>
 				{/* Basic Information */}
 				<Box className="form-section">
-					<Typography variant="h5" sx={{ mb: 2 }}>
+					<Typography variant="h5" sx={{ mb: 2, wordWrap: 'break-word', overflowWrap: 'break-word', maxWidth: '100%' }}>
 						Basic Information
 					</Typography>
 
@@ -374,15 +389,53 @@ const CreateWorkoutPage: NextPage = () => {
 							required
 						/>
 
-						<TextField
-							fullWidth
-							multiline
-							rows={4}
-							label="Workout Description *"
-							value={workoutData.workoutDesc}
-							onChange={(e) => setWorkoutData({ ...workoutData, workoutDesc: e.target.value })}
-							required
-						/>
+					<TextField
+						fullWidth
+						multiline
+						rows={4}
+						label="Workout Description *"
+						value={workoutData.workoutDesc}
+						onChange={(e) => setWorkoutData({ ...workoutData, workoutDesc: e.target.value })}
+						required
+						InputLabelProps={{
+							shrink: true,
+							style: { 
+								position: 'absolute',
+								left: 0,
+								top: 0,
+								transform: 'translate(14px, -9px) scale(0.75)',
+								transformOrigin: 'top left',
+								whiteSpace: 'nowrap',
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								maxWidth: 'calc(100% - 28px)'
+							}
+						}}
+						sx={{
+							'& .MuiInputLabel-root': {
+								position: 'absolute',
+								left: 0,
+								top: 0,
+								transform: workoutData.workoutDesc ? 'translate(14px, -9px) scale(0.75)' : 'translate(14px, 16px) scale(1)',
+								transformOrigin: 'top left',
+								whiteSpace: 'nowrap',
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								maxWidth: 'calc(100% - 28px)',
+								pointerEvents: 'none',
+								transition: 'transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms',
+							},
+							'& .MuiInputLabel-root.Mui-focused': {
+								transform: 'translate(14px, -9px) scale(0.75)',
+							},
+							'& .MuiInputBase-root': {
+								paddingTop: '16px',
+							},
+							'& .MuiInputBase-input': {
+								paddingTop: '8px',
+							}
+						}}
+					/>
 
 						<Grid container spacing={2}>
 							<Grid item xs={12} sm={4}>

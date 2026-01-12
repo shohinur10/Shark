@@ -372,15 +372,53 @@ const CreateMealPlanPage: NextPage = () => {
 							required
 						/>
 
-						<TextField
-							fullWidth
-							multiline
-							rows={4}
-							label="Description *"
-							value={mealPlanData.mealPlanDesc}
-							onChange={(e) => setMealPlanData({ ...mealPlanData, mealPlanDesc: e.target.value })}
-							required
-						/>
+					<TextField
+						fullWidth
+						multiline
+						rows={4}
+						label="Description *"
+						value={mealPlanData.mealPlanDesc}
+						onChange={(e) => setMealPlanData({ ...mealPlanData, mealPlanDesc: e.target.value })}
+						required
+						InputLabelProps={{
+							shrink: true,
+							style: { 
+								position: 'absolute',
+								left: 0,
+								top: 0,
+								transform: 'translate(14px, -9px) scale(0.75)',
+								transformOrigin: 'top left',
+								whiteSpace: 'nowrap',
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								maxWidth: 'calc(100% - 28px)'
+							}
+						}}
+						sx={{
+							'& .MuiInputLabel-root': {
+								position: 'absolute',
+								left: 0,
+								top: 0,
+								transform: mealPlanData.mealPlanDesc ? 'translate(14px, -9px) scale(0.75)' : 'translate(14px, 16px) scale(1)',
+								transformOrigin: 'top left',
+								whiteSpace: 'nowrap',
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								maxWidth: 'calc(100% - 28px)',
+								pointerEvents: 'none',
+								transition: 'transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms',
+							},
+							'& .MuiInputLabel-root.Mui-focused': {
+								transform: 'translate(14px, -9px) scale(0.75)',
+							},
+							'& .MuiInputBase-root': {
+								paddingTop: '16px',
+							},
+							'& .MuiInputBase-input': {
+								paddingTop: '8px',
+							}
+						}}
+					/>
 
 						<Grid container spacing={2}>
 							<Grid item xs={12} sm={6}>

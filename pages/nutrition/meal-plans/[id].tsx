@@ -2,8 +2,8 @@ import React from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Stack, Box, Typography, Button, Grid, Card, CardContent, Chip, Divider, LinearProgress, IconButton, CircularProgress } from '@mui/material';
-import useDeviceDetect from '../../../../libs/hooks/useDeviceDetect';
-import withLayoutBasic from '../../../../libs/components/layout/LayoutBasic';
+import useDeviceDetect from '../../../libs/hooks/useDeviceDetect';
+import withLayoutBasic from '../../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState, useEffect } from 'react';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -16,12 +16,12 @@ import ShareIcon from '@mui/icons-material/Share';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useQuery } from '@apollo/client';
-import { GET_MEAL_PLAN } from '../../../../apollo/user/query';
-import { MealPlan } from '../../../../libs/types/mealplan/mealplan';
-import { T } from '../../../../libs/types/common';
-import { NutritionGoal, DietaryPreference, MealType } from '../../../../libs/enums/nutrition.enum';
+import { GET_MEAL_PLAN } from '../../../apollo/user/query';
+import { MealPlan } from '../../../libs/types/mealplan/mealplan';
+import { T } from '../../../libs/types/common';
+import { NutritionGoal, DietaryPreference, MealType } from '../../../libs/enums/nutrition.enum';
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getServerSideProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
 	},

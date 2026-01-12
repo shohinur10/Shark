@@ -77,7 +77,7 @@ const TopTrainers = (props: TopTrainersProps) => {
 							<p>Connect with certified fitness professionals</p>
 						</Box>
 						<Box component={'div'} className={'right'}>
-							<Link href={'/trainers'}>
+							<Link href={'/trainer'}>
 								<div className={'more-box'}>
 									<span>See All Trainers</span>
 									<img src="/img/icons/rightup.svg" alt="" />
