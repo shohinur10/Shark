@@ -12,7 +12,7 @@ import { useReactiveVar } from '@apollo/client';
 import { socketVar, userVar } from '../../apollo/store';
 import { Member } from '../types/member/member';
 import { Messages, REACT_APP_API_URL } from '../config';
-import { sweetErrorAlert } from '../sweetAlert';
+import { sweetErrorAlert, sweetTopSmallSuccessAlert } from '../sweetAlert';
 
 interface MessagePayload {
 	event: string;
@@ -50,6 +50,11 @@ const Chat = () => {
 	const user = useReactiveVar(userVar);
 	const socket = useReactiveVar(socketVar);
 
+	// Check if user can view messages (only TRAINER and ADMIN)
+	const canViewMessages = user?.memberType === 'TRAINER' || user?.memberType === 'ADMIN';
+	// All authenticated users can send messages
+	const canSendMessages = !!user?._id;
+
 	/** LIFECYCLES **/
 
 	useEffect(() => {
@@ -65,12 +70,18 @@ const Chat = () => {
 						setOnlineUsers(newInfo.totalClients);
 						break;
 					case 'getMessages':
-						const list: MessagePayload[] = data.list;
-						setMessagesList(list);
+						const list: MessagePayload[] = data.list || [];
+						// Only show messages if user is TRAINER or ADMIN
+						if (canViewMessages) {
+							setMessagesList(list);
+						}
 						break;
 					case 'message':
 						const newMessage: MessagePayload = data;
-						setMessagesList((prevMessages) => [...prevMessages, newMessage]);
+						// Only add message to list if user can view messages
+						if (canViewMessages) {
+							setMessagesList((prevMessages) => [...prevMessages, newMessage]);
+						}
 						break;
 				}
 			} catch (error) {
@@ -80,19 +91,40 @@ const Chat = () => {
 
 		socket.onmessage = handleMessage;
 
+		// Request messages from backend when socket opens and user can view
+		const requestMessages = () => {
+			if (socket.readyState === WebSocket.OPEN && canViewMessages) {
+				socket.send(JSON.stringify({ event: 'getMessages' }));
+			}
+		};
+
+		// Request messages immediately if socket is already open
+		if (socket.readyState === WebSocket.OPEN) {
+			requestMessages();
+		} else {
+			// Wait for socket to open, then request messages
+			socket.addEventListener('open', requestMessages);
+		}
+
 		// Cleanup function
 		return () => {
 			if (socket) {
+				socket.removeEventListener('open', requestMessages);
 				socket.onmessage = null;
 			}
 		};
-	}, [socket]);
+	}, [socket, canViewMessages]);
 	useEffect(() => {
-		const timeoutId = setTimeout(() => {
-			setOpenButton(true);
-		}, 100);
-		return () => clearTimeout(timeoutId);
-	}, []);
+		// Only show chat button if user can send messages
+		if (canSendMessages) {
+			const timeoutId = setTimeout(() => {
+				setOpenButton(true);
+			}, 100);
+			return () => clearTimeout(timeoutId);
+		} else {
+			setOpenButton(false);
+		}
+	}, [canSendMessages]);
 
 	useEffect(() => {
 		setOpenButton(false);
@@ -100,7 +132,13 @@ const Chat = () => {
 
 	/** HANDLERS **/
 	const handleOpenChat = () => {
-		setOpen((prevState) => !prevState);
+		const newOpenState = !open;
+		setOpen(newOpenState);
+		
+		// Request messages when chat is opened and user can view them
+		if (newOpenState && socket && socket.readyState === WebSocket.OPEN && canViewMessages) {
+			socket.send(JSON.stringify({ event: 'getMessages' }));
+		}
 	};
 
 	const getInputMessageHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +157,12 @@ const Chat = () => {
 	};
 
 	const onClickHandler = () => {
-		if (!messageInput) {
+		if (!canSendMessages) {
+			sweetErrorAlert('You must be logged in to send messages.');
+			return;
+		}
+
+		if (!messageInput.trim()) {
 			sweetErrorAlert(Messages.error4);
 			return;
 		}
@@ -132,7 +175,9 @@ const Chat = () => {
 		try {
 			const messageData: any = {
 				event: 'message',
-				data: messageInput,
+				data: messageInput.trim(),
+				memberId: user?._id,
+				memberType: user?.memberType,
 			};
 
 			// Add reply information if replying to a message
@@ -143,8 +188,16 @@ const Chat = () => {
 			}
 
 			socket.send(JSON.stringify(messageData));
+			const sentMessage = messageInput.trim();
 			setMessageInput('');
 			setReplyingTo(null);
+
+			// Show feedback for non-TRAINER/ADMIN users
+			if (!canViewMessages) {
+				sweetTopSmallSuccessAlert('Message sent! Trainers and admins will see your message and respond here.', 3000);
+			} else if (replyingTo) {
+				sweetTopSmallSuccessAlert('Reply sent!', 1500);
+			}
 		} catch (error) {
 			console.error('Error sending message:', error);
 			sweetErrorAlert('Failed to send message. Please try again.');
@@ -152,14 +205,38 @@ const Chat = () => {
 	};
 
 	const handleReplyClick = (message: MessagePayload) => {
-		if (message.memberData?._id === user?._id) return; // Can't reply to own messages
-		if (message.messageId) {
-			setReplyingTo({
-				messageId: message.messageId,
-				text: message.text,
-				memberData: message.memberData,
-			});
+		// Only TRAINER and ADMIN can reply to messages
+		if (!canViewMessages) {
+			sweetErrorAlert('Only trainers and admins can reply to messages.');
+			return;
 		}
+
+		// Can't reply to own messages
+		if (message.memberData?._id === user?._id) {
+			sweetErrorAlert('You cannot reply to your own messages.');
+			return;
+		}
+
+		// Need messageId to reply
+		if (!message.messageId) {
+			sweetErrorAlert('Cannot reply to this message. Message ID is missing.');
+			return;
+		}
+
+		// Set the reply state
+		setReplyingTo({
+			messageId: message.messageId,
+			text: message.text,
+			memberData: message.memberData,
+		});
+
+		// Scroll to input area to focus on reply
+		setTimeout(() => {
+			const inputElement = document.querySelector('.msg-input') as HTMLInputElement;
+			if (inputElement) {
+				inputElement.focus();
+			}
+		}, 100);
 	};
 
 	const handleCancelReply = () => {
@@ -175,15 +252,40 @@ const Chat = () => {
 			) : null}
 			<Stack className={`chat-frame ${open ? 'open' : ''}`}>
 				<Box className={'chat-top'} component={'div'}>
-					<div style={{ fontFamily: 'Nunito' }}>Online Chat</div>
-					<RippleBadge style={{ margin: '-18px 0 0 21px' }} badgeContent={onlineUsers} />
+					<div style={{ fontFamily: 'Nunito' }}>
+						{canViewMessages ? 'Support Chat (Trainer/Admin View)' : 'Support Chat'}
+					</div>
+					{canViewMessages && (
+						<RippleBadge style={{ margin: '-18px 0 0 21px' }} badgeContent={onlineUsers} />
+					)}
 				</Box>
 				<Box className={'chat-content'} id="chat-content" ref={chatContentRef} component={'div'}>
 					<ScrollableFeed>
 						<Stack className={'chat-main'}>
 							<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
-								<div className={'welcome'}>Welcome to Live chat!</div>
+								<div className={'welcome'}>
+									{canViewMessages 
+										? 'Welcome to Live chat! You can view and respond to all messages.' 
+										: 'Welcome to Live chat! Your messages will be sent to trainers and admins. They will respond here.'}
+								</div>
 							</Box>
+							{!canViewMessages && messagesList.length === 0 && (
+								<Box sx={{ textAlign: 'center', py: 3, px: 2 }}>
+									<Typography sx={{ fontSize: '14px', color: '#6B6B6B', fontStyle: 'italic', mb: 1 }}>
+										Your messages are being sent to our support team. Only trainers and admins can view and respond to messages.
+									</Typography>
+									<Typography sx={{ fontSize: '12px', color: '#9E9E9E', fontStyle: 'italic' }}>
+										When a trainer or admin responds, you'll see their message here.
+									</Typography>
+								</Box>
+							)}
+							{canViewMessages && messagesList.length === 0 && (
+								<Box sx={{ textAlign: 'center', py: 3, px: 2 }}>
+									<Typography sx={{ fontSize: '14px', color: '#6B6B6B', fontStyle: 'italic' }}>
+										No messages yet. All user messages will appear here for you to respond.
+									</Typography>
+								</Box>
+							)}
 							{messagesList.map((ele: MessagePayload, index: number) => {
 								const { text, memberData, replyTo, replyToText, replyToMember } = ele;
 								const memberImage = memberData?.memberImage
@@ -229,6 +331,26 @@ const Chat = () => {
 									<Box key={messageKey} flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px', position: 'relative' }} component={'div'}>
 										<Avatar alt={memberData?.memberNick || 'User'} src={memberImage} />
 										<Box sx={{ ml: 1, maxWidth: '70%', flex: 1 }}>
+											<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+												<Typography variant="caption" sx={{ fontSize: '11px', color: '#757575', fontWeight: 600 }}>
+													{memberData?.memberNick || memberData?.memberFullName || 'User'}
+												</Typography>
+												{memberData?.memberType && (
+													<Box
+														sx={{
+															px: 0.5,
+															py: 0.25,
+															borderRadius: 0.5,
+															backgroundColor: memberData.memberType === 'ADMIN' ? '#E10600' : '#1976D2',
+															color: '#FFFFFF',
+															fontSize: '9px',
+															fontWeight: 600,
+														}}
+													>
+														{memberData.memberType}
+													</Box>
+												)}
+											</Box>
 											{replyTo && replyToText && (
 												<Box
 													sx={{
@@ -249,20 +371,24 @@ const Chat = () => {
 											)}
 											<div className={'msg-left'}>{text}</div>
 										</Box>
-										<IconButton
-											size="small"
-											onClick={() => handleReplyClick(ele)}
-											sx={{
-												position: 'absolute',
-												right: 0,
-												top: 0,
-												padding: '4px',
-												color: '#757575',
-												'&:hover': { color: '#E10600', backgroundColor: 'rgba(225, 6, 0, 0.1)' },
-											}}
-										>
-											<ReplyIcon fontSize="small" />
-										</IconButton>
+										{/* Only show reply button to TRAINER and ADMIN users */}
+										{canViewMessages && (
+											<IconButton
+												size="small"
+												onClick={() => handleReplyClick(ele)}
+												sx={{
+													position: 'absolute',
+													right: 0,
+													top: 0,
+													padding: '4px',
+													color: '#757575',
+													'&:hover': { color: '#E10600', backgroundColor: 'rgba(225, 6, 0, 0.1)' },
+												}}
+												title="Reply to this message"
+											>
+												<ReplyIcon fontSize="small" />
+											</IconButton>
+										)}
 									</Box>
 								);
 							})}

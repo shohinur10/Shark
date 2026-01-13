@@ -20,6 +20,7 @@ export interface RoutineAssignment {
 	userId: string;
 	trainerId: string;
 	routineType: RoutineType;
+	routineId?: string; // The ID of the workout or meal plan
 	mealPlanId?: string;
 	workoutId?: string;
 	startDate: Date;

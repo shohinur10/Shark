@@ -18,7 +18,8 @@ import MyProfile from '../../libs/components/mypage/MyProfile';
 import MyArticles from '../../libs/components/mypage/MyArticles';
 import { useMutation, useReactiveVar, useQuery } from '@apollo/client';
 import { userVar } from '../../apollo/store';
-import { GET_WORKOUTS, GET_MEAL_PLANS, GET_BOOKINGS } from '../../apollo/user/query';
+import { GET_WORKOUTS, GET_MEAL_PLANS, GET_BOOKINGS, GET_USER_ASSIGNED_ROUTINES, GET_ROUTINE_COMPLETIONS } from '../../apollo/user/query';
+import { RoutineAssignment, RoutineType, AssignmentStatus } from '../../libs/types/routine-assignment/routine-assignment';
 import { WorkoutsInquiry } from '../../libs/types/workout/workout.input';
 import { MealPlansInquiry } from '../../libs/types/mealplan/mealplan.input';
 import { BookingsInquiry } from '../../libs/types/booking/booking.input';
@@ -32,6 +33,9 @@ import EventIcon from '@mui/icons-material/Event';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import MyMenu from '../../libs/components/mypage/MyMenu';
 import WriteArticle from '../../libs/components/mypage/WriteArticle';
+import MyBookings from '../../libs/components/mypage/MyBookings';
+import MyWorkouts from '../../libs/components/mypage/MyWorkouts';
+import MyMealPlans from '../../libs/components/mypage/MyMealPlans';
 import MemberFollowers from '../../libs/components/member/MemberFollowers';
 import { sweetErrorHandling, sweetMixinErrorAlert, sweetTopSmallSuccessAlert } from '../../libs/sweetAlert';
 import MemberFollowings from '../../libs/components/member/MemberFollowings';
@@ -120,8 +124,11 @@ const MyPage: NextPage = () => {
 			limit: 100, // Get more to filter client-side
 			sort: 'createdAt',
 			direction: Direction.DESC,
+			search: {
+				// Note: createdBy might not be in TypeScript type but backend may support it
+			} as any,
 		}),
-		[],
+		[user?._id],
 	);
 
 	const { data: mealPlansData, loading: mealPlansLoading } = useQuery(GET_MEAL_PLANS, {
@@ -148,6 +155,22 @@ const MyPage: NextPage = () => {
 		skip: !user?._id,
 	});
 
+	// Fetch user's assigned routines
+	const userAssignedRoutinesQuery = useMemo(
+		() => ({
+			userId: user?._id,
+			page: 1,
+			limit: 10,
+		}),
+		[user?._id],
+	);
+
+	const { data: assignedRoutinesData, loading: assignedRoutinesLoading } = useQuery(GET_USER_ASSIGNED_ROUTINES, {
+		variables: { input: userAssignedRoutinesQuery },
+		fetchPolicy: 'cache-and-network',
+		skip: !user?._id,
+	});
+
 	const userWorkouts = useMemo(() => {
 		const allWorkouts = (workoutsData?.getWorkouts?.list || []) as Workout[];
 		return allWorkouts.filter((workout) => workout.createdBy === user?._id);
@@ -159,6 +182,8 @@ const MyPage: NextPage = () => {
 	}, [mealPlansData, user?._id]);
 
 	const userBookings = (bookingsData?.getBookings?.list || []) as Booking[];
+	
+	const assignedRoutines = (assignedRoutinesData?.getUserAssignedRoutines?.list || []) as RoutineAssignment[];
 	
 	/** LIFECYCLES **/
 	useEffect(() => {
@@ -690,6 +715,274 @@ const MyPage: NextPage = () => {
 						</Card>
 					</Grid>
 				</Grid>
+
+				{/* My Assigned Routines Section */}
+				{assignedRoutines.length > 0 && (
+					<Card
+						elevation={0}
+						sx={{
+							backgroundColor: '#FFFFFF',
+							borderRadius: '16px',
+							border: '1px solid #E5E5E5',
+							padding: '24px',
+							mb: 3,
+						}}
+					>
+						<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
+							<Stack direction="row" alignItems="center" spacing={1.5}>
+								<CheckCircleIcon sx={{ fontSize: '24px', color: '#E10600' }} />
+								<Typography sx={{ fontSize: '20px', fontWeight: 700, color: '#111111' }}>
+									My Assigned Routines
+								</Typography>
+							</Stack>
+							<Chip
+								label={`${assignedRoutines.length} Active`}
+								size="small"
+								sx={{
+									height: '24px',
+									fontSize: '12px',
+									backgroundColor: '#E8F5E9',
+									color: '#2E7D32',
+									fontWeight: 600,
+								}}
+							/>
+						</Stack>
+						<Divider sx={{ borderColor: '#E5E5E5', mb: 3 }} />
+						{assignedRoutinesLoading ? (
+							<Box sx={{ textAlign: 'center', py: 4 }}>
+								<Typography sx={{ color: '#6B6B6B' }}>Loading routines...</Typography>
+							</Box>
+						) : (
+							<Grid container spacing={2}>
+								{assignedRoutines.map((routine) => (
+									<Grid item xs={12} md={6} key={routine._id}>
+										<Card
+											elevation={0}
+											sx={{
+												border: '1px solid #E5E5E5',
+												borderRadius: '12px',
+												padding: '20px',
+												transition: 'all 0.2s',
+												'&:hover': {
+													borderColor: '#E10600',
+													boxShadow: '0 4px 12px rgba(225, 6, 0, 0.1)',
+												},
+											}}
+										>
+											<Stack spacing={2}>
+												{/* Header with Routine Type and Status */}
+												<Stack direction="row" alignItems="center" justifyContent="space-between">
+													<Stack direction="row" alignItems="center" spacing={1.5}>
+														{routine.routineType === RoutineType.WORKOUT ? (
+															<FitnessCenterIcon sx={{ fontSize: '20px', color: '#E10600' }} />
+														) : (
+															<RestaurantIcon sx={{ fontSize: '20px', color: '#E10600' }} />
+														)}
+														<Typography sx={{ fontSize: '16px', fontWeight: 600, color: '#111111' }}>
+															{routine.routineType === RoutineType.WORKOUT
+																? routine.workoutData?.workoutTitle || 'Workout Routine'
+																: routine.mealPlanData?.mealPlanTitle || 'Meal Plan Routine'}
+														</Typography>
+													</Stack>
+													<Chip
+														label={routine.status.replace(/_/g, ' ')}
+														size="small"
+														sx={{
+															height: '22px',
+															fontSize: '11px',
+															backgroundColor:
+																routine.status === AssignmentStatus.COMPLETED
+																	? '#E8F5E9'
+																	: routine.status === AssignmentStatus.IN_PROGRESS
+																	? '#E3F2FD'
+																	: routine.status === AssignmentStatus.ASSIGNED
+																	? '#FFF3E0'
+																	: '#FFEBEE',
+															color:
+																routine.status === AssignmentStatus.COMPLETED
+																	? '#2E7D32'
+																	: routine.status === AssignmentStatus.IN_PROGRESS
+																	? '#1976D2'
+																	: routine.status === AssignmentStatus.ASSIGNED
+																	? '#E65100'
+																	: '#C62828',
+															fontWeight: 600,
+														}}
+													/>
+												</Stack>
+
+												{/* Routine Details */}
+												{routine.routineType === RoutineType.WORKOUT && routine.workoutData && (
+													<Stack spacing={1}>
+														<Typography sx={{ fontSize: '13px', color: '#6B6B6B' }}>
+															{routine.workoutData.workoutDesc?.substring(0, 100)}
+															{routine.workoutData.workoutDesc && routine.workoutData.workoutDesc.length > 100 ? '...' : ''}
+														</Typography>
+														<Stack direction="row" spacing={1} flexWrap="wrap">
+															<Chip
+																label={`${routine.workoutData.workoutDuration} min`}
+																size="small"
+																sx={{
+																	height: '20px',
+																	fontSize: '10px',
+																	backgroundColor: '#F5F5F5',
+																	color: '#616161',
+																}}
+															/>
+															<Chip
+																label={routine.workoutData.workoutDifficulty}
+																size="small"
+																sx={{
+																	height: '20px',
+																	fontSize: '10px',
+																	backgroundColor: '#F5F5F5',
+																	color: '#616161',
+																}}
+															/>
+														</Stack>
+													</Stack>
+												)}
+
+												{routine.routineType === RoutineType.MEAL_PLAN && routine.mealPlanData && (
+													<Stack spacing={1}>
+														<Typography sx={{ fontSize: '13px', color: '#6B6B6B' }}>
+															{routine.mealPlanData.mealPlanDesc?.substring(0, 100)}
+															{routine.mealPlanData.mealPlanDesc && routine.mealPlanData.mealPlanDesc.length > 100 ? '...' : ''}
+														</Typography>
+														<Stack direction="row" spacing={1} flexWrap="wrap">
+															<Chip
+																label={`${routine.mealPlanData.duration} days`}
+																size="small"
+																sx={{
+																	height: '20px',
+																	fontSize: '10px',
+																	backgroundColor: '#F5F5F5',
+																	color: '#616161',
+																}}
+															/>
+															<Chip
+																label={`${routine.mealPlanData.calorieTarget} cal`}
+																size="small"
+																sx={{
+																	height: '20px',
+																	fontSize: '10px',
+																	backgroundColor: '#F5F5F5',
+																	color: '#616161',
+																}}
+															/>
+														</Stack>
+													</Stack>
+												)}
+
+												{/* Progress Bar */}
+												<Stack spacing={0.5}>
+													<Stack direction="row" alignItems="center" justifyContent="space-between">
+														<Typography sx={{ fontSize: '12px', color: '#6B6B6B', fontWeight: 500 }}>
+															Progress
+														</Typography>
+														<Typography sx={{ fontSize: '12px', color: '#111111', fontWeight: 600 }}>
+															{routine.progressPercentage || 0}%
+														</Typography>
+													</Stack>
+													<Box
+														sx={{
+															width: '100%',
+															height: '8px',
+															backgroundColor: '#E5E5E5',
+															borderRadius: '4px',
+															overflow: 'hidden',
+														}}
+													>
+														<Box
+															sx={{
+																width: `${routine.progressPercentage || 0}%`,
+																height: '100%',
+																backgroundColor:
+																	(routine.progressPercentage || 0) >= 100
+																		? '#2E7D32'
+																		: (routine.progressPercentage || 0) >= 50
+																		? '#1976D2'
+																		: '#E10600',
+																transition: 'width 0.3s ease',
+															}}
+														/>
+													</Box>
+												</Stack>
+
+												{/* Trainer Info and Dates */}
+												<Divider sx={{ borderColor: '#E5E5E5' }} />
+												<Stack spacing={1}>
+													{routine.trainerData && (
+														<Stack direction="row" alignItems="center" spacing={1}>
+															<Avatar
+																sx={{
+																	width: '24px',
+																	height: '24px',
+																	bgcolor: '#E10600',
+																}}
+																src={
+																	routine.trainerData.memberImage
+																		? `${REACT_APP_API_URL}/${routine.trainerData.memberImage}`
+																		: undefined
+																}
+															>
+																{routine.trainerData.memberNick?.[0]?.toUpperCase() || 'T'}
+															</Avatar>
+															<Typography sx={{ fontSize: '12px', color: '#6B6B6B' }}>
+																Assigned by: <strong>{routine.trainerData.memberNick}</strong>
+															</Typography>
+														</Stack>
+													)}
+													<Stack direction="row" spacing={2} alignItems="center">
+														<Stack direction="row" spacing={0.5} alignItems="center">
+															<CalendarTodayIcon sx={{ fontSize: '14px', color: '#6B6B6B' }} />
+															<Typography sx={{ fontSize: '11px', color: '#6B6B6B' }}>
+																Start: <Moment format="MMM DD, YYYY">{routine.startDate}</Moment>
+															</Typography>
+														</Stack>
+														{routine.endDate && (
+															<Stack direction="row" spacing={0.5} alignItems="center">
+																<CalendarTodayIcon sx={{ fontSize: '14px', color: '#6B6B6B' }} />
+																<Typography sx={{ fontSize: '11px', color: '#6B6B6B' }}>
+																	End: <Moment format="MMM DD, YYYY">{routine.endDate}</Moment>
+																</Typography>
+															</Stack>
+														)}
+													</Stack>
+												</Stack>
+
+												{/* Action Button */}
+												<Button
+													component={Link}
+													href={
+														routine.routineType === RoutineType.WORKOUT
+															? `/workouts/${routine.routineId || routine.workoutData?._id}`
+															: `/nutrition/meal-plans/${routine.routineId || routine.mealPlanData?._id}`
+													}
+													variant="outlined"
+													size="small"
+													fullWidth
+													endIcon={<ArrowForwardIcon />}
+													sx={{
+														textTransform: 'none',
+														borderColor: '#E10600',
+														color: '#E10600',
+														'&:hover': {
+															borderColor: '#C10500',
+															backgroundColor: 'rgba(225, 6, 0, 0.08)',
+														},
+													}}
+												>
+													View Routine
+												</Button>
+											</Stack>
+										</Card>
+									</Grid>
+								))}
+							</Grid>
+						)}
+					</Card>
+				)}
 
 				{/* My Routines & Bookings Section */}
 				<Grid container spacing={3} sx={{ mb: 3 }}>
@@ -1312,6 +1605,9 @@ const MyPage: NextPage = () => {
 									{category === 'myProfile' && <MyProfile />}
 									{category === 'myArticles' && <MyArticles />}
 									{category === 'writeArticle' && <WriteArticle />}
+									{category === 'booking' && <MyBookings />}
+									{category === 'workout' && <MyWorkouts />}
+									{category === 'meal-plan' && <MyMealPlans />}
 									{category === 'followers' && (
 										<MemberFollowers
 											subscribeHandler={subscribeHandler}

@@ -97,13 +97,14 @@ const CreateWorkoutPage: NextPage = () => {
 					input: {
 						page: 1,
 						limit: 12,
-						sort: 'createdAt',
+						sort: 'workoutViews',
 						direction: Direction.DESC,
 						workoutStatus: 'PUBLISHED',
 					},
 				},
 			},
 		],
+		awaitRefetchQueries: true,
 	});
 
 	// Fetch exercises for selection
@@ -312,7 +313,7 @@ const CreateWorkoutPage: NextPage = () => {
 			});
 
 			await sweetMixinSuccessAlert('Workout created successfully!');
-			router.push(`/trainer/workouts`);
+			router.push(`/workouts`);
 		} catch (err: any) {
 			setError(err.message || 'Failed to create workout');
 			sweetErrorHandling(err).then();

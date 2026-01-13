@@ -18,6 +18,9 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import EventIcon from '@mui/icons-material/Event';
 
 const MyMenu = () => {
 	const device = useDeviceDetect();
@@ -265,6 +268,76 @@ const MyMenu = () => {
 										/>
 										<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
 											Write Article
+										</Typography>
+									</div>
+								</Link>
+							</ListItem>
+						</List>
+					</Stack>
+					<Stack className={'section'} sx={{ marginTop: '16px' }}>
+						<Typography className="title" variant={'h5'}>
+							MY ROUTINES
+						</Typography>
+						<List className={'sub-section'}>
+							<ListItem className={pathname === 'booking' ? 'focus' : ''}>
+								<Link
+									href={{
+										pathname: '/mypage',
+										query: { category: 'booking' },
+									}}
+									scroll={false}
+								>
+									<div className={'flex-box'}>
+										<EventIcon
+											sx={{
+												fontSize: '20px',
+												color: category === 'booking' ? '#E10600' : '#6B6B6B',
+											}}
+										/>
+										<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
+											My Bookings
+										</Typography>
+									</div>
+								</Link>
+							</ListItem>
+							<ListItem className={pathname === 'workout' ? 'focus' : ''}>
+								<Link
+									href={{
+										pathname: '/mypage',
+										query: { category: 'workout' },
+									}}
+									scroll={false}
+								>
+									<div className={'flex-box'}>
+										<FitnessCenterIcon
+											sx={{
+												fontSize: '20px',
+												color: category === 'workout' ? '#E10600' : '#6B6B6B',
+											}}
+										/>
+										<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
+											My Workouts
+										</Typography>
+									</div>
+								</Link>
+							</ListItem>
+							<ListItem className={pathname === 'meal-plan' ? 'focus' : ''}>
+								<Link
+									href={{
+										pathname: '/mypage',
+										query: { category: 'meal-plan' },
+									}}
+									scroll={false}
+								>
+									<div className={'flex-box'}>
+										<RestaurantIcon
+											sx={{
+												fontSize: '20px',
+												color: category === 'meal-plan' ? '#E10600' : '#6B6B6B',
+											}}
+										/>
+										<Typography className={'sub-title'} variant={'subtitle1'} component={'p'}>
+											My Meal Plans
 										</Typography>
 									</div>
 								</Link>
