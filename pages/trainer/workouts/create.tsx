@@ -72,7 +72,7 @@ const CreateWorkoutPage: NextPage = () => {
 		workoutDifficulty: WorkoutDifficulty.BEGINNER,
 		workoutDuration: '30',
 		workoutEquipment: [],
-		workoutStatus: WorkoutStatus.DRAFT,
+		workoutStatus: WorkoutStatus.PUBLISHED,
 		workoutDesc: '',
 		workoutImage: undefined,
 		workoutVideo: undefined,
@@ -91,18 +91,9 @@ const CreateWorkoutPage: NextPage = () => {
 
 	const [createWorkout] = useMutation(CREATE_WORKOUT, {
 		refetchQueries: [
-			{
-				query: GET_WORKOUTS,
-				variables: {
-					input: {
-						page: 1,
-						limit: 12,
-						sort: 'workoutViews',
-						direction: Direction.DESC,
-						workoutStatus: 'PUBLISHED',
-					},
-				},
-			},
+			// Refetch all GET_WORKOUTS queries to ensure the workout list page updates
+			// Using the query document will refetch all instances of this query
+			GET_WORKOUTS,
 		],
 		awaitRefetchQueries: true,
 	});
@@ -297,7 +288,7 @@ const CreateWorkoutPage: NextPage = () => {
 				workoutDifficulty: workoutData.workoutDifficulty!,
 				workoutDuration: workoutData.workoutDuration!,
 				workoutEquipment: workoutData.workoutEquipment || [],
-				workoutStatus: workoutData.workoutStatus || WorkoutStatus.DRAFT,
+				workoutStatus: workoutData.workoutStatus || WorkoutStatus.PUBLISHED,
 				workoutDesc: workoutData.workoutDesc!.trim(),
 				workoutExercises: workoutData.workoutExercises || [],
 				workoutCaloriesBurn: workoutData.workoutCaloriesBurn || 0,
@@ -313,7 +304,9 @@ const CreateWorkoutPage: NextPage = () => {
 			});
 
 			await sweetMixinSuccessAlert('Workout created successfully!');
-			router.push(`/workouts`);
+			// Navigate to workouts page - the refetchQueries will ensure the list updates
+			// Using replace to avoid back button issues
+			router.replace(`/workouts`);
 		} catch (err: any) {
 			setError(err.message || 'Failed to create workout');
 			sweetErrorHandling(err).then();
