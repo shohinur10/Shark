@@ -33,6 +33,7 @@ export interface MealPlanInput {
 	isPremium?: boolean;
 	price?: number;
 	createdBy?: string;
+	mealPlanImage?: string | string[];
 }
 
 export interface MPISearch {
@@ -46,5 +47,6 @@ export interface MealPlansInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
+n	mealPlanStatus?: MealPlanStatus;
 	search?: MPISearch;
 }

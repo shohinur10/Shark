@@ -301,133 +301,7 @@ const MealPlanCard = ({
 	);
 };
 
-// Mock data generator that matches backend schema exactly
-const generateMockMealPlans = (): MealPlan[] => {
-	const goals: NutritionGoal[] = [NutritionGoal.WEIGHT_LOSS, NutritionGoal.MUSCLE_GAIN, NutritionGoal.MAINTENANCE];
-	const diets: DietaryPreference[][] = [
-		[DietaryPreference.HIGH_PROTEIN],
-		[DietaryPreference.KETO],
-		[DietaryPreference.VEGAN],
-		[DietaryPreference.NONE],
-	];
-	const durations = [7, 14, 30];
-	const calorieRanges = [
-		{ min: 1500, max: 2000 }, // Weight Loss
-		{ min: 2500, max: 3200 }, // Muscle Gain
-		{ min: 2000, max: 2500 }, // Maintenance
-	];
-
-	const mockPlans: MealPlan[] = [];
-
-	for (let i = 0; i < 15; i++) {
-		const goal = goals[i % goals.length];
-		const diet = diets[i % diets.length];
-		const duration = durations[i % durations.length];
-		const calorieRange = calorieRanges[goals.indexOf(goal)];
-		const calorieTarget = Math.floor(Math.random() * (calorieRange.max - calorieRange.min + 1)) + calorieRange.min;
-		const mealsPerDay = Math.floor(Math.random() * 4) + 3; // 3-6 meals per day
-
-		// Calculate macros based on calorie target
-		const proteinGrams = Math.floor(calorieTarget * 0.3 / 4); // 30% calories from protein
-		const carbsGrams = Math.floor(calorieTarget * 0.4 / 4); // 40% calories from carbs
-		const fatsGrams = Math.floor(calorieTarget * 0.3 / 9); // 30% calories from fats
-
-		const macros: Macros = {
-			protein: proteinGrams,
-			carbs: carbsGrams,
-			fats: fatsGrams,
-		};
-
-		// Generate meals array
-		const meals = [];
-		for (let day = 1; day <= duration; day++) {
-			const mealTypes = [MealType.BREAKFAST, MealType.LUNCH, MealType.DINNER];
-			if (mealsPerDay > 3) mealTypes.push(MealType.SNACK);
-			if (mealsPerDay > 4) mealTypes.push(MealType.PRE_WORKOUT);
-			if (mealsPerDay > 5) mealTypes.push(MealType.POST_WORKOUT);
-
-			mealTypes.slice(0, mealsPerDay).forEach((mealType, mealIndex) => {
-				const mealCalories = Math.floor(calorieTarget / mealsPerDay);
-				meals.push({
-					day,
-					mealType,
-					mealName: `${mealType} - Day ${day}`,
-					ingredients: ['Ingredient 1', 'Ingredient 2', 'Ingredient 3'],
-					instructions: 'Cook and serve.',
-					calories: mealCalories,
-					protein: Math.floor(mealCalories * 0.3 / 4),
-					carbs: Math.floor(mealCalories * 0.4 / 4),
-					fats: Math.floor(mealCalories * 0.3 / 9),
-				});
-			});
-		}
-
-		const planTitles = [
-			'Lean Body Transformation',
-			'Muscle Building Program',
-			'Balanced Nutrition Plan',
-			'Fat Loss Accelerator',
-			'Strength & Performance',
-			'Healthy Lifestyle Plan',
-			'Keto Transformation',
-			'High Protein Power',
-			'Vegan Wellness Program',
-			'Rapid Fat Loss',
-			'Bulking Nutrition',
-			'Maintenance Mastery',
-			'Cutting Edge Plan',
-			'Mass Building',
-			'Wellness Journey',
-		];
-
-		const planDescriptions = [
-			'A comprehensive nutrition plan designed to help you achieve your fitness goals with balanced macronutrients.',
-			'Structured meal plan focused on muscle growth and recovery with optimal protein intake.',
-			'Well-rounded nutrition program that supports overall health and wellness.',
-			'Calorie-controlled plan designed to maximize fat loss while preserving muscle mass.',
-			'Performance-focused nutrition to fuel your workouts and enhance recovery.',
-			'A sustainable approach to healthy eating that fits your lifestyle.',
-			'Low-carb, high-fat nutrition plan for metabolic optimization.',
-			'High protein diet plan to support muscle maintenance and growth.',
-			'Plant-based nutrition program for optimal health and performance.',
-			'Intensive fat loss program with precise calorie control.',
-			'Mass gaining nutrition plan with strategic macro distribution.',
-			'Maintenance nutrition to sustain your current physique.',
-			'Advanced cutting protocol for competition prep.',
-			'Muscle mass building with surplus calories.',
-			'Long-term wellness and health optimization.',
-		];
-
-		mockPlans.push({
-			_id: `mock-plan-${i + 1}`,
-			mealPlanTitle: planTitles[i % planTitles.length],
-			mealPlanStatus: MealPlanStatus.PUBLISHED,
-			mealPlanDesc: planDescriptions[i % planDescriptions.length],
-			nutritionGoal: goal,
-			dietaryPreference: diet,
-			duration,
-			calorieTarget,
-			macros,
-			meals,
-			createdBy: 'mock-user-id',
-			mealPlanViews: Math.floor(Math.random() * 5000) + 100,
-			mealPlanLikes: Math.floor(Math.random() * 500) + 10,
-			mealPlanRating: Math.random() * 2 + 3.5, // 3.5-5.5 rating
-			mealPlanFollowers: Math.floor(Math.random() * 200) + 5,
-			isPremium: i % 3 === 0, // Every 3rd plan is premium
-			price: i % 3 === 0 ? Math.floor(Math.random() * 50) + 20 : 0,
-			createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000),
-			updatedAt: new Date(),
-			memberData: {
-				_id: 'mock-member-id',
-				memberNick: `Nutrition Expert ${i + 1}`,
-				memberFullName: `Expert ${i + 1}`,
-			} as any,
-		});
-	}
-
-	return mockPlans;
-};
+// Mock data generator removed - only real data from API will be shown
 
 const MealPlansPage: NextPage = () => {
 	const device = useDeviceDetect();
@@ -470,6 +344,7 @@ const MealPlansPage: NextPage = () => {
 		limit: 3,
 		sort: 'mealPlanViews',
 		direction: Direction.DESC,
+		mealPlanStatus: MealPlanStatus.PUBLISHED,
 		search: { nutritionGoal: NutritionGoal.WEIGHT_LOSS },
 	}), []);
 
@@ -478,6 +353,7 @@ const MealPlansPage: NextPage = () => {
 		limit: 3,
 		sort: 'mealPlanViews',
 		direction: Direction.DESC,
+		mealPlanStatus: MealPlanStatus.PUBLISHED,
 		search: { nutritionGoal: NutritionGoal.MUSCLE_GAIN },
 	}), []);
 
@@ -486,6 +362,7 @@ const MealPlansPage: NextPage = () => {
 		limit: 3,
 		sort: 'mealPlanViews',
 		direction: Direction.DESC,
+		mealPlanStatus: MealPlanStatus.PUBLISHED,
 		search: { nutritionGoal: NutritionGoal.MAINTENANCE },
 	}), []);
 
@@ -510,6 +387,7 @@ const MealPlansPage: NextPage = () => {
 			limit,
 			sort: sortBy,
 			direction: Direction.DESC,
+			mealPlanStatus: MealPlanStatus.PUBLISHED,
 			search: Object.keys(search).length > 0 ? search : undefined,
 		};
 	}, [page, selectedGoal, selectedDiet, searchQuery, sortBy]);
@@ -536,6 +414,7 @@ const MealPlansPage: NextPage = () => {
 	});
 
 	// Fetch All Meal Plans
+	// Apollo Client automatically refetches when variables change
 	const {
 		loading: allPlansLoading,
 		data: allPlansData,
@@ -544,34 +423,29 @@ const MealPlansPage: NextPage = () => {
 		fetchPolicy: 'cache-and-network',
 		variables: { input: allPlansQuery },
 		skip: false,
+		notifyOnNetworkStatusChange: true,
 	});
 
-	// Process data with fallback to mock
-	const getPlansWithFallback = (data: any, mockGenerator: () => MealPlan[]): MealPlan[] => {
+	// Process data - only real data, no mock fallback
+	const getPlans = (data: any): MealPlan[] => {
 		if (data?.getMealPlans?.list && data.getMealPlans.list.length > 0) {
 			return data.getMealPlans.list.filter((plan: MealPlan) => plan.mealPlanStatus === MealPlanStatus.PUBLISHED);
 		}
-		return mockGenerator().filter(plan => plan.mealPlanStatus === MealPlanStatus.PUBLISHED);
+		return [];
 	};
 
 	const weightLossPlans = useMemo(() => {
-		const allPlans = getPlansWithFallback(weightLossData, () => 
-			generateMockMealPlans().filter(p => p.nutritionGoal === NutritionGoal.WEIGHT_LOSS)
-		);
+		const allPlans = getPlans(weightLossData);
 		return allPlans.slice(0, 3);
 	}, [weightLossData]);
 
 	const muscleGainPlans = useMemo(() => {
-		const allPlans = getPlansWithFallback(muscleGainData, () => 
-			generateMockMealPlans().filter(p => p.nutritionGoal === NutritionGoal.MUSCLE_GAIN)
-		);
+		const allPlans = getPlans(muscleGainData);
 		return allPlans.slice(0, 3);
 	}, [muscleGainData]);
 
 	const maintenancePlans = useMemo(() => {
-		const allPlans = getPlansWithFallback(maintenanceData, () => 
-			generateMockMealPlans().filter(p => p.nutritionGoal === NutritionGoal.MAINTENANCE)
-		);
+		const allPlans = getPlans(maintenanceData);
 		return allPlans.slice(0, 3);
 	}, [maintenanceData]);
 
@@ -579,18 +453,17 @@ const MealPlansPage: NextPage = () => {
 	useEffect(() => {
 		let plans: MealPlan[] = [];
 		
+		// Only use real data from API - no mock fallback
 		if (allPlansData?.getMealPlans?.list && allPlansData.getMealPlans.list.length > 0) {
 			plans = allPlansData.getMealPlans.list.filter((plan: MealPlan) => plan.mealPlanStatus === MealPlanStatus.PUBLISHED);
-		} else if (!allPlansLoading && !allPlansError) {
-			plans = generateMockMealPlans().filter(plan => plan.mealPlanStatus === MealPlanStatus.PUBLISHED);
 		}
 
-		// Apply client-side filtering
+		// Apply client-side filtering (calories and search as fallback if backend doesn't handle them)
 		plans = plans.filter(plan => {
-			// Calories range filter
+			// Calories range filter (client-side fallback)
 			const inCalorieRange = plan.calorieTarget >= caloriesRange[0] && plan.calorieTarget <= caloriesRange[1];
 			
-			// Search filter (as fallback if backend doesn't handle it)
+			// Search filter (client-side fallback if backend doesn't handle it)
 			const matchesSearch = !searchQuery.trim() || 
 				plan.mealPlanTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				(plan.mealPlanDesc && plan.mealPlanDesc.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -613,8 +486,12 @@ const MealPlansPage: NextPage = () => {
 		});
 
 		setAllMealPlans(plans);
-		setPage(1); // Reset to first page when filters change
 	}, [allPlansData, allPlansLoading, allPlansError, caloriesRange, sortBy, searchQuery]);
+
+	// Reset page to 1 when filters change
+	useEffect(() => {
+		setPage(1);
+	}, [selectedGoal, selectedDiet, caloriesRange, sortBy, searchQuery]);
 
 	const totalPages = Math.ceil(allMealPlans.length / limit);
 
@@ -1042,12 +919,12 @@ const MealPlansPage: NextPage = () => {
 									</Stack>
 								</Box>
 
-								{/* Show Popular Plans Below Empty State */}
+								{/* Show Popular Plans Below Empty State - Only real data */}
 								{(() => {
-									// Get popular plans from all available plans sorted by views
+									// Get popular plans from all available plans sorted by views - only real data
 									const allAvailablePlans = allPlansData?.getMealPlans?.list 
 										? allPlansData.getMealPlans.list.filter((p: MealPlan) => p.mealPlanStatus === MealPlanStatus.PUBLISHED)
-										: generateMockMealPlans().filter(p => p.mealPlanStatus === MealPlanStatus.PUBLISHED);
+										: [];
 									
 									const popularPlansToShow = [...allAvailablePlans]
 										.sort((a, b) => (b.mealPlanViews || 0) - (a.mealPlanViews || 0))

@@ -1010,7 +1010,7 @@ const MyPage: NextPage = () => {
 								{userWorkouts.length > 0 && (
 									<Button
 										component={Link}
-										href="/workouts"
+										href="/mypage?category=workout"
 										size="small"
 										endIcon={<ArrowForwardIcon />}
 										sx={{

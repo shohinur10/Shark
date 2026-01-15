@@ -170,27 +170,19 @@ export const useBookingForm = (initialTrainerId?: string | string[]): UseBooking
 
 	// Create booking mutation
 	const [createBooking, { loading: creatingBooking }] = useMutation(CREATE_BOOKING, {
-		refetchQueries: user?._id
-			? [
-					{
-						query: GET_BOOKINGS,
-						variables: {
-							input: {
-								page: 1,
-								limit: 50,
-								clientId: user._id,
-							},
-						},
-					},
-			  ]
-			: [],
+		refetchQueries: [
+			// Refetch all GET_BOOKINGS queries to ensure MyPage and bookings list update
+			// Using the query document will refetch all instances of this query
+			GET_BOOKINGS,
+		],
+		awaitRefetchQueries: true,
 		onCompleted: async (data) => {
 			if (data?.createBooking) {
 				await sweetMixinSuccessAlert('Booking created successfully!');
 				// Store booking ID for reference
 				const bookingId = data.createBooking._id;
 				console.log('Booking created with ID:', bookingId);
-				router.push('/bookings');
+				router.push('/mypage?category=bookings');
 			}
 		},
 		onError: (error) => {

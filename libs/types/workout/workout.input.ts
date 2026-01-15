@@ -9,7 +9,7 @@ export interface WorkoutInput {
 	workoutEquipment?: string[];
 	workoutStatus?: string;
 	workoutDesc: string;
-	workoutImage?: string;
+	workoutImage?: string | string[];
 	workoutVideo?: string;
 	workoutExercises?: string[];
 	workoutCaloriesBurn?: number;

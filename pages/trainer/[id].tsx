@@ -54,6 +54,15 @@ function TabPanel(props: TabPanelProps) {
 	);
 }
 
+// Helper function to validate MongoDB ObjectId format
+const isValidObjectId = (id: string): boolean => {
+	// MongoDB ObjectId is 24 hex characters
+	return /^[0-9a-fA-F]{24}$/.test(id);
+};
+
+// Known routes that should not be treated as trainer IDs
+const knownRoutes = ['meal-plans', 'workouts', 'create', 'index'];
+
 const TrainerProfilePage: NextPage = () => {
 	const device = useDeviceDetect();
 	const router = useRouter();
@@ -63,7 +72,13 @@ const TrainerProfilePage: NextPage = () => {
 	const [workoutsPage, setWorkoutsPage] = useState(1);
 
 	const limit = 12;
-	const trainerId = typeof id === 'string' ? id : undefined;
+	
+	// Validate that the ID is a valid ObjectId and not a known route
+	const isValidId = typeof id === 'string' && 
+		isValidObjectId(id) && 
+		!knownRoutes.includes(id.toLowerCase());
+	
+	const trainerId = isValidId ? id : undefined;
 
 	// Fetch trainer profile
 	const { data: trainerData, loading: trainerLoading, error: trainerError } = useQuery(GET_MEMBER, {
@@ -101,6 +116,20 @@ const TrainerProfilePage: NextPage = () => {
 	const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
 		setTabValue(newValue);
 	};
+
+	// Check if ID is invalid format or a known route FIRST (before loading check)
+	// This prevents unnecessary API calls with invalid IDs
+	if (typeof id === 'string' && (!isValidObjectId(id) || knownRoutes.includes(id.toLowerCase()))) {
+		// If it's a known route, don't treat it as a trainer ID
+		// This prevents errors when navigating to routes like /trainer/meal-plans
+		return (
+			<Container maxWidth="xl" sx={{ py: 4 }}>
+				<Alert severity="info" sx={{ mb: 3 }}>
+					This page requires a valid trainer ID. Please check the URL.
+				</Alert>
+			</Container>
+		);
+	}
 
 	if (trainerLoading) {
 		return (

@@ -483,3 +483,449 @@
 		}
 	}
 }
+
+/** WORKOUT DETAIL PAGE - PREMIUM REDESIGN **/
+
+.workout-detail-page {
+	padding: $spacing-2xl 0;
+	min-height: calc(100vh - 200px);
+	background: #ffffff;
+
+	.container {
+		@include container;
+		max-width: $container-lg;
+		padding: 0 $spacing-md;
+	}
+
+	// Hero Section
+	.workout-hero {
+		margin-bottom: $spacing-3xl;
+
+		.workout-hero-image {
+			position: relative;
+			width: 100%;
+			height: 500px;
+			border-radius: $radius-lg;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			.video-overlay {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				z-index: 1;
+
+				.workout-video-hero {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+				}
+			}
+
+			.hero-overlay {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+				padding: $spacing-2xl;
+				color: #ffffff;
+				z-index: 2;
+
+				.premium-chip-hero {
+					background: linear-gradient(135deg, #FFC107 0%, #FF8F00 100%);
+					color: #ffffff;
+					backdrop-filter: blur(10px);
+					font-weight: 600;
+				}
+
+				.category-chip-hero,
+				.difficulty-chip-hero,
+				.duration-chip-hero {
+					background: rgba(255, 255, 255, 0.2);
+					color: #ffffff;
+					backdrop-filter: blur(10px);
+					border: 1px solid rgba(255, 255, 255, 0.3);
+					font-weight: 500;
+				}
+
+				.rating-chip-hero {
+					background: rgba(255, 167, 38, 0.9);
+					color: #ffffff;
+					backdrop-filter: blur(10px);
+					font-weight: 600;
+
+					svg {
+						color: #ffffff;
+					}
+				}
+
+				.workout-hero-title {
+					font-family: $font;
+					font-weight: 700;
+					font-size: 48px;
+					color: #ffffff;
+					margin-bottom: $spacing-md;
+					line-height: 1.2;
+
+					@media (max-width: $breakpoint-md) {
+						font-size: 32px;
+					}
+				}
+
+				.workout-hero-description {
+					font-family: $font;
+					font-size: 18px;
+					color: rgba(255, 255, 255, 0.9);
+					line-height: 1.6;
+					max-width: 800px;
+
+					@media (max-width: $breakpoint-md) {
+						font-size: 16px;
+					}
+				}
+
+				.workout-creator {
+					font-family: $font;
+					color: rgba(255, 255, 255, 0.8);
+					font-size: 14px;
+				}
+
+				.start-workout-btn-hero {
+					background: #E10600;
+					color: #ffffff;
+					font-weight: 600;
+					text-transform: none;
+					padding: $spacing-md $spacing-xl;
+					border-radius: 12px;
+
+					&:hover {
+						background: #C10500;
+						box-shadow: 0 4px 12px rgba(225, 6, 0, 0.4);
+					}
+				}
+
+				.save-workout-btn {
+					border-color: rgba(255, 255, 255, 0.5);
+					color: #ffffff;
+
+					&:hover {
+						background: rgba(255, 255, 255, 0.1);
+						border-color: #ffffff;
+					}
+				}
+
+				.action-icon-btn {
+					color: #ffffff;
+					border: 1px solid rgba(255, 255, 255, 0.3);
+					background: rgba(255, 255, 255, 0.1);
+					backdrop-filter: blur(10px);
+
+					&:hover {
+						background: rgba(255, 255, 255, 0.2);
+					}
+				}
+			}
+		}
+	}
+
+	// Workout Stats Section
+	.workout-stats-section {
+		margin-bottom: $spacing-3xl;
+
+		.section-title {
+			font-family: $font;
+			font-size: 28px;
+			font-weight: 600;
+			color: #1A1A1A;
+			margin-bottom: $spacing-md;
+			letter-spacing: -0.5px;
+		}
+
+		.workout-stat-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			text-align: center;
+			height: 100%;
+
+			&:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+			}
+
+			&.duration {
+				border-left: 4px solid #2196F3;
+			}
+
+			&.calories {
+				border-left: 4px solid #E10600;
+			}
+
+			&.exercises {
+				border-left: 4px solid #4CAF50;
+			}
+
+			&.rating {
+				border-left: 4px solid #FFC107;
+			}
+
+			.stat-icon {
+				color: $gray-600;
+				font-size: 24px;
+			}
+
+			.stat-label {
+				font-family: $font;
+				font-weight: 500;
+				color: $gray-600;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				font-size: 12px;
+			}
+
+			.stat-value {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				margin: $spacing-sm 0;
+			}
+
+			.stat-unit {
+				font-family: $font;
+				color: $gray-600;
+				font-size: 12px;
+			}
+		}
+	}
+
+	// Description Section
+	.workout-description-section {
+		margin-bottom: $spacing-3xl;
+
+		.section-title {
+			font-family: $font;
+			font-size: 28px;
+			font-weight: 600;
+			color: #1A1A1A;
+			margin-bottom: $spacing-md;
+			letter-spacing: -0.5px;
+		}
+
+		.description-text {
+			font-family: $font;
+			font-size: 16px;
+			color: $gray-700;
+			line-height: 1.8;
+		}
+	}
+
+	// Exercises Breakdown Section
+	.exercises-breakdown-section {
+		margin-bottom: $spacing-3xl;
+
+		.section-title {
+			font-family: $font;
+			font-size: 28px;
+			font-weight: 600;
+			color: #1A1A1A;
+			margin-bottom: $spacing-md;
+			letter-spacing: -0.5px;
+		}
+
+		.exercise-card {
+			background: #ffffff;
+			border-radius: $radius-lg;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+			border: 1px solid $gray-200;
+			transition: all $transition-base;
+			cursor: pointer;
+			height: 100%;
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				border-color: #E10600;
+			}
+
+			.exercise-number {
+				width: 48px;
+				height: 48px;
+				border-radius: 50%;
+				background: #E10600;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				.exercise-number-text {
+					font-family: $font;
+					font-weight: 700;
+					color: #ffffff;
+					font-size: 20px;
+				}
+			}
+
+			.exercise-name {
+				font-family: $font;
+				font-weight: 600;
+				color: $gray-900;
+				font-size: 18px;
+			}
+
+			.exercise-muscle-chip {
+				background: #E3F2FD;
+				color: #1976D2;
+				font-weight: 500;
+				font-size: 11px;
+				border-radius: 8px;
+			}
+
+			.exercise-type-chip {
+				background: #F5F5F5;
+				color: $gray-700;
+				font-weight: 500;
+				font-size: 11px;
+				border-radius: 8px;
+			}
+
+			.exercise-difficulty-progress {
+				height: 6px;
+				border-radius: $radius-full;
+				background-color: $gray-200;
+
+				.MuiLinearProgress-bar {
+					background: #E10600;
+					border-radius: $radius-full;
+				}
+			}
+
+			.exercise-icon {
+				color: $gray-400;
+				font-size: 24px;
+			}
+		}
+	}
+
+	// Equipment & Tags Sections
+	.workout-equipment-section,
+	.workout-tags-section {
+		.section-subtitle {
+			font-family: $font;
+			font-size: 18px;
+			font-weight: 600;
+			color: #1A1A1A;
+		}
+
+		.equipment-chip {
+			background: #F5F5F5;
+			color: $gray-700;
+			border: 1px solid #E5E5E5;
+			font-weight: 500;
+			font-size: 12px;
+			border-radius: 8px;
+			font-family: $font;
+
+			svg {
+				color: $gray-600;
+			}
+		}
+
+		.tag-chip {
+			background: #E8EAF6;
+			color: #3F51B5;
+			font-weight: 500;
+			font-size: 12px;
+			border-radius: 8px;
+			font-family: $font;
+		}
+	}
+
+	// Engagement Stats Section
+	.engagement-stats-section {
+		padding: $spacing-xl;
+		background: #FAFAFA;
+		border-radius: $radius-lg;
+		border: 1px solid $gray-200;
+
+		.engagement-stat {
+			text-align: center;
+			padding: $spacing-md;
+
+			.engagement-icon {
+				font-size: 32px;
+				color: #E10600;
+				margin-bottom: $spacing-xs;
+			}
+
+			.engagement-value {
+				font-family: $font;
+				font-weight: 700;
+				color: $gray-900;
+				font-size: 24px;
+				margin: $spacing-xs 0;
+			}
+
+			.engagement-label {
+				font-family: $font;
+				color: $gray-600;
+				font-size: 12px;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+		}
+	}
+}
+
+// Mobile Styles for Workout Detail
+@media (max-width: $breakpoint-md) {
+	.workout-detail-page {
+		padding: $spacing-lg 0;
+
+		.workout-hero {
+			.workout-hero-image {
+				height: 350px;
+
+				.hero-overlay {
+					padding: $spacing-lg;
+
+					.workout-hero-title {
+						font-size: 28px;
+					}
+
+					.workout-hero-description {
+						font-size: 14px;
+					}
+				}
+			}
+		}
+
+		.workout-stats-section,
+		.workout-description-section,
+		.exercises-breakdown-section {
+			.section-title {
+				font-size: 22px;
+			}
+		}
+
+		.engagement-stats-section {
+			.engagement-stat {
+				padding: $spacing-sm;
+
+				.engagement-icon {
+					font-size: 24px;
+				}
+
+				.engagement-value {
+					font-size: 20px;
+				}
+			}
+		}
+	}
+}

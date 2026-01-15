@@ -24,6 +24,7 @@ import withLayoutBasic from '../../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useMutation, useReactiveVar } from '@apollo/client';
 import { CREATE_MEAL_PLAN } from '../../../apollo/user/mutation';
+import { GET_MEAL_PLANS } from '../../../apollo/user/query';
 import { MealPlanInput, MealInput, MacrosInput } from '../../../libs/types/mealplan/mealplan.input';
 import { NutritionGoal, MealPlanStatus, MealType, DietaryPreference } from '../../../libs/enums/nutrition.enum';
 import { userVar } from '../../../apollo/store';
@@ -37,7 +38,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import AIMealPlanGenerator from '../../../libs/components/trainer/AIMealPlanGenerator';
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getServerSideProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
 	},
@@ -50,10 +51,11 @@ const CreateMealPlanPage: NextPage = () => {
 	const token = getJwtToken();
 
 	const imageInputRef = useRef<HTMLInputElement>(null);
+	const mealPlanImageInputRef = useRef<HTMLInputElement>(null);
 
 	const [mealPlanData, setMealPlanData] = useState<Partial<MealPlanInput>>({
 		mealPlanTitle: '',
-		mealPlanStatus: MealPlanStatus.DRAFT,
+		mealPlanStatus: MealPlanStatus.PUBLISHED,
 		mealPlanDesc: '',
 		nutritionGoal: NutritionGoal.MAINTENANCE,
 		dietaryPreference: [],
@@ -67,6 +69,7 @@ const CreateMealPlanPage: NextPage = () => {
 		meals: [],
 		isPremium: false,
 		price: 0,
+		mealPlanImage: [],
 	});
 
 	const [currentMeal, setCurrentMeal] = useState<Partial<MealInput>>({
@@ -87,7 +90,13 @@ const CreateMealPlanPage: NextPage = () => {
 	const [error, setError] = useState('');
 	const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
 
-	const [createMealPlan] = useMutation(CREATE_MEAL_PLAN);
+	const [createMealPlan] = useMutation(CREATE_MEAL_PLAN, {
+		refetchQueries: [
+			// Refetch all GET_MEAL_PLANS queries to ensure the meal plan list page updates
+			GET_MEAL_PLANS,
+		],
+		awaitRefetchQueries: true,
+	});
 
 	// Check if user is trainer
 	useEffect(() => {
@@ -143,6 +152,74 @@ const CreateMealPlanPage: NextPage = () => {
 
 			const uploadedPath = await uploadImage(file);
 			setCurrentMeal({ ...currentMeal, imageUrl: uploadedPath });
+		} catch (err: any) {
+			setError(err.message || 'Failed to upload image');
+		}
+	};
+
+	// Upload single file for meal plan images (supports multiple images)
+	const uploadSingleFile = async (file: File, target: 'mealplan'): Promise<string> => {
+		try {
+			const formData = new FormData();
+			formData.append(
+				'operations',
+				JSON.stringify({
+					query: `mutation ImageUploader($file: Upload!, $target: String!) {
+						imageUploader(file: $file, target: $target) 
+				  }`,
+					variables: {
+						file: null,
+						target: target,
+					},
+				}),
+			);
+			formData.append(
+				'map',
+				JSON.stringify({
+					'0': ['variables.file'],
+				}),
+			);
+			formData.append('0', file);
+
+			const graphQLUrl = process.env.NEXT_PUBLIC_API_GRAPHQL_URL || process.env.REACT_APP_API_GRAPHQL_URL || 'http://localhost:3005/graphql';
+			const response = await axios.post(graphQLUrl, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					'apollo-require-preflight': true,
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			return response.data.data.imageUploader;
+		} catch (err: any) {
+			console.log('Error uploading file:', err);
+			throw new Error(err.message || 'Failed to upload file');
+		}
+	};
+
+	// Handle meal plan image upload (multiple images)
+	const handleMealPlanImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		try {
+			const files = e.target.files;
+			if (!files || files.length === 0) return;
+
+			const currentImages = Array.isArray(mealPlanData.mealPlanImage) ? mealPlanData.mealPlanImage : (mealPlanData.mealPlanImage ? [mealPlanData.mealPlanImage] : []);
+			const uploadedPaths: string[] = [];
+
+			// Upload all selected files
+			for (let i = 0; i < files.length; i++) {
+				const file = files[i];
+				const uploadedPath = await uploadSingleFile(file, 'mealplan');
+				uploadedPaths.push(uploadedPath);
+			}
+
+			// Add new images to existing ones
+			setMealPlanData({ ...mealPlanData, mealPlanImage: [...currentImages, ...uploadedPaths] });
+			
+			// Reset the input so the same files can be selected again if needed
+			if (mealPlanImageInputRef.current) {
+				mealPlanImageInputRef.current.value = '';
+			}
 		} catch (err: any) {
 			setError(err.message || 'Failed to upload image');
 		}
@@ -274,7 +351,7 @@ const CreateMealPlanPage: NextPage = () => {
 
 			const input: MealPlanInput = {
 				mealPlanTitle: mealPlanData.mealPlanTitle!.trim(),
-				mealPlanStatus: mealPlanData.mealPlanStatus || MealPlanStatus.DRAFT,
+				mealPlanStatus: mealPlanData.mealPlanStatus || MealPlanStatus.PUBLISHED,
 				mealPlanDesc: mealPlanData.mealPlanDesc!.trim(),
 				nutritionGoal: mealPlanData.nutritionGoal!,
 				dietaryPreference: mealPlanData.dietaryPreference || [],
@@ -285,6 +362,15 @@ const CreateMealPlanPage: NextPage = () => {
 				isPremium: mealPlanData.isPremium || false,
 				price: mealPlanData.price || 0,
 			};
+
+			// Handle meal plan images (support both single string and array)
+			if (mealPlanData.mealPlanImage) {
+				if (Array.isArray(mealPlanData.mealPlanImage)) {
+					input.mealPlanImage = mealPlanData.mealPlanImage.length > 0 ? mealPlanData.mealPlanImage : undefined;
+				} else {
+					input.mealPlanImage = mealPlanData.mealPlanImage;
+				}
+			}
 
 			const result = await createMealPlan({
 				variables: { input },
@@ -419,6 +505,78 @@ const CreateMealPlanPage: NextPage = () => {
 							}
 						}}
 					/>
+
+					{/* Meal Plan Images Upload */}
+					<Box>
+						<Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+							Meal Plan Images (Upload multiple images)
+						</Typography>
+						<Stack spacing={2}>
+							<Button variant="outlined" component="label" onClick={() => mealPlanImageInputRef.current?.click()}>
+								Upload Images
+								<input ref={mealPlanImageInputRef} type="file" hidden accept="image/*" multiple onChange={handleMealPlanImageUpload} />
+							</Button>
+							{mealPlanData.mealPlanImage && Array.isArray(mealPlanData.mealPlanImage) && mealPlanData.mealPlanImage.length > 0 && (
+								<Grid container spacing={2}>
+									{mealPlanData.mealPlanImage.map((imagePath, index) => (
+										<Grid item key={index} xs={6} sm={4} md={3}>
+											<Box sx={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
+												<Box
+													sx={{
+														position: 'absolute',
+														top: 0,
+														left: 0,
+														width: '100%',
+														height: '100%',
+														borderRadius: 1,
+														overflow: 'hidden',
+														border: '1px solid #e0e0e0',
+													}}
+												>
+													<img
+														src={`${REACT_APP_API_URL}/${imagePath}`}
+														alt={`Meal Plan ${index + 1}`}
+														style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+													/>
+													<IconButton
+														size="small"
+														onClick={() => {
+															const currentImages = Array.isArray(mealPlanData.mealPlanImage) ? mealPlanData.mealPlanImage : [];
+															const updatedImages = currentImages.filter((_, i) => i !== index);
+															setMealPlanData({ ...mealPlanData, mealPlanImage: updatedImages.length > 0 ? updatedImages : [] });
+														}}
+														sx={{
+															position: 'absolute',
+															top: 4,
+															right: 4,
+															backgroundColor: 'rgba(255, 255, 255, 0.9)',
+															'&:hover': {
+																backgroundColor: 'rgba(255, 255, 255, 1)',
+															},
+														}}
+													>
+														<CloseIcon fontSize="small" />
+													</IconButton>
+												</Box>
+											</Box>
+										</Grid>
+									))}
+								</Grid>
+							)}
+							{mealPlanData.mealPlanImage && !Array.isArray(mealPlanData.mealPlanImage) && mealPlanData.mealPlanImage && (
+								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+									<img
+										src={`${REACT_APP_API_URL}/${mealPlanData.mealPlanImage}`}
+										alt="Meal Plan"
+										style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 4 }}
+									/>
+									<IconButton size="small" onClick={() => setMealPlanData({ ...mealPlanData, mealPlanImage: [] })}>
+										<CloseIcon />
+									</IconButton>
+								</Box>
+							)}
+						</Stack>
+					</Box>
 
 						<Grid container spacing={2}>
 							<Grid item xs={12} sm={6}>

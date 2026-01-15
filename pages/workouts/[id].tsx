@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Stack, Box, Typography, Button, Chip, Divider, List, ListItem, ListItemText, CircularProgress, ListItemButton } from '@mui/material';
+import { Stack, Box, Typography, Button, Chip, Divider, Card, CardContent, Grid, CircularProgress, IconButton, LinearProgress } from '@mui/material';
 import useDeviceDetect from '../../libs/hooks/useDeviceDetect';
 import withLayoutBasic from '../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -12,6 +12,10 @@ import ShareIcon from '@mui/icons-material/Share';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import StarIcon from '@mui/icons-material/Star';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useQuery } from '@apollo/client';
 import { GET_WORKOUT, GET_EXERCISE } from '../../apollo/user/query';
 import { T } from '../../libs/types/common';
@@ -19,7 +23,7 @@ import { WorkoutDifficulty, WorkoutCategory, WorkoutDuration } from '../../libs/
 import { Exercise } from '../../libs/types/exercise/exercise';
 import Link from 'next/link';
 
-export const getStaticProps = async ({ locale }: any) => ({
+export const getServerSideProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),
 	},
@@ -149,152 +153,281 @@ const WorkoutDetailPage: NextPage = () => {
 		return (
 			<Stack className={'workout-detail-page'}>
 				<Stack className={'container'}>
-					{/* Header Section */}
-					<Stack className={'workout-header'}>
-						<Box className={'workout-media'}>
-							{workout.workoutVideo ? (
-								<video
-									controls
-									poster={workout.workoutImage}
-									className={'workout-video'}
-								>
-									<source src={workout.workoutVideo} type="video/mp4" />
-								</video>
-							) : workout.workoutImage ? (
-								<img src={workout.workoutImage} alt={workout.workoutTitle} className={'workout-image'} />
-							) : (
-								<Box className={'media-placeholder'}>
-									<FitnessCenterIcon sx={{ fontSize: 80, color: '#ccc' }} />
+					{/* Hero Section */}
+					<Box className={'workout-hero'}>
+						<Box
+							className={'workout-hero-image'}
+							style={{
+								backgroundImage: workout.workoutImage 
+									? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${workout.workoutImage})`
+									: 'linear-gradient(135deg, #E10600 0%, #C10500 100%)',
+								backgroundSize: 'cover',
+								backgroundPosition: 'center',
+							}}
+						>
+							{workout.workoutVideo && (
+								<Box className={'video-overlay'}>
+									<video
+										controls
+										poster={workout.workoutImage}
+										className={'workout-video-hero'}
+									>
+										<source src={workout.workoutVideo} type="video/mp4" />
+									</video>
 								</Box>
 							)}
-						</Box>
-						<Box className={'workout-header-info'}>
-							<Stack direction="row" spacing={1} className={'workout-badges'}>
-								{workout.isPremium && <Chip label="Premium" color="warning" size="small" />}
-								<Chip label={formatCategory(workout.workoutCategory)} size="small" />
-								<Chip label={formatDifficulty(workout.workoutDifficulty)} size="small" />
-								<Chip label={formatDuration(workout.workoutDuration)} size="small" />
-							</Stack>
-							<Typography variant="h3" className={'workout-title'}>
-								{workout.workoutTitle}
-							</Typography>
-							{workout.memberData && (
-								<Typography variant="body2" className={'workout-trainer'}>
-									By {workout.memberData.memberFullName || workout.memberData.memberNick}
+							<Box className={'hero-overlay'}>
+								<Stack direction="row" spacing={1} mb={2} flexWrap="wrap">
+									{workout.isPremium && (
+										<Chip label="Premium" className={'premium-chip-hero'} />
+									)}
+									<Chip label={formatCategory(workout.workoutCategory)} className={'category-chip-hero'} />
+									<Chip label={formatDifficulty(workout.workoutDifficulty)} className={'difficulty-chip-hero'} />
+									<Chip label={formatDuration(workout.workoutDuration)} className={'duration-chip-hero'} />
+									{workout.workoutRating > 0 && (
+										<Chip 
+											icon={<StarIcon />} 
+											label={workout.workoutRating.toFixed(1)} 
+											className={'rating-chip-hero'} 
+										/>
+									)}
+								</Stack>
+								<Typography variant="h2" className={'workout-hero-title'}>
+									{workout.workoutTitle}
 								</Typography>
-							)}
-							<Stack direction="row" spacing={3} className={'workout-stats'}>
-								<Box className={'stat-item'}>
-									<AccessTimeIcon />
-									<span>{formatDuration(workout.workoutDuration)}</span>
-								</Box>
-								<Box className={'stat-item'}>
-									<LocalFireDepartmentIcon />
-									<span>{workout.workoutCaloriesBurn || 0} calories</span>
-								</Box>
-								<Box className={'stat-item'}>
-									<span>⭐ {workout.workoutRating?.toFixed(1) || '0.0'}</span>
-									<span>({workout.workoutCompletions || 0} completions)</span>
-								</Box>
-								<Box className={'stat-item'}>
-									<span>👁️ {workout.workoutViews || 0} views</span>
-								</Box>
-								<Box className={'stat-item'}>
-									<span>❤️ {workout.workoutLikes || 0} likes</span>
-								</Box>
-							</Stack>
-							<Stack direction="row" spacing={2} className={'workout-actions'}>
-								<Button
-									variant="contained"
-									size="large"
-									startIcon={<PlayArrowIcon />}
-									onClick={handleStartWorkout}
-									className={'start-btn'}
-								>
-									Start Workout
-								</Button>
-								<Button variant="outlined" startIcon={<FavoriteBorderIcon />}>
-									Save
-								</Button>
-								<Button variant="outlined" startIcon={<ShareIcon />}>
-									Share
-								</Button>
-							</Stack>
+								<Typography variant="body1" className={'workout-hero-description'}>
+									{workout.workoutDesc || 'A comprehensive workout designed to help you achieve your fitness goals.'}
+								</Typography>
+								{workout.memberData && (
+									<Typography variant="body2" className={'workout-creator'} mt={1}>
+										By {workout.memberData.memberFullName || workout.memberData.memberNick}
+									</Typography>
+								)}
+								<Stack direction="row" spacing={2} mt={3}>
+									<Button 
+										variant="contained" 
+										size="large" 
+										startIcon={<PlayArrowIcon />} 
+										className={'start-workout-btn-hero'}
+										onClick={handleStartWorkout}
+									>
+										Start Workout
+									</Button>
+									<Button 
+										variant="outlined" 
+										size="large" 
+										startIcon={<FavoriteBorderIcon />}
+										className={'save-workout-btn'}
+									>
+										Save
+									</Button>
+									<IconButton className={'action-icon-btn'}>
+										<ShareIcon />
+									</IconButton>
+								</Stack>
+							</Box>
 						</Box>
-					</Stack>
-
-					<Divider sx={{ my: 4 }} />
-
-					{/* Description */}
-					<Box className={'workout-description'}>
-						<Typography variant="h5" gutterBottom>
-							Description
-						</Typography>
-						<Typography variant="body1" className={'description-text'}>
-							{workout.workoutDesc || 'No description available.'}
-						</Typography>
 					</Box>
 
-					<Divider sx={{ my: 4 }} />
-
-					{/* Exercises List */}
-					<Box className={'workout-exercises'}>
-						<Typography variant="h5" gutterBottom>
-							Exercises ({workout.workoutExercises?.length || 0})
+					{/* Workout Stats Section */}
+					<Box className={'workout-stats-section'}>
+						<Typography variant="h5" className={'section-title'} gutterBottom>
+							Workout Overview
 						</Typography>
-						{workout.workoutExercises && workout.workoutExercises.length > 0 ? (
-							<List>
+						<Grid container spacing={3} mt={1}>
+							<Grid item xs={12} sm={6} md={3}>
+								<Card className={'workout-stat-card duration'}>
+									<CardContent>
+										<Stack direction="row" alignItems="center" spacing={1} mb={2}>
+											<AccessTimeIcon className={'stat-icon'} />
+											<Typography variant="body2" className={'stat-label'}>
+												Duration
+											</Typography>
+										</Stack>
+										<Typography variant="h3" className={'stat-value'}>
+											{formatDuration(workout.workoutDuration)}
+										</Typography>
+									</CardContent>
+								</Card>
+							</Grid>
+							<Grid item xs={12} sm={6} md={3}>
+								<Card className={'workout-stat-card calories'}>
+									<CardContent>
+										<Stack direction="row" alignItems="center" spacing={1} mb={2}>
+											<LocalFireDepartmentIcon className={'stat-icon'} />
+											<Typography variant="body2" className={'stat-label'}>
+												Calories Burn
+											</Typography>
+										</Stack>
+										<Typography variant="h3" className={'stat-value'}>
+											{workout.workoutCaloriesBurn || 0}
+										</Typography>
+										<Typography variant="caption" className={'stat-unit'}>
+											estimated
+										</Typography>
+									</CardContent>
+								</Card>
+							</Grid>
+							<Grid item xs={12} sm={6} md={3}>
+								<Card className={'workout-stat-card exercises'}>
+									<CardContent>
+										<Stack direction="row" alignItems="center" spacing={1} mb={2}>
+											<FitnessCenterIcon className={'stat-icon'} />
+											<Typography variant="body2" className={'stat-label'}>
+												Exercises
+											</Typography>
+										</Stack>
+										<Typography variant="h3" className={'stat-value'}>
+											{workout.workoutExercises?.length || 0}
+										</Typography>
+									</CardContent>
+								</Card>
+							</Grid>
+							<Grid item xs={12} sm={6} md={3}>
+								<Card className={'workout-stat-card rating'}>
+									<CardContent>
+										<Stack direction="row" alignItems="center" spacing={1} mb={2}>
+											<StarIcon className={'stat-icon'} />
+											<Typography variant="body2" className={'stat-label'}>
+												Rating
+											</Typography>
+										</Stack>
+										<Typography variant="h3" className={'stat-value'}>
+											{workout.workoutRating?.toFixed(1) || '0.0'}
+										</Typography>
+										<Typography variant="caption" className={'stat-unit'}>
+											({workout.workoutCompletions || 0} completions)
+										</Typography>
+									</CardContent>
+								</Card>
+							</Grid>
+						</Grid>
+					</Box>
+
+					{/* Description Section */}
+					{workout.workoutDesc && (
+						<Box className={'workout-description-section'}>
+							<Typography variant="h5" className={'section-title'} gutterBottom>
+								About This Workout
+							</Typography>
+							<Typography variant="body1" className={'description-text'}>
+								{workout.workoutDesc}
+							</Typography>
+						</Box>
+					)}
+
+					{/* Exercises Breakdown */}
+					{workout.workoutExercises && workout.workoutExercises.length > 0 && (
+						<Box className={'exercises-breakdown-section'}>
+							<Typography variant="h5" className={'section-title'} gutterBottom>
+								Exercise Breakdown ({workout.workoutExercises.length})
+							</Typography>
+							<Grid container spacing={3} mt={1}>
 								{workout.workoutExercises.map((exerciseId, index) => (
-									<ExerciseListItem key={exerciseId || index} exerciseId={exerciseId} index={index} />
+									<Grid item xs={12} md={6} key={exerciseId || index}>
+										<ExerciseCard exerciseId={exerciseId} index={index} />
+									</Grid>
 								))}
-							</List>
-						) : (
-							<Typography variant="body2" color="text.secondary">
-								No exercises added to this workout yet.
-							</Typography>
-						)}
+							</Grid>
+						</Box>
+					)}
+
+					{/* Equipment & Tags Section */}
+					{(workout.workoutEquipment?.length > 0 || workout.workoutTags?.length > 0) && (
+						<Grid container spacing={3} mt={2}>
+							{workout.workoutEquipment && workout.workoutEquipment.length > 0 && (
+								<Grid item xs={12} md={6}>
+									<Box className={'workout-equipment-section'}>
+										<Typography variant="h6" className={'section-subtitle'} gutterBottom>
+											Equipment Required
+										</Typography>
+										<Stack direction="row" spacing={1} flexWrap="wrap" mt={1}>
+											{workout.workoutEquipment.map((equipment, index) => (
+												<Chip 
+													key={index} 
+													label={equipment.replace(/_/g, ' ')} 
+													className={'equipment-chip'}
+													icon={<FitnessCenterIcon />}
+												/>
+											))}
+										</Stack>
+									</Box>
+								</Grid>
+							)}
+							{workout.workoutTags && workout.workoutTags.length > 0 && (
+								<Grid item xs={12} md={6}>
+									<Box className={'workout-tags-section'}>
+										<Typography variant="h6" className={'section-subtitle'} gutterBottom>
+											Tags
+										</Typography>
+										<Stack direction="row" spacing={1} flexWrap="wrap" mt={1}>
+											{workout.workoutTags.map((tag, index) => (
+												<Chip key={index} label={tag} className={'tag-chip'} />
+											))}
+										</Stack>
+									</Box>
+								</Grid>
+							)}
+						</Grid>
+					)}
+
+					{/* Engagement Stats */}
+					<Box className={'engagement-stats-section'} mt={4}>
+						<Grid container spacing={2}>
+							<Grid item xs={6} sm={3}>
+								<Box className={'engagement-stat'}>
+									<VisibilityIcon className={'engagement-icon'} />
+									<Typography variant="h6" className={'engagement-value'}>
+										{workout.workoutViews || 0}
+									</Typography>
+									<Typography variant="caption" className={'engagement-label'}>
+										Views
+									</Typography>
+								</Box>
+							</Grid>
+							<Grid item xs={6} sm={3}>
+								<Box className={'engagement-stat'}>
+									<FavoriteIcon className={'engagement-icon'} />
+									<Typography variant="h6" className={'engagement-value'}>
+										{workout.workoutLikes || 0}
+									</Typography>
+									<Typography variant="caption" className={'engagement-label'}>
+										Likes
+									</Typography>
+								</Box>
+							</Grid>
+							<Grid item xs={6} sm={3}>
+								<Box className={'engagement-stat'}>
+									<CheckCircleIcon className={'engagement-icon'} />
+									<Typography variant="h6" className={'engagement-value'}>
+										{workout.workoutCompletions || 0}
+									</Typography>
+									<Typography variant="caption" className={'engagement-label'}>
+										Completions
+									</Typography>
+								</Box>
+							</Grid>
+							<Grid item xs={6} sm={3}>
+								<Box className={'engagement-stat'}>
+									<StarIcon className={'engagement-icon'} />
+									<Typography variant="h6" className={'engagement-value'}>
+										{workout.workoutRating?.toFixed(1) || '0.0'}
+									</Typography>
+									<Typography variant="caption" className={'engagement-label'}>
+										Rating
+									</Typography>
+								</Box>
+							</Grid>
+						</Grid>
 					</Box>
-
-					{/* Equipment Required */}
-					{workout.workoutEquipment && workout.workoutEquipment.length > 0 && (
-						<Box className={'workout-equipment'} mt={4}>
-							<Typography variant="h6" gutterBottom>
-								Equipment Required
-							</Typography>
-							<Stack direction="row" spacing={1} flexWrap="wrap">
-								{workout.workoutEquipment.map((equipment, index) => (
-									<Chip 
-										key={index} 
-										label={equipment.replace(/_/g, ' ')} 
-										size="small"
-										icon={<FitnessCenterIcon />}
-									/>
-								))}
-							</Stack>
-						</Box>
-					)}
-
-					{/* Tags */}
-					{workout.workoutTags && workout.workoutTags.length > 0 && (
-						<Box className={'workout-tags'}>
-							<Typography variant="h6" gutterBottom>
-								Tags
-							</Typography>
-							<Stack direction="row" spacing={1} flexWrap="wrap">
-								{workout.workoutTags.map((tag, index) => (
-									<Chip key={index} label={tag} size="small" />
-								))}
-							</Stack>
-						</Box>
-					)}
 				</Stack>
 			</Stack>
 		);
 	}
 };
 
-// Component to fetch and display individual exercise details
-const ExerciseListItem = ({ exerciseId, index }: { exerciseId: string; index: number }) => {
+// Component to fetch and display individual exercise details as a card
+const ExerciseCard = ({ exerciseId, index }: { exerciseId: string; index: number }) => {
 	const { data, loading, error } = useQuery(GET_EXERCISE, {
 		skip: !exerciseId || typeof exerciseId !== 'string',
 		variables: { input: exerciseId },
@@ -305,66 +438,90 @@ const ExerciseListItem = ({ exerciseId, index }: { exerciseId: string; index: nu
 
 	if (loading) {
 		return (
-			<ListItem className={'exercise-item'}>
-				<CircularProgress size={20} sx={{ mr: 2 }} />
-				<ListItemText primary={`Exercise ${index + 1}`} secondary="Loading exercise details..." />
-			</ListItem>
+			<Card className={'exercise-card'}>
+				<CardContent>
+					<Box display="flex" justifyContent="center" alignItems="center" minHeight={150}>
+						<CircularProgress size={30} />
+					</Box>
+				</CardContent>
+			</Card>
 		);
 	}
 
 	if (error || !exercise) {
 		return (
-			<ListItem className={'exercise-item'}>
-				<ListItemText
-					primary={`Exercise ${index + 1}`}
-					secondary={exerciseId ? `Exercise ID: ${exerciseId} (Unable to load details)` : 'Exercise details unavailable'}
-				/>
-			</ListItem>
+			<Card className={'exercise-card'}>
+				<CardContent>
+					<Stack direction="row" alignItems="center" spacing={2} mb={2}>
+						<Box className={'exercise-number'}>
+							<Typography variant="h5" className={'exercise-number-text'}>
+								{index + 1}
+							</Typography>
+						</Box>
+						<Typography variant="h6" className={'exercise-name'}>
+							Exercise {index + 1}
+						</Typography>
+					</Stack>
+					<Typography variant="body2" color="text.secondary">
+						Unable to load exercise details
+					</Typography>
+				</CardContent>
+			</Card>
 		);
 	}
 
 	return (
 		<Link href={`/exercises/${exercise._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-			<ListItemButton className={'exercise-item'} component="div">
-				<Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-					<Box sx={{ mr: 2, minWidth: 60, textAlign: 'center' }}>
-						<Typography variant="h6" color="primary">
-							{index + 1}
+			<Card className={'exercise-card'}>
+				<CardContent>
+					<Stack direction="row" alignItems="center" spacing={2} mb={2}>
+						<Box className={'exercise-number'}>
+							<Typography variant="h5" className={'exercise-number-text'}>
+								{index + 1}
+							</Typography>
+						</Box>
+						<Typography variant="h6" className={'exercise-name'}>
+							{exercise.exerciseName}
 						</Typography>
+					</Stack>
+					<Stack direction="row" spacing={1} mb={2} flexWrap="wrap">
+						{exercise.targetMuscles && exercise.targetMuscles.length > 0 && (
+							<Chip
+								label={exercise.targetMuscles[0].replace(/_/g, ' ')}
+								size="small"
+								className={'exercise-muscle-chip'}
+							/>
+						)}
+						{exercise.exerciseType && (
+							<Chip
+								label={exercise.exerciseType.replace(/_/g, ' ')}
+								size="small"
+								className={'exercise-type-chip'}
+							/>
+						)}
+					</Stack>
+					{exercise.exerciseDifficulty && (
+						<Box mt={1}>
+							<Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.5}>
+								<Typography variant="caption" color="text.secondary">
+									Difficulty
+								</Typography>
+								<Typography variant="caption" fontWeight={600}>
+									{exercise.exerciseDifficulty}/10
+								</Typography>
+							</Stack>
+							<LinearProgress 
+								variant="determinate" 
+								value={(exercise.exerciseDifficulty / 10) * 100} 
+								className={'exercise-difficulty-progress'}
+							/>
+						</Box>
+					)}
+					<Box mt={2} display="flex" justifyContent="flex-end">
+						<FitnessCenterIcon className={'exercise-icon'} />
 					</Box>
-					<Box sx={{ flex: 1 }}>
-						<ListItemText
-							primary={exercise.exerciseName}
-							secondary={
-								<Stack direction="row" spacing={1} sx={{ mt: 0.5 }} flexWrap="wrap">
-									{exercise.targetMuscles && exercise.targetMuscles.length > 0 && (
-										<Chip
-											label={exercise.targetMuscles[0].replace(/_/g, ' ')}
-											size="small"
-											variant="outlined"
-											sx={{ height: 20, fontSize: '0.7rem' }}
-										/>
-									)}
-									{exercise.exerciseType && (
-										<Chip
-											label={exercise.exerciseType.replace(/_/g, ' ')}
-											size="small"
-											variant="outlined"
-											sx={{ height: 20, fontSize: '0.7rem' }}
-										/>
-									)}
-									{exercise.exerciseDifficulty && (
-										<Typography variant="caption" color="text.secondary">
-											Difficulty: {exercise.exerciseDifficulty}/10
-										</Typography>
-									)}
-								</Stack>
-							}
-						/>
-					</Box>
-					<FitnessCenterIcon sx={{ color: 'text.secondary' }} />
-				</Box>
-			</ListItemButton>
+				</CardContent>
+			</Card>
 		</Link>
 	);
 };

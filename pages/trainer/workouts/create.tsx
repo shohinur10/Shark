@@ -74,7 +74,7 @@ const CreateWorkoutPage: NextPage = () => {
 		workoutEquipment: [],
 		workoutStatus: WorkoutStatus.PUBLISHED,
 		workoutDesc: '',
-		workoutImage: undefined,
+		workoutImage: [],
 		workoutVideo: undefined,
 		workoutExercises: [],
 		workoutCaloriesBurn: 0,
@@ -164,11 +164,26 @@ const CreateWorkoutPage: NextPage = () => {
 
 	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		try {
-			const file = e.target.files?.[0];
-			if (!file) return;
+			const files = e.target.files;
+			if (!files || files.length === 0) return;
 
-			const uploadedPath = await uploadSingleFile(file, 'workout');
-			setWorkoutData({ ...workoutData, workoutImage: uploadedPath });
+			const currentImages = Array.isArray(workoutData.workoutImage) ? workoutData.workoutImage : (workoutData.workoutImage ? [workoutData.workoutImage] : []);
+			const uploadedPaths: string[] = [];
+
+			// Upload all selected files
+			for (let i = 0; i < files.length; i++) {
+				const file = files[i];
+				const uploadedPath = await uploadSingleFile(file, 'workout');
+				uploadedPaths.push(uploadedPath);
+			}
+
+			// Add new images to existing ones
+			setWorkoutData({ ...workoutData, workoutImage: [...currentImages, ...uploadedPaths] });
+			
+			// Reset the input so the same files can be selected again if needed
+			if (imageInputRef.current) {
+				imageInputRef.current.value = '';
+			}
 		} catch (err: any) {
 			setError(err.message || 'Failed to upload image');
 		}
@@ -296,7 +311,14 @@ const CreateWorkoutPage: NextPage = () => {
 				isPremium: workoutData.isPremium || false,
 			};
 
-			if (workoutData.workoutImage) input.workoutImage = workoutData.workoutImage;
+			if (workoutData.workoutImage) {
+				// Support both single image (string) and multiple images (array)
+				if (Array.isArray(workoutData.workoutImage)) {
+					input.workoutImage = workoutData.workoutImage.length > 0 ? workoutData.workoutImage : undefined;
+				} else {
+					input.workoutImage = workoutData.workoutImage;
+				}
+			}
 			if (workoutData.workoutVideo) input.workoutVideo = workoutData.workoutVideo;
 
 			const result = await createWorkout({
@@ -630,21 +652,68 @@ const CreateWorkoutPage: NextPage = () => {
 						{/* Image Upload */}
 						<Box>
 							<Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-								Workout Image
+								Workout Images (Upload multiple images)
 							</Typography>
-							<Stack direction="row" spacing={2} alignItems="center">
+							<Stack spacing={2}>
 								<Button variant="outlined" component="label" onClick={() => imageInputRef.current?.click()}>
-									Upload Image
-									<input ref={imageInputRef} type="file" hidden accept="image/*" onChange={handleImageUpload} />
+									Upload Images
+									<input ref={imageInputRef} type="file" hidden accept="image/*" multiple onChange={handleImageUpload} />
 								</Button>
-								{workoutData.workoutImage && (
+								{workoutData.workoutImage && Array.isArray(workoutData.workoutImage) && workoutData.workoutImage.length > 0 && (
+									<Grid container spacing={2}>
+										{workoutData.workoutImage.map((imagePath, index) => (
+											<Grid item key={index} xs={6} sm={4} md={3}>
+												<Box sx={{ position: 'relative', width: '100%', paddingTop: '100%' }}>
+													<Box
+														sx={{
+															position: 'absolute',
+															top: 0,
+															left: 0,
+															width: '100%',
+															height: '100%',
+															borderRadius: 1,
+															overflow: 'hidden',
+															border: '1px solid #e0e0e0',
+														}}
+													>
+														<img
+															src={`${REACT_APP_API_URL}/${imagePath}`}
+															alt={`Workout ${index + 1}`}
+															style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+														/>
+														<IconButton
+															size="small"
+															onClick={() => {
+																const currentImages = Array.isArray(workoutData.workoutImage) ? workoutData.workoutImage : [];
+																const updatedImages = currentImages.filter((_, i) => i !== index);
+																setWorkoutData({ ...workoutData, workoutImage: updatedImages.length > 0 ? updatedImages : [] });
+															}}
+															sx={{
+																position: 'absolute',
+																top: 4,
+																right: 4,
+																backgroundColor: 'rgba(255, 255, 255, 0.9)',
+																'&:hover': {
+																	backgroundColor: 'rgba(255, 255, 255, 1)',
+																},
+															}}
+														>
+															<CloseIcon fontSize="small" />
+														</IconButton>
+													</Box>
+												</Box>
+											</Grid>
+										))}
+									</Grid>
+								)}
+								{workoutData.workoutImage && !Array.isArray(workoutData.workoutImage) && workoutData.workoutImage && (
 									<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 										<img
 											src={`${REACT_APP_API_URL}/${workoutData.workoutImage}`}
 											alt="Workout"
 											style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 4 }}
 										/>
-										<IconButton size="small" onClick={() => setWorkoutData({ ...workoutData, workoutImage: undefined })}>
+										<IconButton size="small" onClick={() => setWorkoutData({ ...workoutData, workoutImage: [] })}>
 											<CloseIcon />
 										</IconButton>
 									</Box>
