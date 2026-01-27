@@ -10,6 +10,7 @@ import { Workout } from '../../types/workout/workout';
 import { WorkoutsInquiry } from '../../types/workout/workout.input';
 import { useQuery } from '@apollo/client';
 import { T } from '../../types/common';
+import { Direction } from '../../enums/common.enum';
 
 interface FeaturedWorkoutsProps {
 	initialInput?: WorkoutsInquiry;
@@ -24,7 +25,7 @@ const FeaturedWorkouts = (props: FeaturedWorkoutsProps) => {
 		page: 1,
 		limit: 8,
 		sort: 'workoutViews',
-		direction: 'DESC',
+		direction: Direction.DESC,
 		search: {},
 	};
 
@@ -74,18 +75,18 @@ const FeaturedWorkouts = (props: FeaturedWorkoutsProps) => {
 								return (
 									<SwiperSlide key={workout._id} className={'workout-card'}>
 										<Link href={`/workouts/${workout._id}`}>
-											<Box className={'workout-card-inner'}>
-												<Box className={'workout-image'}>
+											<Box component="div" className={'workout-card-inner'}>
+												<Box component="div" className={'workout-image'}>
 													{workout.workoutImage ? (
 														<img src={workout.workoutImage} alt={workout.workoutTitle} />
 													) : (
 														<div className={'image-placeholder'}>Workout Image</div>
 													)}
 													{workout.isPremium && (
-														<Box className={'premium-badge'}>Premium</Box>
+														<Box component="div" className={'premium-badge'}>Premium</Box>
 													)}
 												</Box>
-												<Box className={'workout-info'}>
+												<Box component="div" className={'workout-info'}>
 													<Typography variant="h6" className={'workout-title'}>
 														{workout.workoutTitle}
 													</Typography>
@@ -112,7 +113,7 @@ const FeaturedWorkouts = (props: FeaturedWorkoutsProps) => {
 			<Stack className={'featured-workouts'}>
 				<Stack className={'container'}>
 					<Stack className={'section-header'}>
-						<Box className={'header-left'}>
+						<Box component="div" className={'header-left'}>
 							<Typography variant="h3" className={'section-title'}>
 								Featured Workouts
 							</Typography>
@@ -120,7 +121,7 @@ const FeaturedWorkouts = (props: FeaturedWorkoutsProps) => {
 								Popular workouts to get you started on your fitness journey
 							</Typography>
 						</Box>
-						<Box className={'header-right'}>
+						<Box component="div" className={'header-right'}>
 							<Link href="/workouts">
 								<Button variant="outlined" className={'view-all-btn'}>
 									View All Workouts
@@ -129,7 +130,7 @@ const FeaturedWorkouts = (props: FeaturedWorkoutsProps) => {
 						</Box>
 					</Stack>
 					<Stack className={'workouts-grid'}>
-						<Box className={'navigation-prev'}>
+						<Box component="div" className={'navigation-prev'}>
 							<WestIcon className={'swiper-featured-prev'} />
 						</Box>
 						<Swiper
@@ -146,23 +147,23 @@ const FeaturedWorkouts = (props: FeaturedWorkoutsProps) => {
 								return (
 									<SwiperSlide key={workout._id} className={'workout-card'}>
 										<Link href={`/workouts/${workout._id}`}>
-											<Box className={'workout-card-inner'}>
-												<Box className={'workout-image'}>
+											<Box component="div" className={'workout-card-inner'}>
+												<Box component="div" className={'workout-image'}>
 													{workout.workoutImage ? (
 														<img src={workout.workoutImage} alt={workout.workoutTitle} />
 													) : (
 														<div className={'image-placeholder'}>Workout Image</div>
 													)}
 													{workout.isPremium && (
-														<Box className={'premium-badge'}>Premium</Box>
+														<Box component="div" className={'premium-badge'}>Premium</Box>
 													)}
-													<Box className={'workout-overlay'}>
+													<Box component="div" className={'workout-overlay'}>
 														<Button variant="contained" size="small" className={'play-btn'}>
 															View Details
 														</Button>
 													</Box>
 												</Box>
-												<Box className={'workout-info'}>
+												<Box component="div" className={'workout-info'}>
 													<Typography variant="h6" className={'workout-title'}>
 														{workout.workoutTitle}
 													</Typography>
@@ -187,7 +188,7 @@ const FeaturedWorkouts = (props: FeaturedWorkoutsProps) => {
 								);
 							})}
 						</Swiper>
-						<Box className={'navigation-next'}>
+						<Box component="div" className={'navigation-next'}>
 							<EastIcon className={'swiper-featured-next'} />
 						</Box>
 					</Stack>

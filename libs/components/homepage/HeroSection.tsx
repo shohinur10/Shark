@@ -13,8 +13,8 @@ const HeroSection = () => {
 	if (device === 'mobile') {
 		return (
 			<Stack className={'hero-section'}>
-				<Box className={'hero-image-container'}>
-					<Box className={'hero-overlay'} />
+				<Box component="div" className={'hero-image-container'}>
+					<Box component="div" className={'hero-overlay'} />
 					<Stack className={'hero-content'}>
 						<Typography variant="h2" className={'hero-title'}>
 							Start Your Fitness Journey
@@ -34,8 +34,8 @@ const HeroSection = () => {
 	} else {
 		return (
 			<Stack className={'hero-section'}>
-				<Box className={'hero-image-container'}>
-					<Box className={'hero-overlay'} />
+				<Box component="div" className={'hero-image-container'}>
+					<Box component="div" className={'hero-overlay'} />
 					<Stack className={'hero-content'}>
 						<Typography variant="h1" className={'hero-title'}>
 							Start Your Fitness Journey
@@ -51,17 +51,17 @@ const HeroSection = () => {
 							</Button>
 						</Link>
 						<Stack className={'hero-stats'} direction="row" spacing={6}>
-							<Box className={'stat-item'}>
+							<Box component="div" className={'stat-item'}>
 								<PeopleIcon className={'stat-icon'} />
 								<Typography variant="h3" className={'stat-number'}>50K+</Typography>
 								<Typography variant="body2" className={'stat-label'}>Active Members</Typography>
 							</Box>
-							<Box className={'stat-item'}>
+							<Box component="div" className={'stat-item'}>
 								<FitnessCenterIcon className={'stat-icon'} />
 								<Typography variant="h3" className={'stat-number'}>500+</Typography>
 								<Typography variant="body2" className={'stat-label'}>Workout Plans</Typography>
 							</Box>
-							<Box className={'stat-item'}>
+							<Box component="div" className={'stat-item'}>
 								<LocalFireDepartmentIcon className={'stat-icon'} />
 								<Typography variant="h3" className={'stat-number'}>1000+</Typography>
 								<Typography variant="body2" className={'stat-label'}>Success Stories</Typography>

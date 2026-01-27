@@ -136,7 +136,7 @@ const TrainerShowcase = () => {
 			<Stack className={'trainer-showcase'}>
 				<Stack className={'container'}>
 					<Stack className={'section-header'}>
-						<Box>
+						<Box component="div">
 							<Typography variant="h3" className={'section-title'}>
 								Meet Our Expert Trainers
 							</Typography>
@@ -156,6 +156,7 @@ const TrainerShowcase = () => {
 								<Link href={`/trainer/${trainer._id}`}>
 									<Card className={'trainer-card'}>
 										<Box
+											component="div"
 											className={'trainer-image'}
 											style={{
 												backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), url(${getTrainerImageUrl(trainer)})`,

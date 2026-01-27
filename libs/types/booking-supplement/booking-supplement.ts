@@ -1,7 +1,7 @@
 import { Booking } from '../booking/booking';
 import { Member } from '../member/member';
 import { Supplement } from '../supplement/supplement';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface BookingSupplement {
 	_id: string;

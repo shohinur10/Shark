@@ -1,6 +1,6 @@
 import { WorkoutCategory, WorkoutDifficulty, WorkoutDuration, WorkoutEquipment, WorkoutStatus } from '../../enums/workout.enum';
 import { Member } from '../member/member';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface Workout {
 	_id: string;

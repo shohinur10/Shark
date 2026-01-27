@@ -71,7 +71,7 @@ const MyWorkouts: NextPage = ({ initialInput, ...props }: T) => {
 				</Stack>
 				<Stack spacing={3} sx={{ mt: 3 }}>
 					{workoutsLoading ? (
-						<Box sx={{ textAlign: 'center', py: 4 }}>
+						<Box component="div" sx={{ textAlign: 'center', py: 4 }}>
 							<Typography sx={{ color: '#6B6B6B' }}>Loading workouts...</Typography>
 						</Box>
 					) : workouts?.length > 0 ? (
@@ -189,6 +189,7 @@ const MyWorkouts: NextPage = ({ initialInput, ...props }: T) => {
 						</>
 					) : (
 						<Box
+							component="div"
 							sx={{
 								textAlign: 'center',
 								py: 6,

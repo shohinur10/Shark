@@ -3464,3 +3464,248 @@ export const MARK_ROUTINE_COMPLETE = gql`
 	}
 `;
 
+/**************************
+ *        PROPERTY        *
+ *************************/
+
+export const CREATE_PROPERTY = gql`
+	mutation CreateProperty($input: PropertyInput!) {
+		createProperty(input: $input) {
+			_id
+			propertyType
+			propertyStatus
+			propertyLocation
+			propertyAddress
+			propertyTitle
+			propertyPrice
+			priceType
+			propertySquare
+			propertyBeds
+			propertyRooms
+			womenDiscountPercent
+			childrenDiscountPercent
+			childrenAgeLimit
+			extraClassDiscountPercent
+			perClassPrice
+			propertyCapacity
+			propertyEquipmentList
+			propertyAmenities
+			propertyOperatingHours
+			propertyRating
+			propertyViews
+			propertyLikes
+			propertyComments
+			propertyRank
+			propertyImages
+			propertyDesc
+			propertyRent
+			propertyBarter
+			propertyCondition
+			memberId
+			soldAt
+			constructedAt
+			deletedAt
+			createdAt
+			updatedAt
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberProperties
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberBlocks
+				memberWarnings
+				memberWorkouts
+				memberChallenges
+				memberAchievements
+				trainerRating
+				trainerExperience
+				trainerSpecialties
+				trainerCertifications
+				trainerBio
+				subscriptionId
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+			}
+		}
+	}
+`;
+
+export const UPDATE_PROPERTY = gql`
+	mutation UpdateProperty($input: PropertyUpdate!) {
+		updateProperty(input: $input) {
+			_id
+			propertyType
+			propertyStatus
+			propertyLocation
+			propertyAddress
+			propertyTitle
+			propertyPrice
+			priceType
+			propertySquare
+			propertyBeds
+			propertyRooms
+			womenDiscountPercent
+			childrenDiscountPercent
+			childrenAgeLimit
+			extraClassDiscountPercent
+			perClassPrice
+			propertyCapacity
+			propertyEquipmentList
+			propertyAmenities
+			propertyOperatingHours
+			propertyRating
+			propertyViews
+			propertyLikes
+			propertyComments
+			propertyRank
+			propertyImages
+			propertyDesc
+			propertyRent
+			propertyBarter
+			propertyCondition
+			memberId
+			soldAt
+			constructedAt
+			deletedAt
+			createdAt
+			updatedAt
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberProperties
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberBlocks
+				memberWarnings
+				memberWorkouts
+				memberChallenges
+				memberAchievements
+				trainerRating
+				trainerExperience
+				trainerSpecialties
+				trainerCertifications
+				trainerBio
+				subscriptionId
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+			}
+		}
+	}
+`;
+
+export const LIKE_TARGET_PROPERTY = gql`
+	mutation LikeTargetProperty($input: String!) {
+		likeTargetProperty(propertyId: $input) {
+			_id
+			propertyType
+			propertyStatus
+			propertyLocation
+			propertyAddress
+			propertyTitle
+			propertyPrice
+			priceType
+			propertySquare
+			propertyBeds
+			propertyRooms
+			womenDiscountPercent
+			childrenDiscountPercent
+			childrenAgeLimit
+			extraClassDiscountPercent
+			perClassPrice
+			propertyCapacity
+			propertyEquipmentList
+			propertyAmenities
+			propertyOperatingHours
+			propertyRating
+			propertyViews
+			propertyLikes
+			propertyComments
+			propertyRank
+			propertyImages
+			propertyDesc
+			propertyRent
+			propertyBarter
+			propertyCondition
+			memberId
+			soldAt
+			constructedAt
+			deletedAt
+			createdAt
+			updatedAt
+			memberData {
+				_id
+				memberType
+				memberStatus
+				memberAuthType
+				memberPhone
+				memberNick
+				memberFullName
+				memberImage
+				memberAddress
+				memberDesc
+				memberProperties
+				memberArticles
+				memberFollowers
+				memberFollowings
+				memberPoints
+				memberLikes
+				memberViews
+				memberComments
+				memberRank
+				memberBlocks
+				memberWarnings
+				memberWorkouts
+				memberChallenges
+				memberAchievements
+				trainerRating
+				trainerExperience
+				trainerSpecialties
+				trainerCertifications
+				trainerBio
+				subscriptionId
+				deletedAt
+				createdAt
+				updatedAt
+				accessToken
+			}
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
+		}
+	}
+`;

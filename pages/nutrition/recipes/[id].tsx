@@ -2,8 +2,8 @@ import React from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Stack, Box, Typography, Button, Grid, Card, CardContent, Chip, List, ListItem, ListItemText, LinearProgress, IconButton, Divider, CircularProgress } from '@mui/material';
-import useDeviceDetect from '../../../../libs/hooks/useDeviceDetect';
-import withLayoutBasic from '../../../../libs/components/layout/LayoutBasic';
+import useDeviceDetect from '../../../libs/hooks/useDeviceDetect';
+import withLayoutBasic from '../../../libs/components/layout/LayoutBasic';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState, useEffect } from 'react';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -14,7 +14,9 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Recipe, RecipeTag } from '../../../../libs/types/recipe/recipe';
+import { Recipe, RecipeTag } from '../../../libs/types/recipe/recipe';
+
+export const getStaticPaths = async () => ({ paths: [], fallback: 'blocking' });
 
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {

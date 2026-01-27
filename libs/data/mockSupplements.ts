@@ -23,6 +23,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.8,
 		usageNotes: 'Take with a meal containing fat. Higher doses may be needed during winter months or for those with limited sun exposure. Consult healthcare provider if taking blood thinners.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '2',
@@ -44,6 +46,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.7,
 		usageNotes: 'Particularly important for vegetarians, vegans, or those over 50 who may have reduced absorption. Water-soluble, so excess is excreted safely.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '3',
@@ -65,6 +69,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.6,
 		usageNotes: 'Take with meals to enhance absorption. High doses (>2000mg) may cause digestive upset in some individuals. No serious toxicity at recommended doses.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '4',
@@ -86,6 +92,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.8,
 		usageNotes: 'Take in the evening as it may support relaxation. High doses may cause diarrhea. Avoid taking with calcium supplements as they compete for absorption.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '5',
@@ -107,6 +115,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.7,
 		usageNotes: 'Take with food to reduce stomach upset. High doses (>40mg) may interfere with copper absorption. Take separately from iron and calcium supplements.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '6',
@@ -128,6 +138,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.6,
 		usageNotes: 'Only supplement if deficient or at risk. Take with vitamin C for enhanced absorption. Avoid taking with calcium or zinc. Excess iron can be toxic - consult healthcare provider before supplementing.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '7',
@@ -149,6 +161,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.9,
 		usageNotes: 'Generally safe for most people. May cause digestive issues in those with lactose intolerance. Choose isolate form if sensitive to lactose.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '8',
@@ -170,6 +184,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.7,
 		usageNotes: 'Safe for most people. May cause digestive issues in those with lactose intolerance. Generally well-tolerated.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '9',
@@ -191,6 +207,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.9,
 		usageNotes: 'Extremely well-researched and safe. May cause slight water retention. Stay well-hydrated. No serious side effects at recommended doses.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '10',
@@ -212,6 +230,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.5,
 		usageNotes: 'Safe at recommended doses. May cause harmless tingling sensation (paresthesia) which subsides with continued use. No serious side effects.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '11',
@@ -233,6 +253,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.8,
 		usageNotes: 'Take with meals for optimal absorption. High doses may increase bleeding risk. Consult healthcare provider if taking blood thinners. Choose quality sources to avoid contaminants.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 	{
 		_id: '12',
@@ -254,6 +276,8 @@ export const mockSupplements: Supplement[] = [
 		],
 		rating: 4.6,
 		usageNotes: 'Generally safe. Choose quality brands with appropriate dosages. Not a replacement for a balanced diet. Some nutrients may interact with medications - consult healthcare provider.',
+		createdAt: new Date(),
+		updatedAt: new Date(),
 	},
 ];
 

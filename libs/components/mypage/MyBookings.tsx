@@ -68,7 +68,7 @@ const MyBookings: NextPage = ({ initialInput, ...props }: T) => {
 				</Stack>
 				<Stack spacing={3} sx={{ mt: 3 }}>
 					{bookingsLoading ? (
-						<Box sx={{ textAlign: 'center', py: 4 }}>
+						<Box component="div" sx={{ textAlign: 'center', py: 4 }}>
 							<Typography sx={{ color: '#6B6B6B' }}>Loading bookings...</Typography>
 						</Box>
 					) : bookings?.length > 0 ? (
@@ -143,6 +143,7 @@ const MyBookings: NextPage = ({ initialInput, ...props }: T) => {
 						</>
 					) : (
 						<Box
+							component="div"
 							sx={{
 								textAlign: 'center',
 								py: 6,

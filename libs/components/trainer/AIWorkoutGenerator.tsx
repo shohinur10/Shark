@@ -118,7 +118,7 @@ const AIWorkoutGenerator: React.FC<AIWorkoutGeneratorProps> = ({ open, onClose, 
 					</FormControl>
 
 					{/* Duration */}
-					<Box>
+					<Box component="div">
 						<Typography gutterBottom>Duration: {params.duration} minutes</Typography>
 						<Slider
 							value={parseInt(params.duration)}

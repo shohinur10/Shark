@@ -149,7 +149,7 @@ const TuiEditor = () => {
 
 			<Card elevation={0} sx={{ p: 3, backgroundColor: '#f8f9fa', borderRadius: 3 }}>
 				<Stack direction={{ xs: 'column', md: 'row' }} spacing={3} alignItems="flex-start">
-					<Box sx={{ flex: 1, minWidth: { xs: '100%', md: '300px' } }}>
+					<Box component="div" sx={{ flex: 1, minWidth: { xs: '100%', md: '300px' } }}>
 						<Stack direction="row" alignItems="center" spacing={1} mb={1.5}>
 							<CategoryIcon sx={{ color: '#87cdf9', fontSize: 20 }} />
 							<Typography variant="subtitle2" sx={{ color: '#5a6c7d', fontWeight: 600 }}>
@@ -185,7 +185,7 @@ const TuiEditor = () => {
 						</FormControl>
 					</Box>
 
-					<Box sx={{ flex: 2, minWidth: { xs: '100%', md: '400px' } }}>
+					<Box component="div" sx={{ flex: 2, minWidth: { xs: '100%', md: '400px' } }}>
 						<Stack direction="row" alignItems="center" spacing={1} mb={1.5}>
 							<TitleIcon sx={{ color: '#87cdf9', fontSize: 20 }} />
 							<Typography variant="subtitle2" sx={{ color: '#5a6c7d', fontWeight: 600 }}>
@@ -218,12 +218,12 @@ const TuiEditor = () => {
 			</Card>
 
 			<Card elevation={0} sx={{ borderRadius: 3, overflow: 'hidden', border: '1px solid #e0e0e0' }}>
-				<Box sx={{ p: 2, backgroundColor: '#f8f9fa', borderBottom: '1px solid #e0e0e0' }}>
+				<Box component="div" sx={{ p: 2, backgroundColor: '#f8f9fa', borderBottom: '1px solid #e0e0e0' }}>
 					<Typography variant="subtitle2" sx={{ color: '#5a6c7d', fontWeight: 600 }}>
 						Article Content
 					</Typography>
 				</Box>
-				<Box sx={{ p: 2 }}>
+				<Box component="div" sx={{ p: 2 }}>
 					<Editor
 						initialValue=""
 						placeholder="Start writing your article here..."

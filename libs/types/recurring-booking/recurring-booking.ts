@@ -1,7 +1,7 @@
 import { BookingType } from '../../enums/booking.enum';
 import { Booking } from '../booking/booking';
 import { Member } from '../member/member';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface RecurringBooking {
 	_id: string;

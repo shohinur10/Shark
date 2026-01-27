@@ -44,12 +44,12 @@ const Footer = () => {
 		<Stack className={'footer-container'}>
 			<Stack className={'main'}>
 				{/* Column 1: Brand & Support */}
-				<Box className={'column brand-column'}>
-					<Box className={'brand-section'}>
+				<Box component="div" className={'column brand-column'}>
+					<Box component="div" className={'brand-section'}>
 						<img src="/img/logo/ChatGPT Image Nov 25, 2025, 11_45_12 PM.png" alt="Shark Logo" className={'logo'} />
 						<p className={'tagline'}>Transform your body, elevate your mind.</p>
 					</Box>
-					<Box className={'support-section'}>
+					<Box component="div" className={'support-section'}>
 						<div className={'support-item'}>
 							<span className={'support-label'}>Phone</span>
 							<p className={'support-value'}>+82 10 4867 2909</p>
@@ -63,7 +63,7 @@ const Footer = () => {
 							<p className={'support-value'}>support@shark.com</p>
 						</div>
 					</Box>
-					<Box className={'social-section'}>
+					<Box component="div" className={'social-section'}>
 						<div className={'media-box'}>
 							<FacebookOutlinedIcon />
 							<TelegramIcon />
@@ -74,7 +74,7 @@ const Footer = () => {
 				</Box>
 
 				{/* Column 2: Popular Workouts */}
-				<Box className={'column links-column'}>
+				<Box component="div" className={'column links-column'}>
 					<strong className={'column-title'}>Popular Workouts</strong>
 					<Stack className={'links-list'}>
 						<span className={'link-item'}>Strength Training</span>
@@ -85,7 +85,7 @@ const Footer = () => {
 				</Box>
 
 				{/* Column 3: Quick Links */}
-				<Box className={'column links-column'}>
+				<Box component="div" className={'column links-column'}>
 					<strong className={'column-title'}>Quick Links</strong>
 					<Stack className={'links-list'}>
 						<span className={'link-item'}>Terms of Use</span>
@@ -98,8 +98,8 @@ const Footer = () => {
 				</Box>
 
 				{/* Column 4: Explore + Newsletter */}
-				<Box className={'column newsletter-column'}>
-					<Box className={'explore-section'}>
+				<Box component="div" className={'column newsletter-column'}>
+					<Box component="div" className={'explore-section'}>
 						<strong className={'column-title'}>Explore</strong>
 						<Stack className={'links-list'}>
 							<span className={'link-item'}>Workouts</span>
@@ -108,7 +108,7 @@ const Footer = () => {
 							<span className={'link-item'}>Gyms & Studios</span>
 						</Stack>
 					</Box>
-					<Box className={'newsletter-card'}>
+					<Box component="div" className={'newsletter-card'}>
 						<h3 className={'newsletter-title'}>Get weekly training + nutrition tips</h3>
 						<p className={'newsletter-subtitle'}>No spam. Just real workouts, meal plans, and coaching insights.</p>
 						<form onSubmit={handleSubscribe} className={'newsletter-form'}>

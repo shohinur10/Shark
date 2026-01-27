@@ -12,7 +12,7 @@ const WriteArticle: NextPage = () => {
 
 	if (device === 'mobile') {
 		return (
-			<Box sx={{ p: 2 }}>
+			<Box component="div" sx={{ p: 2 }}>
 				<Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
 					Write Article
 				</Typography>
@@ -34,6 +34,7 @@ const WriteArticle: NextPage = () => {
 				>
 					<Stack direction="row" alignItems="center" spacing={2} mb={1}>
 						<Box
+							component="div"
 							sx={{
 								display: 'flex',
 								alignItems: 'center',
@@ -47,7 +48,7 @@ const WriteArticle: NextPage = () => {
 						>
 							<EditNoteIcon sx={{ fontSize: 32 }} />
 						</Box>
-						<Box>
+						<Box component="div">
 							<Typography
 								className="main-title"
 								variant="h4"

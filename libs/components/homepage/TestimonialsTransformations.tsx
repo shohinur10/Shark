@@ -63,12 +63,14 @@ const TestimonialsTransformations = () => {
 								<CardContent>
 									<Stack direction="row" spacing={2} mb={2}>
 										<Box
+											component="div"
 											className={'before-image'}
 											style={{
 												backgroundImage: `url(${story.beforeImage})`,
 											}}
 										/>
 										<Box
+											component="div"
 											className={'after-image'}
 											style={{
 												backgroundImage: `url(${story.afterImage})`,
@@ -93,7 +95,7 @@ const TestimonialsTransformations = () => {
 			<Stack className={'testimonials-transformations'}>
 				<Stack className={'container'}>
 					<Stack className={'section-header'}>
-						<Box>
+						<Box component="div">
 							<Typography variant="h3" className={'section-title'}>
 								Real Transformations, Real Results
 							</Typography>
@@ -106,9 +108,10 @@ const TestimonialsTransformations = () => {
 						{transformations.map((story) => (
 							<Grid item xs={12} md={4} key={story.id}>
 								<Card className={'transformation-card'}>
-									<Box className={'transformation-images'}>
-										<Box className={'image-container'}>
+									<Box component="div" className={'transformation-images'}>
+										<Box component="div" className={'image-container'}>
 											<Box
+												component="div"
 												className={'before-image'}
 												style={{
 													backgroundImage: `url(${story.beforeImage})`,
@@ -117,6 +120,7 @@ const TestimonialsTransformations = () => {
 												<Chip label="Before" size="small" className={'before-label'} />
 											</Box>
 											<Box
+												component="div"
 												className={'after-image'}
 												style={{
 													backgroundImage: `url(${story.afterImage})`,
@@ -128,7 +132,7 @@ const TestimonialsTransformations = () => {
 									</Box>
 									<CardContent>
 										<Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-											<Box>
+											<Box component="div">
 												<Typography variant="h6" className={'story-name'}>
 													{story.name}
 												</Typography>

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { GET_TRAINERS } from '../apollo/user/query';
+import { GET_TRAINERS } from '../../apollo/user/query';
 import { Member } from '../types/member/member';
 
 interface UseTrainersResult {

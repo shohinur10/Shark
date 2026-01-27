@@ -46,7 +46,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 const DatePicker = dynamic(
-	() => import('@mui/x-date-pickers/DatePicker').then((mod) => mod.DatePicker),
+	() => import('@mui/x-date-pickers/DatePicker').then((mod) => mod.DatePicker as any),
 	{ ssr: false }
 );
 
@@ -141,7 +141,7 @@ const NewBookingPage: NextPage = () => {
 	};
 
 	return (
-		<Box sx={{ minHeight: '100vh', backgroundColor: '#f8f9fa', py: 4 }}>
+		<div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa', paddingTop: 32, paddingBottom: 32 }}>
 			<Container maxWidth="lg">
 				{/* Header */}
 				<Box sx={{ mb: 4 }}>
@@ -718,7 +718,7 @@ const NewBookingPage: NextPage = () => {
 					</Grid>
 				</Grid>
 			</Container>
-		</Box>
+		</div>
 	);
 };
 

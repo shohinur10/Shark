@@ -243,6 +243,52 @@ const Chat = () => {
 		setReplyingTo(null);
 	};
 
+	// Extract reply preview to avoid TypeScript union type complexity
+	const replyPreview = replyingTo ? (
+		<Box
+			component="div"
+			sx={{
+				p: 1.5,
+				mb: 1,
+				backgroundColor: 'rgba(225, 6, 0, 0.08)',
+				borderLeft: '3px solid #E10600',
+				borderRadius: 1,
+				display: 'flex',
+				justifyContent: 'space-between',
+				alignItems: 'center',
+			}}
+		>
+			<Box component="div" sx={{ flex: 1, minWidth: 0 }}>
+				<Typography variant="caption" sx={{ fontSize: '11px', color: '#757575', display: 'block', fontWeight: 600 }}>
+					Replying to {replyingTo.memberData?.memberNick || replyingTo.memberData?.memberFullName || 'User'}
+				</Typography>
+				<Typography
+					variant="body2"
+					sx={{
+						fontSize: '12px',
+						color: '#616161',
+						overflow: 'hidden',
+						textOverflow: 'ellipsis',
+						whiteSpace: 'nowrap',
+						mt: 0.5,
+					}}
+				>
+					{replyingTo.text}
+				</Typography>
+			</Box>
+			<IconButton
+				size="small"
+				onClick={handleCancelReply}
+				sx={{
+					color: '#757575',
+					'&:hover': { color: '#E10600', backgroundColor: 'rgba(225, 6, 0, 0.1)' },
+				}}
+			>
+				<CloseIcon fontSize="small" />
+			</IconButton>
+		</Box>
+	) : null;
+
 	return (
 		<Stack className="chatting">
 			{openButton ? (
@@ -251,7 +297,7 @@ const Chat = () => {
 				</button>
 			) : null}
 			<Stack className={`chat-frame ${open ? 'open' : ''}`}>
-				<Box className={'chat-top'} component={'div'}>
+				<Box component="div" className={'chat-top'}>
 					<div style={{ fontFamily: 'Nunito' }}>
 						{canViewMessages ? 'Support Chat (Trainer/Admin View)' : 'Support Chat'}
 					</div>
@@ -259,10 +305,10 @@ const Chat = () => {
 						<RippleBadge style={{ margin: '-18px 0 0 21px' }} badgeContent={onlineUsers} />
 					)}
 				</Box>
-				<Box className={'chat-content'} id="chat-content" ref={chatContentRef} component={'div'}>
+				<Box component="div" className={'chat-content'} id="chat-content" ref={chatContentRef}>
 					<ScrollableFeed>
 						<Stack className={'chat-main'}>
-							<Box flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }} component={'div'}>
+							<Box component="div" flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px' }}>
 								<div className={'welcome'}>
 									{canViewMessages 
 										? 'Welcome to Live chat! You can view and respond to all messages.' 
@@ -270,7 +316,7 @@ const Chat = () => {
 								</div>
 							</Box>
 							{!canViewMessages && messagesList.length === 0 && (
-								<Box sx={{ textAlign: 'center', py: 3, px: 2 }}>
+								<Box component="div" sx={{ textAlign: 'center', py: 3, px: 2 }}>
 									<Typography sx={{ fontSize: '14px', color: '#6B6B6B', fontStyle: 'italic', mb: 1 }}>
 										Your messages are being sent to our support team. Only trainers and admins can view and respond to messages.
 									</Typography>
@@ -280,7 +326,7 @@ const Chat = () => {
 								</Box>
 							)}
 							{canViewMessages && messagesList.length === 0 && (
-								<Box sx={{ textAlign: 'center', py: 3, px: 2 }}>
+								<Box component="div" sx={{ textAlign: 'center', py: 3, px: 2 }}>
 									<Typography sx={{ fontSize: '14px', color: '#6B6B6B', fontStyle: 'italic' }}>
 										No messages yet. All user messages will appear here for you to respond.
 									</Typography>
@@ -302,11 +348,11 @@ const Chat = () => {
 										style={{ display: 'flex' }}
 										alignItems={'flex-end'}
 										justifyContent={'flex-end'}
-										sx={{ m: '10px 0px' }}
-									>
-										<Box sx={{ maxWidth: '70%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+										sx={{ m: '10px 0px' }}>
+										<Box component="div" sx={{ maxWidth: '70%', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
 											{replyTo && replyToText && (
 												<Box
+													component="div"
 													sx={{
 														mb: 0.5,
 														p: 1,
@@ -328,15 +374,16 @@ const Chat = () => {
 										</Box>
 									</Box>
 								) : (
-									<Box key={messageKey} flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px', position: 'relative' }} component={'div'}>
+									<Box key={messageKey} flexDirection={'row'} style={{ display: 'flex' }} sx={{ m: '10px 0px', position: 'relative' }} component="div">
 										<Avatar alt={memberData?.memberNick || 'User'} src={memberImage} />
-										<Box sx={{ ml: 1, maxWidth: '70%', flex: 1 }}>
-											<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+										<Box component="div" sx={{ ml: 1, maxWidth: '70%', flex: 1 }}>
+											<Box component="div" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
 												<Typography variant="caption" sx={{ fontSize: '11px', color: '#757575', fontWeight: 600 }}>
 													{memberData?.memberNick || memberData?.memberFullName || 'User'}
 												</Typography>
 												{memberData?.memberType && (
 													<Box
+														component="div"
 														sx={{
 															px: 0.5,
 															py: 0.25,
@@ -353,6 +400,7 @@ const Chat = () => {
 											</Box>
 											{replyTo && replyToText && (
 												<Box
+													component="div"
 													sx={{
 														mb: 0.5,
 														p: 1,
@@ -395,52 +443,10 @@ const Chat = () => {
 						</Stack>
 					</ScrollableFeed>
 				</Box>
-				<Box className={'chat-bott'} component={'div'}>
+				<Box component="div" className={'chat-bott'}>
 					{/* Reply Preview */}
-					{replyingTo && (
-						<Box
-							sx={{
-								p: 1.5,
-								mb: 1,
-								backgroundColor: 'rgba(225, 6, 0, 0.08)',
-								borderLeft: '3px solid #E10600',
-								borderRadius: 1,
-								display: 'flex',
-								justifyContent: 'space-between',
-								alignItems: 'center',
-							}}
-						>
-							<Box sx={{ flex: 1, minWidth: 0 }}>
-								<Typography variant="caption" sx={{ fontSize: '11px', color: '#757575', display: 'block', fontWeight: 600 }}>
-									Replying to {replyingTo.memberData?.memberNick || replyingTo.memberData?.memberFullName || 'User'}
-								</Typography>
-								<Typography
-									variant="body2"
-									sx={{
-										fontSize: '12px',
-										color: '#616161',
-										overflow: 'hidden',
-										textOverflow: 'ellipsis',
-										whiteSpace: 'nowrap',
-										mt: 0.5,
-									}}
-								>
-									{replyingTo.text}
-								</Typography>
-							</Box>
-							<IconButton
-								size="small"
-								onClick={handleCancelReply}
-								sx={{
-									color: '#757575',
-									'&:hover': { color: '#E10600', backgroundColor: 'rgba(225, 6, 0, 0.1)' },
-								}}
-							>
-								<CloseIcon fontSize="small" />
-							</IconButton>
-						</Box>
-					)}
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+					{replyPreview}
+					<Box component="div" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 						<input
 							type={'text'}
 							name={'message'}

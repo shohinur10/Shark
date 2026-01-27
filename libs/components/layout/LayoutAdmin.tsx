@@ -20,8 +20,14 @@ import { REACT_APP_API_URL } from '../../config';
 import { MemberType } from '../../enums/member.enum';
 const drawerWidth = 280;
 
-const withAdminLayout = (Component: ComponentType) => {
-	return (props: object) => {
+interface AdminLayoutProps {
+	setSnackbar?: (value: { open: boolean; message: string; severity: string }) => void;
+	setTitle?: (value: string) => void;
+	[key: string]: any;
+}
+
+const withAdminLayout = (Component: ComponentType<any>) => {
+	return (props: AdminLayoutProps) => {
 		const router = useRouter();
 		const user = useReactiveVar(userVar);
 		const [settingsState, setSettingsStateState] = useState(false);
@@ -75,7 +81,7 @@ const withAdminLayout = (Component: ComponentType) => {
 		// Show loading state while checking authentication
 		if (loading) {
 			return (
-				<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+				<Box component="div" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
 					<Typography>Loading...</Typography>
 				</Box>
 			);
@@ -86,7 +92,7 @@ const withAdminLayout = (Component: ComponentType) => {
 		const userMemberType = user?.memberType;
 		if (!jwt || !user || userMemberType !== MemberType.ADMIN) {
 			return (
-				<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', flexDirection: 'column', gap: 2 }}>
+				<Box component="div" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', flexDirection: 'column', gap: 2 }}>
 					<Typography variant="h6">Access Denied</Typography>
 					<Typography variant="body2" color="text.secondary">
 						You need admin privileges to access this page.
@@ -196,7 +202,7 @@ const withAdminLayout = (Component: ComponentType) => {
 									src={user?.memberImage ? `${REACT_APP_API_URL}/${user?.memberImage}` : '/img/profile/defaultUser.svg'}
 									sx={{ width: 40, height: 40 }}
 								/>
-								<Box sx={{ ml: 1, flex: 1, minWidth: 0 }}>
+								<Box component="div" sx={{ ml: 1, flex: 1, minWidth: 0 }}>
 									<Typography variant={'body2'} sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
 										{user?.memberNick || 'Admin'}
 									</Typography>

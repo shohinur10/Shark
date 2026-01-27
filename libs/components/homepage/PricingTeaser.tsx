@@ -57,7 +57,7 @@ const PricingTeaser = () => {
 		<Stack className={'pricing-teaser'}>
 			<Stack className={'container'}>
 				<Stack className={'section-header'}>
-					<Box>
+					<Box component="div">
 						<Typography variant="h3" className={'section-title'}>
 							Simple, Transparent Pricing
 						</Typography>
@@ -76,7 +76,7 @@ const PricingTeaser = () => {
 						<Grid item xs={12} sm={6} md={4} key={plan.id} className={'pricing-grid-item'}>
 							<Card className={`pricing-card ${plan.popular ? 'popular' : ''}`}>
 								{plan.popular && (
-									<Box className={'popular-badge-wrapper'}>
+									<Box component="div" className={'popular-badge-wrapper'}>
 										<Chip label="Most Popular" className={'popular-badge'} size="small" />
 									</Box>
 								)}
@@ -87,7 +87,7 @@ const PricingTeaser = () => {
 									<Typography variant="caption" className={'plan-description'}>
 										{plan.description}
 									</Typography>
-									<Box className={'plan-price-container'}>
+									<Box component="div" className={'plan-price-container'}>
 										<Typography variant="h3" className={'plan-price'}>
 											{plan.price}
 										</Typography>

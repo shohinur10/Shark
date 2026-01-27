@@ -95,9 +95,11 @@ const AdminWorkouts: NextPage = ({ initialInquiry, ...props }: any) => {
 
 	const getStatusClass = (status: WorkoutStatus) => {
 		switch (status) {
-			case WorkoutStatus.ACTIVE:
+			case WorkoutStatus.PUBLISHED:
 				return 'success';
-			case WorkoutStatus.INACTIVE:
+			case WorkoutStatus.DRAFT:
+			case WorkoutStatus.ARCHIVED:
+			case WorkoutStatus.DELETED:
 				return '';
 			default:
 				return '';
@@ -129,11 +131,11 @@ const AdminWorkouts: NextPage = ({ initialInquiry, ...props }: any) => {
 							<ListItem onClick={(e: any) => tabChangeHandler(e, 'ALL')} value="ALL" className={value === 'ALL' ? 'li on' : 'li'}>
 								All
 							</ListItem>
-							<ListItem onClick={(e: any) => tabChangeHandler(e, WorkoutStatus.ACTIVE)} value={WorkoutStatus.ACTIVE} className={value === WorkoutStatus.ACTIVE ? 'li on' : 'li'}>
-								Active
+							<ListItem onClick={(e: any) => tabChangeHandler(e, WorkoutStatus.PUBLISHED)} value={WorkoutStatus.PUBLISHED} className={value === WorkoutStatus.PUBLISHED ? 'li on' : 'li'}>
+								Published
 							</ListItem>
-							<ListItem onClick={(e: any) => tabChangeHandler(e, WorkoutStatus.INACTIVE)} value={WorkoutStatus.INACTIVE} className={value === WorkoutStatus.INACTIVE ? 'li on' : 'li'}>
-								Inactive
+							<ListItem onClick={(e: any) => tabChangeHandler(e, WorkoutStatus.DRAFT)} value={WorkoutStatus.DRAFT} className={value === WorkoutStatus.DRAFT ? 'li on' : 'li'}>
+								Draft
 							</ListItem>
 						</List>
 						<Divider />
@@ -175,15 +177,17 @@ const AdminWorkouts: NextPage = ({ initialInquiry, ...props }: any) => {
 						<Divider />
 					</Box>
 
-					{getAllWorkoutsByAdminLoading ? (
-						<Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+					{getAllWorkoutsByAdminLoading && (
+						<div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
 							<Typography>Loading...</Typography>
-						</Box>
-					) : getAllWorkoutsByAdminError ? (
-						<Box sx={{ p: 3 }}>
+						</div>
+					)}
+					{!getAllWorkoutsByAdminLoading && getAllWorkoutsByAdminError && (
+						<div style={{ padding: '24px' }}>
 							<Typography color="error">Error loading workouts: {getAllWorkoutsByAdminError.message}</Typography>
-						</Box>
-					) : (
+						</div>
+					)}
+					{!getAllWorkoutsByAdminLoading && !getAllWorkoutsByAdminError && (
 						<>
 							<TableContainer>
 								<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'}>

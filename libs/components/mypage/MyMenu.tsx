@@ -47,6 +47,7 @@ const MyMenu = () => {
 			<Stack width={'100%'} padding={'24px'} className={'my-menu-container'}>
 				{/* My Page Highlight */}
 				<Box
+					component="div"
 					sx={{
 						mb: 3,
 						p: 2,

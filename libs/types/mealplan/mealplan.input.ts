@@ -47,6 +47,6 @@ export interface MealPlansInquiry {
 	limit: number;
 	sort?: string;
 	direction?: Direction;
-n	mealPlanStatus?: MealPlanStatus;
+	mealPlanStatus?: MealPlanStatus;
 	search?: MPISearch;
 }

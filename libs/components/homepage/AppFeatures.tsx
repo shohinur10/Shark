@@ -84,7 +84,7 @@ const AppFeatures = () => {
 							<Grid item xs={6} key={feature.id}>
 								<Card className={'feature-card'}>
 									<CardContent>
-										<Box className={'feature-icon'} style={{ color: feature.color }}>
+										<Box component="div" className={'feature-icon'} style={{ color: feature.color }}>
 											{feature.icon}
 										</Box>
 										<Typography variant="h6" className={'feature-title'}>
@@ -103,7 +103,7 @@ const AppFeatures = () => {
 			<Stack className={'app-features'}>
 				<Stack className={'container'}>
 					<Stack className={'section-header'}>
-						<Box>
+						<Box component="div">
 							<Typography variant="h3" className={'section-title'}>
 								Everything You Need to Succeed
 							</Typography>
@@ -117,7 +117,7 @@ const AppFeatures = () => {
 							<Grid item xs={12} sm={6} md={3} key={feature.id}>
 								<Card className={'feature-card'}>
 									<CardContent>
-										<Box className={'feature-icon'} style={{ color: feature.color }}>
+										<Box component="div" className={'feature-icon'} style={{ color: feature.color }}>
 											{feature.icon}
 										</Box>
 										<Typography variant="h6" className={'feature-title'}>

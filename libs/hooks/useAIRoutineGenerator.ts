@@ -252,7 +252,7 @@ function formatWorkoutResponse(data: any, params: WorkoutGenerationParams): Part
 		workoutDuration: data.workoutDuration || params.duration,
 		workoutEquipment: data.workoutEquipment || params.equipment || [],
 		workoutExercises: data.workoutExercises || data.exercises?.map((e: any) => e.name) || [],
-		workoutCaloriesBurn: data.workoutCaloriesBurn || estimateCalories(params.duration, params.difficulty),
+		workoutCaloriesBurn: data.workoutCaloriesBurn || estimateCalories(parseInt(params.duration) || 30, params.difficulty),
 		workoutTags: data.workoutTags || [params.goal, params.difficulty.toLowerCase()],
 	};
 }
@@ -330,12 +330,13 @@ function generateMealPlanFallback(params: MealPlanGenerationParams): Partial<Mea
 // Helper functions
 function estimateCalories(duration: number, difficulty: WorkoutDifficulty): number {
 	const baseCalories = duration * 8; // Base 8 cal/min
-	const multiplier = {
+	const multiplier: Record<WorkoutDifficulty, number> = {
 		[WorkoutDifficulty.BEGINNER]: 0.7,
 		[WorkoutDifficulty.INTERMEDIATE]: 1.0,
+		[WorkoutDifficulty.ADVANCED]: 1.25,
 		[WorkoutDifficulty.EXPERT]: 1.5,
 	};
-	return Math.round(baseCalories * (multiplier[difficulty] || 1));
+	return Math.round(baseCalories * multiplier[difficulty]);
 }
 
 function calculateMacros(calories: number, goal: NutritionGoal): { protein: number; carbs: number; fats: number } {
@@ -347,7 +348,7 @@ function calculateMacros(calories: number, goal: NutritionGoal): { protein: numb
 		proteinRatio = 0.35;
 		carbRatio = 0.35;
 		fatRatio = 0.3;
-	} else if (goal === NutritionGoal.MUSCLE_GAIN || goal === NutritionGoal.WEIGHT_GAIN) {
+	} else if (goal === NutritionGoal.MUSCLE_GAIN || goal === NutritionGoal.LEAN_MUSCLE) {
 		proteinRatio = 0.3;
 		carbRatio = 0.45;
 		fatRatio = 0.25;
@@ -386,6 +387,8 @@ function getDefaultIngredients(mealType: MealType, goal: NutritionGoal): string[
 		[MealType.LUNCH]: ['Lean protein', 'Complex carbs', 'Vegetables'],
 		[MealType.DINNER]: ['Protein source', 'Vegetables', 'Healthy fats'],
 		[MealType.SNACK]: ['Nuts', 'Fruits', 'Yogurt'],
+		[MealType.PRE_WORKOUT]: ['Banana', 'Oats', 'Quick carbs'],
+		[MealType.POST_WORKOUT]: ['Protein shake', 'Chicken', 'Rice'],
 	};
 
 	return baseIngredients[mealType] || ['Protein', 'Vegetables', 'Healthy carbs'];

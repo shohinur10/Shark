@@ -82,7 +82,7 @@ const WorkoutCategoriesPreview = () => {
 												backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url(${category.image})`,
 											}}
 										>
-											<Box className={'category-icon'}>{category.icon}</Box>
+											<Box component="div" className={'category-icon'}>{category.icon}</Box>
 											<Typography variant="h6" className={'category-title'}>
 												{category.title}
 											</Typography>
@@ -103,7 +103,7 @@ const WorkoutCategoriesPreview = () => {
 			<Stack className={'workout-categories-preview'}>
 				<Stack className={'container'}>
 					<Stack className={'section-header'}>
-						<Box>
+						<Box component="div">
 							<Typography variant="h3" className={'section-title'}>
 								Workout Categories
 							</Typography>
@@ -129,8 +129,8 @@ const WorkoutCategoriesPreview = () => {
 												backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url(${category.image})`,
 											}}
 										>
-											<Box className={'category-content'}>
-												<Box className={'category-icon'}>{category.icon}</Box>
+											<Box component="div" className={'category-content'}>
+												<Box component="div" className={'category-icon'}>{category.icon}</Box>
 												<Typography variant="h5" className={'category-title'}>
 													{category.title}
 												</Typography>

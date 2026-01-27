@@ -74,7 +74,7 @@ function removeUndefinedKeys<T extends Record<string, any>>(obj: T): Partial<T> 
 		if (obj.hasOwnProperty(key)) {
 			const value = obj[key];
 			if (value !== undefined) {
-				if (value !== null && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
+				if (value !== null && typeof value === 'object' && !Array.isArray(value) && !(value as any instanceof Date)) {
 					const cleanedNested = removeUndefinedKeys(value);
 					if (Object.keys(cleanedNested).length > 0) {
 						cleaned[key] = cleanedNested;

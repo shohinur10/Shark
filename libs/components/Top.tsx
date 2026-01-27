@@ -263,14 +263,14 @@ const Top = () => {
 			<Stack className={'navbar'}>
 				<Stack className={`navbar-main ${colorChange ? 'transparent' : ''} ${bgColor ? 'transparent' : ''}`}>
 					<Stack className={'container'}>
-						<Box className={'logo-box'} component="div">
+						<Box component="div" className={'logo-box'}>
 							<Link href={'/'}>
 								<div className="logo-container">
 									<img src="/img/logo/ChatGPT Image Nov 25, 2025, 11_45_12 PM.png" alt="Shark Logo" />
 								</div>
 							</Link>
 						</Box>
-						<Box className={'router-box'} component="div">
+						<Box component="div" className={'router-box'}>
 							{menuItems.map((item) => {
 								// Skip auth-required items if user is not logged in
 								if (item.requiresAuth && !user?._id) {
@@ -321,7 +321,7 @@ const Top = () => {
 								);
 							})}
 						</Box>
-						<Box className={'user-box'} component="div">
+						<Box component="div" className={'user-box'}>
 							{user?._id ? (
 								<>
 									<div className={'login-user'} onClick={(e: any) => setLogoutAnchor(e.currentTarget)}>
@@ -398,7 +398,7 @@ const Top = () => {
 									onClick={langClick}
 									endIcon={<CaretDown size={14} color="#616161" weight="fill" />}
 								>
-									<Box className={'flag'} component="div">
+									<Box component="div" className={'flag'}>
 										<img src={`/img/flag/lang${lang || 'en'}.png`} alt="language" />
 									</Box>
 								</Button>

@@ -1,6 +1,6 @@
 import { ChallengeDifficulty, ChallengeStatus, ChallengeType } from '../../enums/challenge.enum';
 import { Member } from '../member/member';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface Participant {
 	memberId: string;

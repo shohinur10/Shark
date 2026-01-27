@@ -60,8 +60,8 @@ const NutritionPreview = () => {
 												backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url(${feature.image})`,
 											}}
 										>
-											<Box className={'nutrition-content'}>
-												<Box className={'nutrition-icon'}>{feature.icon}</Box>
+											<Box component="div" className={'nutrition-content'}>
+												<Box component="div" className={'nutrition-icon'}>{feature.icon}</Box>
 												<Typography variant="h6" className={'nutrition-title'}>
 													{feature.title}
 												</Typography>
@@ -80,7 +80,7 @@ const NutritionPreview = () => {
 			<Stack className={'nutrition-preview'}>
 				<Stack className={'container'}>
 					<Stack className={'section-header'}>
-						<Box>
+						<Box component="div">
 							<Typography variant="h3" className={'section-title'}>
 								Fuel Your Body Right
 							</Typography>
@@ -117,7 +117,7 @@ const NutritionPreview = () => {
 										</CardMedia>
 										<CardContent>
 											<Stack direction="row" alignItems="center" spacing={1} mb={1}>
-												<Box className={'nutrition-icon-small'}>{feature.icon}</Box>
+												<Box component="div" className={'nutrition-icon-small'}>{feature.icon}</Box>
 												<Typography variant="h5" className={'nutrition-title'}>
 													{feature.title}
 												</Typography>

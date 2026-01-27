@@ -90,7 +90,7 @@ const AdminUsers: NextPage = ({ initialInquiry, ...props }: any) => {
 				setMembersInquiry({ ...membersInquiry, search: { memberStatus: MemberStatus.BLOCK } });
 				break;
 			case 'DELETE':
-				setMembersInquiry({ ...membersInquiry, search: { memberStatus: MemberStatus.DELETE } });
+				setMembersInquiry({ ...membersInquiry, search: { memberStatus: MemberStatus.DELETED } });
 				break;
 			default:
 				delete membersInquiry?.search?.memberStatus;

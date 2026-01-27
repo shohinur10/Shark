@@ -228,7 +228,7 @@ const Faq = () => {
 	} else {
 		return (
 			<Stack className={'faq-content'}>
-				<Box className={'categories'} component={'div'}>
+				<Box component="div" className={'categories'}>
 					<button
 						className={`category-button ${category === 'account' ? 'active' : ''}`}
 						onClick={() => changeCategoryHandler('account')}
@@ -266,7 +266,7 @@ const Faq = () => {
 						Payments
 					</button>
 				</Box>
-				<Box className={'faq-cards'} component={'div'}>
+				<Box component="div" className={'faq-cards'}>
 					<Grid container spacing={2}>
 					{data[category] &&
 						data[category].map((ele: any) => (

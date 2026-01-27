@@ -1,6 +1,6 @@
 import { BookingStatus, BookingType, SessionDuration } from '../../enums/booking.enum';
 import { Member } from '../member/member';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface Booking {
 	_id: string;

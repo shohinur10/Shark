@@ -1,6 +1,6 @@
 import { InquiryCategory, InquiryPriority, InquiryStatus } from '../../enums/inquiry.enum';
 import { Faq } from '../faq/faq';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface ConversationMessage {
 	sender: string;

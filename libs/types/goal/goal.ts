@@ -1,5 +1,5 @@
 import { GoalStatus, GoalType, MeasurementUnit } from '../../enums/progress.enum';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface Milestone {
 	value: number;

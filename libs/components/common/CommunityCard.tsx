@@ -160,8 +160,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 						</Stack>
 
 						{/* Post Content */}
-						<Box
-							onClick={(e: React.SyntheticEvent<Element, Event>) => chooseArticleHandler(e, boardArticle)}
+						<Box component="div" onClick={(e: React.SyntheticEvent<Element, Event>) => chooseArticleHandler(e, boardArticle)}
 							sx={{ cursor: 'pointer' }}
 						>
 							<Typography
@@ -278,7 +277,7 @@ const CommunityCard = (props: CommunityCardProps) => {
 								<ShareIcon sx={{ fontSize: '20px' }} />
 							</IconButton>
 
-							<Box sx={{ flex: 1 }} />
+							<Box component="div" sx={{ flex: 1 }} />
 
 							<Stack direction="row" alignItems="center" spacing={0.5}>
 								<RemoveRedEyeIcon sx={{ fontSize: '16px', color: '#6B6B6B' }} />

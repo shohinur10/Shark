@@ -13,6 +13,8 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import StarIcon from '@mui/icons-material/Star';
 import { Exercise } from '../../libs/types/exercise/exercise';
 
+export const getStaticPaths = async () => ({ paths: [], fallback: 'blocking' });
+
 export const getStaticProps = async ({ locale }: any) => ({
 	props: {
 		...(await serverSideTranslations(locale, ['common'])),

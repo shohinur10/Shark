@@ -1,5 +1,5 @@
 import { NoticeCategory, NoticeStatus } from '../../enums/notice.enum';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface Notice {
 	_id: string;

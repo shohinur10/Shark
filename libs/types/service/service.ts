@@ -1,6 +1,6 @@
 import { BookingType, ServiceStatus } from '../../enums/booking.enum';
 import { WorkoutDifficulty } from '../../enums/workout.enum';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface Service {
 	_id: string;

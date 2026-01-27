@@ -58,9 +58,9 @@ const WhyChooseShark = () => {
 					</Stack>
 					<Stack spacing={3}>
 						{features.map((feature, index) => (
-							<Box key={index} className={'feature-card'}>
-								<Box className={'feature-icon'}>{feature.icon}</Box>
-								<Box className={'feature-content'}>
+							<Box key={index} className={'feature-card'} component="div">
+								<Box component="div" className={'feature-icon'}>{feature.icon}</Box>
+								<Box component="div" className={'feature-content'}>
 									<Typography variant="h6" className={'feature-title'}>
 										{feature.title}
 									</Typography>
@@ -89,8 +89,8 @@ const WhyChooseShark = () => {
 					<Grid container spacing={4}>
 						{features.map((feature, index) => (
 							<Grid item xs={12} sm={6} md={4} key={index}>
-								<Box className={'feature-card'}>
-									<Box className={'feature-icon'}>{feature.icon}</Box>
+								<Box component="div" className={'feature-card'}>
+									<Box component="div" className={'feature-icon'}>{feature.icon}</Box>
 									<Typography variant="h6" className={'feature-title'}>
 										{feature.title}
 									</Typography>

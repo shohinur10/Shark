@@ -185,15 +185,17 @@ const AdminBookings: NextPage = ({ initialInquiry, ...props }: any) => {
 						<Divider />
 					</Box>
 
-					{getAllBookingsByAdminLoading ? (
-						<Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+					{getAllBookingsByAdminLoading && (
+						<div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
 							<Typography>Loading...</Typography>
-						</Box>
-					) : getAllBookingsByAdminError ? (
-						<Box sx={{ p: 3 }}>
+						</div>
+					)}
+					{!getAllBookingsByAdminLoading && getAllBookingsByAdminError && (
+						<div style={{ padding: '24px' }}>
 							<Typography color="error">Error loading bookings: {getAllBookingsByAdminError.message}</Typography>
-						</Box>
-					) : (
+						</div>
+					)}
+					{!getAllBookingsByAdminLoading && !getAllBookingsByAdminError && (
 						<>
 							<TableContainer>
 								<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={'medium'}>

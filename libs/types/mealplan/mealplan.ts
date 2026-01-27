@@ -1,6 +1,6 @@
 import { DietaryPreference, MealPlanStatus, MealType, NutritionGoal } from '../../enums/nutrition.enum';
 import { Member } from '../member/member';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface Macros {
 	protein: number;

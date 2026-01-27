@@ -22,6 +22,8 @@ export interface RoutineCompletion {
 	trainerData?: Member;
 	mealPlanData?: MealPlan;
 	workoutData?: Workout;
+	/** whether user earned a bonus for this completion */
+	eligibleForBonus?: boolean;
 }
 
 export interface RoutineCompletions {

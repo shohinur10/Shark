@@ -1,6 +1,6 @@
 import { SubscriptionDiscount, SubscriptionPeriod, SubscriptionPlan, SubscriptionStatus } from '../../enums/subscription.enum';
 import { Member } from '../member/member';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface Subscription {
 	_id: string;

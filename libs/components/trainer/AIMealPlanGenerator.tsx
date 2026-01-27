@@ -108,7 +108,7 @@ const AIMealPlanGenerator: React.FC<AIMealPlanGeneratorProps> = ({ open, onClose
 					</FormControl>
 
 					{/* Duration */}
-					<Box>
+					<Box component="div">
 						<Typography gutterBottom>Duration: {params.duration} days</Typography>
 						<Slider
 							value={params.duration}
@@ -126,7 +126,7 @@ const AIMealPlanGenerator: React.FC<AIMealPlanGeneratorProps> = ({ open, onClose
 					</Box>
 
 					{/* Calorie Target */}
-					<Box>
+					<Box component="div">
 						<Typography gutterBottom>Daily Calorie Target: {params.calorieTarget} kcal</Typography>
 						<Slider
 							value={params.calorieTarget}
@@ -175,7 +175,7 @@ const AIMealPlanGenerator: React.FC<AIMealPlanGeneratorProps> = ({ open, onClose
 					/>
 
 					{/* Allergies */}
-					<Box>
+					<Box component="div">
 						<Typography variant="body2" sx={{ mb: 1 }}>Allergies</Typography>
 						<Stack direction="row" spacing={1} sx={{ mb: 1 }}>
 							<TextField
@@ -195,7 +195,7 @@ const AIMealPlanGenerator: React.FC<AIMealPlanGeneratorProps> = ({ open, onClose
 								Add
 							</Button>
 						</Stack>
-						<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+						<Box component="div" sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
 							{params.allergies?.map((allergy, index) => (
 								<Chip
 									key={index}

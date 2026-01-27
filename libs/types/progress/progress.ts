@@ -1,5 +1,5 @@
 import { MeasurementUnit, ProgressType } from '../../enums/progress.enum';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface BodyMeasurements {
 	chest?: number;

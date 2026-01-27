@@ -201,7 +201,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ anchorEl, o
 			anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
 			transformOrigin={{ vertical: 'top', horizontal: 'right' }}
 		>
-			<Box sx={{ p: 2, pb: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+			<Box component="div" sx={{ p: 2, pb: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 				<Typography variant="h6" sx={{ fontSize: 16, fontWeight: 600 }}>
 					Notifications
 				</Typography>
@@ -217,15 +217,15 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ anchorEl, o
 				)}
 			</Box>
 			<Divider />
-			<Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
+			<Box component="div" sx={{ maxHeight: 400, overflowY: 'auto' }}>
 				{notificationsLoading ? (
-					<Box sx={{ p: 3, textAlign: 'center' }}>
+					<Box component="div" sx={{ p: 3, textAlign: 'center' }}>
 						<Typography variant="body2" color="text.secondary">
 							Loading notifications...
 						</Typography>
 					</Box>
 				) : notifications.length === 0 ? (
-					<Box sx={{ p: 3, textAlign: 'center' }}>
+					<Box component="div" sx={{ p: 3, textAlign: 'center' }}>
 						<NotificationsIcon sx={{ fontSize: 48, color: 'text.disabled', mb: 1 }} />
 						<Typography variant="body2" color="text.secondary">
 							No notifications
@@ -239,7 +239,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ anchorEl, o
 							onClick={() => handleNotificationClick(notification)}
 						>
 							<Stack direction="row" spacing={2} alignItems="flex-start">
-								<Box sx={{ mt: 0.5 }}>
+								<Box component="div" sx={{ mt: 0.5 }}>
 									{(notification.actionMemberData?.memberImage || notification.authorData?.memberImage) ? (
 										<Box
 											component="img"
@@ -254,6 +254,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ anchorEl, o
 										/>
 									) : (
 										<Box
+											component="div"
 											sx={{
 												width: 40,
 												height: 40,
@@ -269,7 +270,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ anchorEl, o
 										</Box>
 									)}
 								</Box>
-								<Box sx={{ flex: 1, minWidth: 0 }}>
+								<Box component="div" sx={{ flex: 1, minWidth: 0 }}>
 									<Typography
 										variant="body2"
 										sx={{
@@ -294,6 +295,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ anchorEl, o
 									)}
 									{notification.relatedCommentData && (
 										<Box
+											component="div"
 											sx={{
 												mt: 1,
 												p: 1,

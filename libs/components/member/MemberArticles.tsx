@@ -95,8 +95,8 @@ const MemberArticles: NextPage = ({ initialInput, ...props }: any) => {
 					<Stack className="pagination-config">
 						<Stack className="pagination-box">
 							<Pagination
-								count={Math.ceil(total / searchFilter.limit) || 1}
-								page={searchFilter.page}
+								count={Math.ceil(total / (searchFilter.limit || 10)) || 1}
+								page={searchFilter.page || 1}
 								shape="circular"
 								color="primary"
 								onChange={paginationHandler}

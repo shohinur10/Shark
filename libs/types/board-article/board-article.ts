@@ -1,6 +1,6 @@
 import { BoardArticleCategory, BoardArticleStatus } from '../../enums/board-article.enum';
 import { Member } from '../member/member';
-import { MeLiked, TotalCounter } from "../common"';
+import { MeLiked, TotalCounter } from '../common';
 
 export interface BoardArticle {
 	_id: string;

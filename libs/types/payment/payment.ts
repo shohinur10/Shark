@@ -1,5 +1,5 @@
 import { Currency, PaymentMethod, PaymentStatus, TransactionType } from '../../enums/payment.enum';
-import { TotalCounter } from "../common"';
+import { TotalCounter } from '../common';
 
 export interface Payment {
 	_id: string;

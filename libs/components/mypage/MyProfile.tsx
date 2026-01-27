@@ -208,12 +208,12 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 								</Typography>
 
 								{/* Profile Photo */}
-								<Box className={'photo-section'} sx={{ mb: 4 }}>
+								<Box component="div" className={'photo-section'} sx={{ mb: 4 }}>
 									<Typography variant="body2" className={'field-label'} gutterBottom>
 										Profile Photo
 									</Typography>
 									<Stack direction="row" spacing={3} alignItems="center">
-										<Box className={'image-preview'}>
+										<Box component="div" className={'image-preview'}>
 											<img
 												src={
 													updateData?.memberImage
@@ -224,7 +224,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 												className={'profile-image'}
 											/>
 										</Box>
-										<Box>
+										<Box component="div">
 											<input
 												type="file"
 												hidden
@@ -303,7 +303,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 									</Grid>
 								</Grid>
 
-								<Box sx={{ mt: 4 }}>
+								<Box component="div" sx={{ mt: 4 }}>
 									<Button
 										variant="contained"
 										size="large"
@@ -340,7 +340,7 @@ const MyProfile: NextPage = ({ initialValues, ...props }: any) => {
 										Change Password
 									</Button>
 								) : (
-									<Box>
+									<Box component="div">
 										<TextField
 											fullWidth
 											label="Current Password"

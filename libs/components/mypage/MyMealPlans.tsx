@@ -69,7 +69,7 @@ const MyMealPlans: NextPage = ({ initialInput, ...props }: T) => {
 				</Stack>
 				<Stack spacing={3} sx={{ mt: 3 }}>
 					{mealPlansLoading ? (
-						<Box sx={{ textAlign: 'center', py: 4 }}>
+						<Box component="div" sx={{ textAlign: 'center', py: 4 }}>
 							<Typography sx={{ color: '#6B6B6B' }}>Loading meal plans...</Typography>
 						</Box>
 					) : mealPlans?.length > 0 ? (
@@ -189,6 +189,7 @@ const MyMealPlans: NextPage = ({ initialInput, ...props }: T) => {
 						</>
 					) : (
 						<Box
+							component="div"
 							sx={{
 								textAlign: 'center',
 								py: 6,
